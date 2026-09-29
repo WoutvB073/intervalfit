@@ -5,6 +5,8 @@ import { settingsStore } from './storage/data';
 import { applyTheme } from './styles/theme';
 import { Home } from './screens/Home';
 import { Placeholder } from './screens/Placeholder';
+import { Gallery } from './screens/Gallery';
+import { Editor } from './screens/editor/Editor';
 import { InstallScreen } from './screens/gate/InstallScreen';
 import { DesktopScreen } from './screens/gate/DesktopScreen';
 import { ToastHost, showToast } from './components/Toast';
@@ -57,13 +59,8 @@ function AppRoutes() {
       screen = <Home />;
       break;
     case 'editor':
-      screen = (
-        <Placeholder
-          title={route.id ? 'Workout bewerken' : 'Nieuwe workout'}
-          step={2}
-          text="Hier kun je straks oefeningen kiezen, tijden instellen en de volgorde slepen."
-        />
-      );
+      screen = <Editor key={route.id ?? 'nieuw'} id={route.id} />;
+
       break;
     case 'player':
       screen = <Placeholder title="Workout" step={3} text="Hier komt de speler met timer, geluid en spraak." />;
@@ -73,6 +70,9 @@ function AppRoutes() {
       break;
     case 'settings':
       screen = <Placeholder title="Instellingen" step={4} text="Geluid, aftellen, thema's, gewicht en back-up." />;
+      break;
+    case 'gallery':
+      screen = <Gallery poses={route.poses} />;
       break;
     case 'share':
       screen = <Placeholder title="Gedeelde workout" step={5} text="Importeren binnen de app komt in stap 5." />;

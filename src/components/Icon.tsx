@@ -16,6 +16,44 @@ const PATHS = {
     </>
   ),
   plus: <path d="M12 5v14M5 12h14" />,
+  minus: <path d="M5 12h14" />,
+  grip: (
+    <>
+      <circle cx="9" cy="6" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="15" cy="6" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="9" cy="12" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="15" cy="12" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="9" cy="18" r="1.5" fill="currentColor" stroke="none" />
+      <circle cx="15" cy="18" r="1.5" fill="currentColor" stroke="none" />
+    </>
+  ),
+  chevron: <path d="M9 5l7 7-7 7" />,
+  camera: (
+    <>
+      <path d="M4 8.5A2.5 2.5 0 0 1 6.5 6h1.8l1.4-2h4.6l1.4 2h1.8A2.5 2.5 0 0 1 20 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5v-9Z" />
+      <circle cx="12" cy="13" r="3.5" />
+    </>
+  ),
+  image: (
+    <>
+      <rect x="3.5" y="4.5" width="17" height="15" rx="3" />
+      <circle cx="9" cy="10" r="1.8" />
+      <path d="m20.5 16-5-5-9 8.5" />
+    </>
+  ),
+  search: (
+    <>
+      <circle cx="11" cy="11" r="6.5" />
+      <path d="m20 20-4.2-4.2" />
+    </>
+  ),
+  arrowUp: <path d="M12 19V5M6 11l6-6 6 6" />,
+  arrowDown: <path d="M12 5v14M6 13l6 6 6-6" />,
+  pencil: (
+    <>
+      <path d="M4 20h4L19 9a2.83 2.83 0 0 0-4-4L4 16v4Z" />
+    </>
+  ),
   settings: (
     <>
       <path d="M4 7h10M18 7h2M4 17h2M10 17h10" />

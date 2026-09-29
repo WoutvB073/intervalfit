@@ -1,0 +1,67 @@
+.screen.gallery {
+  max-width: 1100px;
+}
+.gallery-grid {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+}
+.gallery-card {
+  --fig-halo: var(--surface);
+  background: var(--surface);
+  border-radius: 20px;
+  box-shadow: var(--shadow-card);
+  padding: 8px 8px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.gallery-card__art {
+  width: 100%;
+  aspect-ratio: 1;
+}
+.gallery-card__name {
+  font-weight: 700;
+  font-size: 15px;
+  text-align: center;
+}
+
+.gallery-poses {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 12px;
+}
+.gallery-poses__row {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 10px;
+}
+.gallery-poses__row h2 {
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+.gallery-poses__row small {
+  color: var(--text-3);
+  font-weight: 500;
+}
+.gallery-poses__frames {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+.gallery-poses__frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 11px;
+  color: var(--text-3);
+}
+.gallery-poses__frame .figure {
+  aspect-ratio: 1;
+  background: var(--bg);
+  border-radius: 8px;
+}

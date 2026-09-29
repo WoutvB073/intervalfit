@@ -46,6 +46,14 @@
   --cat-cardio: #f0567a;
   --cat-eigen: #19a974;
 
+  /* Figuurtjes */
+  --fig: #1f3d35;
+  --fig-far: #9bb9af;
+  --fig-accent: #0f9d63;
+  --fig-accent-far: #8fd3b5;
+  --fig-ground: #d3e6de;
+  --fig-prop: #cfe0d9;
+
   /* Vorm */
   --radius-card: 24px;
   --radius-btn: 16px;

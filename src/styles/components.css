@@ -169,16 +169,38 @@
   color: var(--primary);
 }
 
-/* ── Oefening-tegels ─────────────────────────────────────────── */
+/* ── Oefening-tegels en -afbeeldingen ────────────────────────── */
 .thumb {
   display: inline-grid;
   place-items: center;
   flex: none;
+  overflow: hidden;
   border-radius: 30%;
+  background: var(--surface-2);
   font-weight: 800;
+}
+.thumb--more {
+  width: 40px;
+  height: 40px;
+  font-size: 15px;
+  color: var(--text-2);
+}
+.ex-visual {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+.ex-visual--photo {
+  object-fit: cover;
+}
+.ex-visual--figure {
+  padding: 6%;
+}
+.ex-visual--letter {
   color: #fff;
   background: var(--cat-eigen);
-  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.08);
+  font-weight: 800;
 }
 .thumb--benen {
   background: var(--cat-benen);
@@ -192,15 +214,9 @@
 .thumb--cardio {
   background: var(--cat-cardio);
 }
-.thumb--more {
-  width: 40px;
-  height: 40px;
-  font-size: 15px;
-  background: var(--surface-2);
-  color: var(--text-2);
-  box-shadow: none;
+.thumb .ex-visual--letter {
+  font-size: inherit;
 }
-
 /* ── Overlay, paneel, dialoog ────────────────────────────────── */
 .overlay {
   position: fixed;
@@ -245,10 +261,65 @@
   background: var(--border);
   background: color-mix(in srgb, var(--text) 18%, transparent);
 }
+.sheet--tall {
+  height: calc(100dvh - env(safe-area-inset-top) - 16px);
+  display: flex;
+  flex-direction: column;
+}
+.sheet--tall > * {
+  flex-shrink: 0;
+}
+.sheet__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 0 8px 4px;
+}
 .sheet__title {
   font-size: 20px;
   font-weight: 800;
-  margin: 4px 4px 12px;
+}
+.sheet__close {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border: 0;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--text-2);
+  cursor: pointer;
+}
+.dialog__stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 20px;
+}
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+label.btn {
+  position: relative;
+  cursor: pointer;
+}
+.btn.is-disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+.inline-icon {
+  display: inline-block;
+  vertical-align: -3px;
 }
 
 .sheet-actions {
@@ -330,6 +401,42 @@
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   margin-top: 22px;
+}
+
+/* ── Keuzeknopjes (categorieën) ───────────────────────────────── */
+.chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 2px 0 4px;
+  margin: 0 calc(-1 * var(--gutter, 16px));
+  padding-left: var(--gutter, 16px);
+  padding-right: var(--gutter, 16px);
+}
+.chips::-webkit-scrollbar {
+  display: none;
+}
+.chip {
+  flex: none;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text-2);
+  font-weight: 700;
+  font-size: 15px;
+  box-shadow: inset 0 0 0 1.5px var(--border);
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    color 160ms ease;
+}
+.chip.is-active {
+  background: var(--text);
+  color: var(--bg);
+  box-shadow: none;
 }
 
 /* ── Toast ───────────────────────────────────────────────────── */

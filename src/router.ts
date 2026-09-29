@@ -17,6 +17,7 @@ export type Route =
   | { name: 'summary'; id: string }
   | { name: 'settings' }
   | { name: 'share'; code: string }
+  | { name: 'gallery'; poses: boolean }
   | { name: 'notFound' };
 
 export function parseHash(hash: string): Route {
@@ -29,6 +30,7 @@ export function parseHash(hash: string): Route {
   if (a === 'speel' && b) return { name: 'player', id: decodeURIComponent(b) };
   if (a === 'klaar' && b) return { name: 'summary', id: decodeURIComponent(b) };
   if (a === 'instellingen') return { name: 'settings' };
+  if (a === 'galerij') return { name: 'gallery', poses: b === 'houdingen' };
   // De code bevat geen '/' (lz-string URI-veilig), maar neem voor de zekerheid alles mee.
   if (a === 'deel' && b) return { name: 'share', code: parts.slice(1).join('/') };
   return { name: 'notFound' };

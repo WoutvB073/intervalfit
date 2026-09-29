@@ -7,6 +7,22 @@ import { useEffect, useRef } from 'react';
 type Entry = { close: () => void };
 const stack: Entry[] = [];let checkScheduled = false;
 let ignoreNextPop = false;
+let afterPop: (() => void) | null = null;
+
+/**
+ * Sluit alle panelen/bewakers in één keer (haalt hun stap uit de geschiedenis) en voert daarna `then` uit.
+ * Gebruikt bij het verlaten van een scherm vanuit een dialoog, bv. "Niet bewaren".
+ */
+export function leaveOverlays(then: () => void): void {
+  stack.length = 0;
+  if (isOverlayEntry()) {
+    ignoreNextPop = true;
+    afterPop = then;
+    history.back();
+  } else {
+    then();
+  }
+}
 
 export function isOverlayEntry(): boolean {
   return (history.state as { overlay?: boolean } | null)?.overlay === true;
@@ -25,6 +41,8 @@ function scheduleCheck() {
   checkScheduled = true;
   setTimeout(() => {
     checkScheduled = false;
+    // Tijdens het verlaten (leaveOverlays) loopt er al een 'terug'; niet nog eens.
+    if (ignoreNextPop) return;
     if (stack.length === 0 && isOverlayEntry()) {
       ignoreNextPop = true;
       history.back();
@@ -36,6 +54,9 @@ if (typeof window !== 'undefined') {
   window.addEventListener('popstate', () => {
     if (ignoreNextPop) {
       ignoreNextPop = false;
+      const fn = afterPop;
+      afterPop = null;
+      fn?.();
       return;
     }
     const top = stack[stack.length - 1];

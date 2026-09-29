@@ -1,0 +1,72 @@
+/* ── Oefeningfiguurtjes ─────────────────────────────────────────── */
+.figure {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.fig-seg {
+  fill: none;
+  stroke-linecap: round;
+}
+.fig-body {
+  stroke: var(--fig);
+}
+.fig-accent {
+  stroke: var(--fig-accent);
+}
+.fig-body.fig-far {
+  stroke: var(--fig-far);
+}
+.fig-accent.fig-far {
+  stroke: var(--fig-accent-far);
+}
+.fig-torso {
+  stroke-width: 17px;
+}
+.fig-torso-front {
+  stroke-width: 10px;
+  stroke-linejoin: round;
+}
+.fig-torso-front.fig-body {
+  fill: var(--fig);
+}
+.fig-torso-front.fig-accent {
+  fill: var(--fig-accent);
+}
+.fig-thigh {
+  stroke-width: 13px;
+}
+.fig-shin {
+  stroke-width: 11px;
+}
+.fig-foot {
+  stroke-width: 8px;
+}
+.fig-upper {
+  stroke-width: 10.5px;
+}
+.fig-fore {
+  stroke-width: 9.5px;
+}
+.fig-halo {
+  stroke: var(--fig-halo, var(--bg));
+}
+.fig-halo-upper {
+  stroke-width: 16px;
+}
+.fig-halo-fore {
+  stroke-width: 15px;
+}
+.fig-head {
+  fill: var(--fig);
+}
+.fig-ground {
+  stroke: var(--fig-ground);
+  stroke-width: 4px;
+  stroke-linecap: round;
+}
+.fig-prop,
+.fig-prop rect {
+  fill: var(--fig-prop);
+}

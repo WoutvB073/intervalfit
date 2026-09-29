@@ -74,7 +74,10 @@ npm run preview  # productieversie lokaal bekijken
 - **Testen in een gewone browser (ook op de computer):** open de app met `?dev=1`, bijvoorbeeld
   `http://localhost:5173/intervalfit/?dev=1`. De keuze wordt onthouden; zet hem uit met `?dev=0`.
   Linksonder staat dan een klein "dev"-label.
-- De oefeningenbibliotheek staat in één bestand: `src/data/exercises.ts`.
+- **Galerij met alle animaties:** `…/intervalfit/?dev=1#/galerij` (ook op de telefoon). Met de knop *Houdingen*
+  zie je per oefening 8 momenten uit de beweging.
+- De oefeningenbibliotheek staat in één bestand: `src/data/exercises.ts`. De animaties staan in
+  `src/figure/animations.ts`; een oefening zonder animatie krijgt vanzelf een letter-tegel.
 - De naam van de app staat in `src/config.ts`, `vite.config.ts` en `index.html`.
 - Het app-icoon wordt gemaakt uit `public/logo.svg` (configuratie in `pwa-assets.config.ts`).
 - Het volledige plan en de gemaakte keuzes staan in `PLAN.md`.

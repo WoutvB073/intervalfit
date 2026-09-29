@@ -1,0 +1,574 @@
+/* ── Workout-editor ─────────────────────────────────────────── */
+.editor {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 112px);
+}
+.editor__main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Invoervelden */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.field__label {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-2);
+}
+.field__input {
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
+  border: 2px solid var(--border);
+  border-radius: var(--radius-btn);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 600;
+  outline: none;
+  transition: border-color 160ms ease;
+}
+.field__input:focus {
+  border-color: var(--primary);
+}
+.field__input--big {
+  min-height: 60px;
+  font-size: 21px;
+  font-weight: 800;
+}
+.field__input::placeholder {
+  color: var(--text-3);
+  font-weight: 500;
+}
+.field.has-error .field__input {
+  border-color: var(--danger);
+}
+.field__error {
+  color: var(--danger);
+  font-size: 15px;
+  font-weight: 600;
+}
+.field__hint {
+  font-size: 15px;
+  color: var(--text-2);
+}
+
+/* Instellingen van de workout */
+.editor__settings {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 16px;
+}
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+}
+.setting-row + .setting-row {
+  border-top: 1px solid var(--border);
+}
+.setting-row__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.setting-row__label {
+  font-weight: 700;
+}
+.setting-row__hint {
+  font-size: 14px;
+  color: var(--text-3);
+}
+.setting-row.is-muted .setting-row__label {
+  color: var(--text-3);
+}
+
+/* − waarde + */
+.stepper {
+  display: flex;
+  align-items: center;
+  flex: none;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 18px;
+  background: var(--surface-2);
+}
+.stepper__btn {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 1px 2px rgba(16, 40, 32, 0.08);
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  transition: transform 100ms ease;
+}
+.stepper__btn:active {
+  transform: scale(0.9);
+}
+.stepper__btn:disabled {
+  opacity: 0.35;
+}
+.stepper__value {
+  position: relative;
+  min-width: 76px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+/* Onzichtbare <select> over de waarde: tik = het draaiwiel van het toestel. */
+.stepper__value select {
+  position: absolute;
+  inset: -8px 0;
+  width: 100%;
+  opacity: 0;
+  font-size: 16px;
+  cursor: pointer;
+}
+/* In een los veld (paneel): over de hele breedte, waarde in het midden. */
+.field > .stepper .stepper__value {
+  flex: 1;
+  font-size: 22px;
+}
+.stepper.is-disabled .stepper__value {
+  color: var(--text-3);
+}
+
+.presets {
+  display: flex;
+  gap: 8px;
+}
+.preset {
+  flex: 1;
+  min-height: 44px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--surface-2);
+  color: var(--text-2);
+  font-weight: 700;
+  cursor: pointer;
+}
+.preset.is-active {
+  background: var(--primary);
+  color: var(--primary-ink);
+}
+
+.segmented {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 16px;
+  background: var(--surface-2);
+}
+.segmented button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--text-2);
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+.segmented button.is-active {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 1px 3px rgba(16, 40, 32, 0.12);
+}
+
+/* Lijst met oefeningen */
+.editor__tip {
+  font-size: 14px;
+  color: var(--text-3);
+  margin-top: -8px;
+}
+.editor__empty {
+  padding: 20px;
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  color: var(--text-2);
+  text-align: center;
+}
+.ex-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ex-row {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  background: var(--surface);
+  border-radius: 20px;
+  box-shadow: var(--shadow-card);
+}
+.ex-row.is-dragging {
+  z-index: 5;
+  box-shadow: var(--shadow-pop);
+  scale: 1.02;
+}
+.ex-row__grip {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  flex: none;
+  border: 0;
+  border-radius: 20px 0 0 20px;
+  background: transparent;
+  color: var(--text-3);
+  cursor: grab;
+  /* Op de greep scrollt de pagina niet, zodat slepen daar prettig werkt. */
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+.ex-row__grip:active {
+  cursor: grabbing;
+  color: var(--primary);
+}
+.ex-row__main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 72px;
+  padding: 10px 12px 10px 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+.ex-row__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.ex-row__name {
+  font-weight: 700;
+  font-size: 17px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ex-row__detail {
+  font-size: 14px;
+  color: var(--text-2);
+}
+.ex-row__chevron {
+  color: var(--text-3);
+  flex: none;
+}
+
+.add-ex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 64px;
+  border: 2px dashed color-mix(in srgb, var(--primary) 45%, transparent);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--primary-soft) 55%, transparent);
+  color: var(--primary-soft-ink);
+  font-weight: 800;
+  font-size: 18px;
+  cursor: pointer;
+}
+.add-ex:active {
+  background: var(--primary-soft);
+}
+
+/* Onderbalk met totale duur en Opslaan */
+.save-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 12px max(16px, env(safe-area-inset-left)) calc(env(safe-area-inset-bottom) + 12px);
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--border);
+}
+.save-bar__total {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.save-bar__total span {
+  font-size: 14px;
+  color: var(--text-2);
+}
+.save-bar__total strong {
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+}
+.save-bar .btn {
+  min-width: 150px;
+}
+
+/* Paneel: oefening aanpassen */
+.ex-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 0 4px 8px;
+}
+.ex-sheet__hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.ex-sheet__visual {
+  position: relative;
+  width: min(220px, 60vw);
+  aspect-ratio: 1;
+  border-radius: 28px;
+  overflow: hidden;
+  background: var(--surface-2);
+}
+.ex-sheet__visual .ex-visual--letter {
+  font-size: 72px;
+}
+.ex-sheet__busy {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--surface) 80%, transparent);
+  font-weight: 700;
+}
+.ex-sheet__instruction {
+  text-align: center;
+  color: var(--text-2);
+  max-width: 420px;
+}
+.photo-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.photo-actions .btn {
+  padding: 0 12px;
+}
+.ex-sheet__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+.btn--danger-text {
+  color: var(--danger);
+}
+
+/* Paneel: bibliotheek */
+.lib-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 8px 0 14px;
+  margin: 0 4px 10px;
+  border-radius: 16px;
+  background: var(--surface-2);
+  color: var(--text-3);
+}
+.lib-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  outline: none;
+  color: var(--text);
+  font-size: 17px;
+}
+.lib-search input::-webkit-search-cancel-button {
+  display: none;
+}
+.lib-search__clear {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text-2);
+}
+.lib-chips {
+  --gutter: 20px;
+  margin-bottom: 10px;
+}
+.lib-custom-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: calc(100% - 8px);
+  margin: 0 4px 12px;
+  padding: 12px;
+  border: 2px dashed var(--border);
+  border-radius: 18px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+.lib-custom-btn__icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 14px;
+  background: var(--primary-soft);
+  color: var(--primary-soft-ink);
+}
+.lib-custom-btn strong {
+  display: block;
+}
+.lib-custom-btn small {
+  color: var(--text-2);
+  font-size: 14px;
+}
+.lib-empty {
+  padding: 16px;
+  color: var(--text-2);
+  text-align: center;
+}
+.lib-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0 4px 96px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 10px;
+}
+.lib-tile {
+  --fig-halo: var(--surface-2);
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 8px 12px;
+  border: 2px solid transparent;
+  border-radius: 20px;
+  background: var(--surface-2);
+  cursor: pointer;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease;
+}
+.lib-tile.is-selected {
+  --fig-halo: var(--primary-soft);
+  border-color: var(--primary);
+  background: var(--primary-soft);
+}
+.lib-tile__art {
+  width: 100%;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+}
+.lib-tile__letter {
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--text-3);
+}
+.lib-tile__name {
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.25;
+  text-align: center;
+}
+.lib-tile__time {
+  font-size: 13px;
+  color: var(--text-3);
+}
+.lib-tile__check {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--primary-ink);
+  transform: scale(0);
+  transition: transform 200ms cubic-bezier(0.2, 0.9, 0.3, 1.4);
+}
+.lib-tile.is-selected .lib-tile__check {
+  transform: scale(1);
+}
+.lib-footer {
+  margin-top: auto !important;
+  position: sticky;
+  bottom: calc(-1 * (env(safe-area-inset-bottom) + 20px));
+  margin: 0 -20px calc(-1 * (env(safe-area-inset-bottom) + 20px));
+  padding: 12px 20px calc(env(safe-area-inset-bottom) + 16px);
+  background: linear-gradient(to top, var(--surface) 70%, transparent);
+  transform: translateY(110%);
+  transition: transform 240ms cubic-bezier(0.2, 0.9, 0.25, 1);
+}
+.lib-footer.is-visible {
+  transform: none;
+}
+.lib-custom {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 0 4px;
+}
+.lib-custom__actions {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 10px;
+}
+
+/* Kleine schermen */
+@media (max-width: 374px) {
+  .setting-row {
+    flex-wrap: wrap;
+  }
+  .setting-row .stepper {
+    margin-left: auto;
+  }
+  .stepper__value {
+    min-width: 64px;
+  }
+  .save-bar .btn {
+    min-width: 0;
+  }
+}

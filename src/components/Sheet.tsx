@@ -36,11 +36,14 @@ export function Sheet({
   open,
   onClose,
   title,
+  tall,
   children,
 }: {
   open: boolean;
   onClose: () => void;
   title?: string;
+  /** Bijna schermvullend (lange lijsten). */
+  tall?: boolean;
   children: ReactNode;
 }) {
   useOverlay(open, onClose);
@@ -49,14 +52,21 @@ export function Sheet({
   return createPortal(
     <div className={`overlay${visible ? ' is-visible' : ''}`} onClick={onClose}>
       <div
-        className="sheet"
+        className={`sheet${tall ? ' sheet--tall' : ''}`}
         role="dialog"
         aria-modal="true"
         aria-label={title}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sheet__grip" aria-hidden="true" />
-        {title && <h2 className="sheet__title">{title}</h2>}
+        {title && (
+          <div className="sheet__head">
+            <h2 className="sheet__title">{title}</h2>
+            <button type="button" className="sheet__close" aria-label="Sluiten" onClick={onClose}>
+              <Icon name="close" size={22} />
+            </button>
+          </div>
+        )}
         {children}
       </div>
     </div>,

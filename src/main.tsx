@@ -6,14 +6,20 @@ import './styles/global.css';
 import './styles/components.css';
 import './styles/home.css';
 import './styles/gate.css';
+import './styles/figure.css';
+import './styles/gallery.css';
+import './styles/editor.css';
 import { App } from './App';
-import { migrate, requestPersistentStorage } from './storage/data';
+import { migrate, requestPersistentStorage, workoutsStore } from './storage/data';
+import { cleanupPhotos } from './storage/photos';
 import { initServiceWorker } from './engine/update';
 import { initDevMode } from './engine/devMode';
 
 const devMode = initDevMode();
 migrate();
 requestPersistentStorage();
+// Foto's die bij geen enkele workout meer horen opruimen (bv. na verwijderen of niet-bewaarde wijzigingen).
+void cleanupPhotos(workoutsStore.get());
 // Ook in de browser registreren: zo is alles al offline beschikbaar zodra de app geïnstalleerd is.
 initServiceWorker();
 
