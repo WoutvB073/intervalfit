@@ -86,7 +86,7 @@ export function usePlayer(workout: Workout, settings: Settings, debug: boolean) 
           finishTimer.current = setTimeout(() => {
             speech.speak(FINISH_TEXT, sound.volume);
             log({ type: 'speak', what: FINISH_TEXT });
-          }, 1500);
+          }, 2100); // na de slotmelodie
         }
       }
     },
@@ -105,7 +105,8 @@ export function usePlayer(workout: Workout, settings: Settings, debug: boolean) 
       }
     }
 
-    if (session.status === 'running') {
+    // Alleen inplannen als de app zichtbaar is (op de achtergrond zou geluid te laat klinken).
+    if (session.status === 'running' && document.visibilityState === 'visible') {
       // Geluiden vooruit inplannen op de audioklok.
       for (const cue of soundCues) {
         if (cue.phase < session.index) continue;

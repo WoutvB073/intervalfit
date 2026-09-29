@@ -237,7 +237,9 @@ export function fitViewBox(anim: FigureAnim): [number, number, number, number] {
   const size = Math.min(210, Math.max(150, maxX - minX + 24, bottom - minY + 12));
   let x = (minX + maxX) / 2 - size / 2;
   if (anim.mirror) x = 200 - x - size;
-  const box: [number, number, number, number] = [x, bottom - size, size, size];
+  // Verticaal centreren: liggende oefeningen staan zo niet onderin een lege kaart.
+  const top = Math.min(bottom - size, (minY + bottom) / 2 - size / 2);
+  const box: [number, number, number, number] = [x, top, size, size];
   fitCache.set(anim, box);
   return box;
 }
