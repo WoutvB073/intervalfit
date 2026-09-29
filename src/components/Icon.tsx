@@ -17,6 +17,30 @@ const PATHS = {
   ),
   plus: <path d="M12 5v14M5 12h14" />,
   minus: <path d="M5 12h14" />,
+  pause: (
+    <>
+      <rect x="6.5" y="5" width="4" height="14" rx="1.5" fill="currentColor" stroke="none" />
+      <rect x="13.5" y="5" width="4" height="14" rx="1.5" fill="currentColor" stroke="none" />
+    </>
+  ),
+  skipForward: (
+    <>
+      <path d="M5 6.5v11a1 1 0 0 0 1.5.86l8.5-5.5a1 1 0 0 0 0-1.72l-8.5-5.5A1 1 0 0 0 5 6.5Z" fill="currentColor" stroke="none" />
+      <path d="M19 5v14" strokeWidth="2.6" />
+    </>
+  ),
+  skipBack: (
+    <>
+      <path d="M19 6.5v11a1 1 0 0 1-1.5.86L9 12.86a1 1 0 0 1 0-1.72l8.5-5.5A1 1 0 0 1 19 6.5Z" fill="currentColor" stroke="none" />
+      <path d="M5 5v14" strokeWidth="2.6" />
+    </>
+  ),
+  sound: (
+    <>
+      <path d="M4 9.5v5h3.5L12 19V5L7.5 9.5H4Z" fill="currentColor" />
+      <path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" />
+    </>
+  ),
   grip: (
     <>
       <circle cx="9" cy="6" r="1.5" fill="currentColor" stroke="none" />

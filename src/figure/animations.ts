@@ -269,6 +269,32 @@ export const ANIMATIONS: Record<string, FigureAnim> = {
     } satisfies FigureAnim;
   })(),
 
+  'side-leg-raises-left': (() => {
+    // Vooraanzicht, liggend op de rechterzij (hoofd links in beeld, rechterkant onder),
+    // hoofd rust op de gestrekte onderste arm, bovenste hand op de vloer voor de borst.
+    // Het bovenste (linker)been gaat gestrekt omhoog tot ± 45°.
+    const hip: V = [115, 170];
+    const shoulder: V = [69.5, 163];
+    const rest: Pose = {
+      hip,
+      torso: angleTo(hip, shoulder),
+      head: 0,
+      // Onderste arm: elleboog op de vloer, hand onder het hoofd. Bovenste arm: onderarm plat op de vloer voor de borst.
+      hands: [[60, 164], [88, 178]],
+      elbows: [1, -1],
+      feet: [[185.7, 178.4], pol(83, LEG)],
+      footAbs: [92, 83],
+    };
+    const lifted: Pose = { ...rest, feet: [[185.7, 178.4], pol(135, LEG)], footAbs: [92, 135] };
+    return {
+      view: 'front',
+      focus: ['legF', 'hipF'],
+      still: 1,
+      frames: [rest, lifted, lifted, rest],
+      times: [1.1, 0.3, 1.3, 0.5],
+    } satisfies FigureAnim;
+  })(),
+
   // ══ Bovenlichaam ═══════════════════════════════════════════════
   'push-ups': {
     view: 'side',
@@ -526,6 +552,8 @@ export const ANIMATIONS: Record<string, FigureAnim> = {
 
 // Zijplank rechts = zijplank links, gespiegeld.
 ANIMATIONS['side-plank-right'] = { ...ANIMATIONS['side-plank-left']!, mirror: true };
+// Side leg raises rechts = links, gespiegeld (op de linkerzij, rechterbeen omhoog).
+ANIMATIONS['side-leg-raises-right'] = { ...ANIMATIONS['side-leg-raises-left']!, mirror: true };
 
 export function getAnimation(id: string | undefined): FigureAnim | undefined {
   return id ? ANIMATIONS[id] : undefined;

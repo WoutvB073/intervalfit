@@ -180,7 +180,8 @@ export function lerpPose(a: Pose, b: Pose, t: number): Pose {
 // ── Animatie ─────────────────────────────────────────────────────
 
 export type Prop = 'wall' | 'bench';
-export type Part = 'legs' | 'arms' | 'torso';
+/** Lichaamsdelen voor de accentkleur; met N/F alleen de ene kant (bv. 'legF' = bovenste been bij zijligging). */
+export type Part = 'legs' | 'arms' | 'torso' | 'legN' | 'legF' | 'armN' | 'armF' | 'hipN' | 'hipF';
 
 export type FigureAnim = {
   view: View;

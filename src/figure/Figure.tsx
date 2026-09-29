@@ -28,7 +28,7 @@ function setLine(el: SVGLineElement | null | undefined, a: V, b: V) {
   el.setAttribute('y2', b[1].toFixed(1));
 }
 
-function draw(sk: Skeleton, refs: Map<Seg | 'head' | 'torsoPath', SVGElement>) {
+function draw(sk: Skeleton, refs: Map<Seg | 'head' | 'torsoPath' | 'hipDotF' | 'hipDotN', SVGElement>) {
   const L = (k: Seg) => refs.get(k) as SVGLineElement | undefined;
   setLine(L('armFU'), sk.shF, sk.elbowF);
   setLine(L('armFF'), sk.elbowF, sk.handF);
@@ -52,6 +52,11 @@ function draw(sk: Skeleton, refs: Map<Seg | 'head' | 'torsoPath', SVGElement>) {
     const f = (v: V) => `${v[0].toFixed(1)} ${v[1].toFixed(1)}`;
     p?.setAttribute('d', `M${f(sk.shN)}L${f(sk.shF)}L${f(sk.hipF)}L${f(sk.hipN)}Z`);
   }
+  for (const [k, p] of [['hipDotF', sk.hipF], ['hipDotN', sk.hipN]] as const) {
+    const dot = refs.get(k);
+    dot?.setAttribute('cx', p[0].toFixed(1));
+    dot?.setAttribute('cy', p[1].toFixed(1));
+  }
   const head = refs.get('head');
   head?.setAttribute('cx', sk.head[0].toFixed(1));
   head?.setAttribute('cy', sk.head[1].toFixed(1));
@@ -61,7 +66,7 @@ function draw(sk: Skeleton, refs: Map<Seg | 'head' | 'torsoPath', SVGElement>) {
 export function Figure({ exerciseId, anim: animProp, playing = true, at, frame, className = '', title }: Props) {
   const anim = animProp ?? getAnimation(exerciseId);
   const svgRef = useRef<SVGSVGElement>(null);
-  const refs = useRef(new Map<Seg | 'head' | 'torsoPath', SVGElement>());
+  const refs = useRef(new Map<Seg | 'head' | 'torsoPath' | 'hipDotF' | 'hipDotN', SVGElement>());
 
   const staticPose = () => {
     if (!anim) return null;
@@ -106,9 +111,12 @@ export function Figure({ exerciseId, anim: animProp, playing = true, at, frame, 
   if (!anim) return null;
 
   const focus = new Set<Part>(anim.focus ?? []);
-  const cls = (part: Part, far: boolean) =>
-    `${focus.has(part) ? 'fig-accent' : 'fig-body'}${far && anim.view === 'side' ? ' fig-far' : ''}`;
-  const reg = (k: Seg | 'head' | 'torsoPath') => (el: SVGElement | null) => {
+  const cls = (part: Part, far: boolean) => {
+    const side = (part === 'legs' ? 'leg' : part === 'arms' ? 'arm' : '') + (far ? 'F' : 'N');
+    const on = focus.has(part) || focus.has(side as Part);
+    return `${on ? 'fig-accent' : 'fig-body'}${far && anim.view === 'side' ? ' fig-far' : ''}`;
+  };
+  const reg = (k: Seg | 'head' | 'torsoPath' | 'hipDotF' | 'hipDotN') => (el: SVGElement | null) => {
     if (el) refs.current.set(k, el);
   };
   const line = (k: Seg, part: Part, far: boolean, kind: string) => (
@@ -153,7 +161,13 @@ export function Figure({ exerciseId, anim: animProp, playing = true, at, frame, 
     ) : (
       <path ref={reg('torsoPath')} className={`fig-torso-front ${focus.has('torso') ? 'fig-accent' : 'fig-body'}`} />
     );
-  const head = <circle ref={reg('head')} r={LEN.headR} className="fig-head" />;
+  const head = (
+    <>
+      <circle ref={reg('head')} r={LEN.headR} className="fig-head" />
+      {focus.has('hipF') && <circle ref={reg('hipDotF')} r={7.5} className="fig-hip" />}
+      {focus.has('hipN') && <circle ref={reg('hipDotN')} r={7.5} className="fig-hip" />}
+    </>
+  );
 
   const [vx, vy, vs] = fitViewBox(anim);
   return (

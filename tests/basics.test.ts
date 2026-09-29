@@ -35,9 +35,9 @@ describe('tijdweergave', () => {
 });
 
 describe('oefeningenbibliotheek', () => {
-  it('bevat alle 37 oefeningen met unieke id', () => {
-    expect(EXERCISES).toHaveLength(37);
-    expect(new Set(EXERCISES.map((e) => e.id)).size).toBe(37);
+  it('bevat alle 39 oefeningen met unieke id', () => {
+    expect(EXERCISES).toHaveLength(39);
+    expect(new Set(EXERCISES.map((e) => e.id)).size).toBe(39);
   });
   it('heeft per oefening een geldige categorie, instructie, MET en zoekwoorden', () => {
     const cats = new Set(CATEGORIES.map((c) => c.id));

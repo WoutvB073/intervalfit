@@ -9,6 +9,7 @@ import './styles/gate.css';
 import './styles/figure.css';
 import './styles/gallery.css';
 import './styles/editor.css';
+import './styles/player.css';
 import { App } from './App';
 import { migrate, requestPersistentStorage, workoutsStore } from './storage/data';
 import { cleanupPhotos } from './storage/photos';

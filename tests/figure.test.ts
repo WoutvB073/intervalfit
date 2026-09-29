@@ -21,7 +21,7 @@ describe('skelet (inverse kinematica)', () => {
 });
 
 describe('animaties', () => {
-  it('bestaan voor alle 37 oefeningen', () => {
+  it('bestaan voor alle oefeningen', () => {
     for (const e of EXERCISES) expect(ANIMATIONS[e.id], e.id).toBeDefined();
   });
 

@@ -7,6 +7,7 @@ import { Home } from './screens/Home';
 import { Placeholder } from './screens/Placeholder';
 import { Gallery } from './screens/Gallery';
 import { Editor } from './screens/editor/Editor';
+import { Player } from './screens/player/Player';
 import { InstallScreen } from './screens/gate/InstallScreen';
 import { DesktopScreen } from './screens/gate/DesktopScreen';
 import { ToastHost, showToast } from './components/Toast';
@@ -28,7 +29,7 @@ export function App({ devMode }: { devMode: boolean }) {
   const inApp = isStandalone() || devMode;
   return (
     <>
-      {inApp ? <AppRoutes /> : env.isMobile ? <GateRoutes /> : <DesktopScreen />}
+      {inApp ? <AppRoutes devMode={devMode} /> : env.isMobile ? <GateRoutes /> : <DesktopScreen />}
       {devMode && !isStandalone() && <span className="dev-badge">dev</span>}
       <ToastHost />
     </>
@@ -40,7 +41,7 @@ function GateRoutes() {
   return <InstallScreen shareCode={route.name === 'share' ? route.code : undefined} />;
 }
 
-function AppRoutes() {
+function AppRoutes({ devMode }: { devMode: boolean }) {
   const route = useRoute();
   const { offlineReady } = useUpdateState();
 
@@ -56,14 +57,14 @@ function AppRoutes() {
   let screen;
   switch (route.name) {
     case 'home':
-      screen = <Home />;
+      screen = <Home devMode={devMode} />;
       break;
     case 'editor':
       screen = <Editor key={route.id ?? 'nieuw'} id={route.id} />;
 
       break;
     case 'player':
-      screen = <Placeholder title="Workout" step={3} text="Hier komt de speler met timer, geluid en spraak." />;
+      screen = <Player id={route.id} devMode={devMode} />;
       break;
     case 'summary':
       screen = <Placeholder title="Goed gedaan!" step={6} />;

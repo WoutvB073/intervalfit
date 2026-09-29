@@ -58,6 +58,9 @@
 .fig-halo-fore {
   stroke-width: 15px;
 }
+.fig-hip {
+  fill: var(--fig-accent);
+}
 .fig-head {
   fill: var(--fig);
 }

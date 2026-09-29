@@ -72,6 +72,18 @@ export const EXERCISES: LibraryExercise[] = [
     instruction: 'Kom rustig zo hoog mogelijk op je tenen en zak gecontroleerd weer terug.',
   },
   {
+    id: 'side-leg-raises-left', name: 'Side leg raises links', category: 'benen', met: 3.0, defaultWorkSec: 30,
+    aliases: ['side leg raises', 'side leg raise', 'zijwaarts been heffen', 'been heffen zij', 'zijligging', 'abductie', 'links', 'linkerbeen'],
+    spoken: 'saaid leg reezes, links',
+    instruction: 'Lig op je rechterzij in een rechte lijn en hef je gestrekte linkerbeen rustig tot ongeveer 45 graden en weer omlaag.',
+  },
+  {
+    id: 'side-leg-raises-right', name: 'Side leg raises rechts', category: 'benen', met: 3.0, defaultWorkSec: 30,
+    aliases: ['side leg raises', 'side leg raise', 'zijwaarts been heffen', 'been heffen zij', 'zijligging', 'abductie', 'rechts', 'rechterbeen'],
+    spoken: 'saaid leg reezes, rechts',
+    instruction: 'Lig op je linkerzij in een rechte lijn en hef je gestrekte rechterbeen rustig tot ongeveer 45 graden en weer omlaag.',
+  },
+  {
     id: 'donkey-kicks', name: 'Donkey kicks', category: 'benen', met: 3.5, defaultWorkSec: 30,
     aliases: ['donkey kick', 'ezelschop', 'been naar achteren', 'billen'],
     spoken: 'donkie kiks',
@@ -128,11 +140,13 @@ export const EXERCISES: LibraryExercise[] = [
   {
     id: 'side-plank-left', name: 'Zijplank links', category: 'core', met: 3.5, defaultWorkSec: 25,
     aliases: ['side plank', 'side plank links', 'zijplank', 'zijwaartse plank'],
+    spoken: 'zijplank, links',
     instruction: 'Steun op je linker onderarm en de zijkant van je voet en houd je heupen hoog in een rechte lijn.',
   },
   {
     id: 'side-plank-right', name: 'Zijplank rechts', category: 'core', met: 3.5, defaultWorkSec: 25,
     aliases: ['side plank', 'side plank rechts', 'zijplank', 'zijwaartse plank'],
+    spoken: 'zijplank, rechts',
     instruction: 'Steun op je rechter onderarm en de zijkant van je voet en houd je heupen hoog in een rechte lijn.',
   },
   {

@@ -1,0 +1,409 @@
+/* ── Speler ─────────────────────────────────────────────────────
+ * Gemaakt om op ± 2 meter afstand te lezen: volle fasekleur, grote naam en grote timer.
+ */
+.player {
+  --phase: var(--work);
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  padding: calc(env(safe-area-inset-top) + 8px) max(14px, env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 10px)
+    max(14px, env(safe-area-inset-left));
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 60%),
+    var(--phase);
+  color: #fff;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  transition: background-color 450ms ease;
+}
+.player--countdown {
+  --phase: var(--countdown);
+}
+.player--work {
+  --phase: var(--work);
+}
+.player--rest {
+  --phase: var(--rest);
+}
+.player--round-rest {
+  --phase: var(--round-rest);
+}
+.player--done {
+  --phase: var(--work);
+}
+
+.player__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.player__icon-btn,
+.player__icon-spacer {
+  width: 52px;
+  height: 52px;
+  flex: none;
+}
+.player__icon-btn {
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  cursor: pointer;
+}
+.player__meta {
+  display: flex;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+.player__progress {
+  height: 6px;
+  margin: 10px 4px 0;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.28);
+  overflow: hidden;
+}
+.player__progress-fill {
+  height: 100%;
+  background: #fff;
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+/* Het midden: kop, afbeelding, timer */
+.player__stage {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-evenly;
+  gap: 8px;
+  padding: 6px 0;
+}
+.player__heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  max-width: 100%;
+}
+.player__label {
+  margin: 0;
+  font-size: clamp(30px, 8.5vw, 60px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  overflow-wrap: anywhere;
+}
+.player__label--name {
+  text-transform: none;
+  font-size: clamp(32px, 9.5vw, 64px);
+}
+.player__next {
+  margin: 0;
+  font-size: clamp(19px, 5.2vw, 30px);
+  font-weight: 600;
+  opacity: 0.95;
+}
+.player__next strong {
+  font-weight: 800;
+}
+.player__next-time {
+  opacity: 0.8;
+}
+.player__side {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px 6px 10px;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--phase);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+.player__side .flip {
+  transform: scaleX(-1);
+}
+
+.player__visual {
+  --fig-halo: var(--surface);
+  width: min(74vw, 32vh, 360px);
+  aspect-ratio: 1;
+  flex: none;
+  border-radius: 34px;
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.35);
+}
+.player__visual .ex-visual--figure {
+  padding: 5%;
+}
+.player__visual .ex-visual--letter {
+  font-size: 96px;
+}
+
+.player__timer-wrap {
+  position: relative;
+  width: min(62vw, 27vh, 320px);
+  aspect-ratio: 1;
+  flex: none;
+  container-type: inline-size;
+}
+.player__ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.player__ring-track {
+  fill: rgba(0, 0, 0, 0.12);
+  stroke: rgba(255, 255, 255, 0.28);
+  stroke-width: 7;
+}
+.player__ring-fill {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+.player__timer {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+.player__digits {
+  font-size: 44cqw;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.player__instruction {
+  margin: 0;
+  max-width: 34ch;
+  font-size: 16px;
+  line-height: 1.35;
+  text-align: center;
+  opacity: 0.9;
+}
+
+/* Bediening */
+.player__controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(20px, 8vw, 48px);
+  padding-top: 6px;
+}
+.player__ctrl {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+  cursor: pointer;
+  transition: transform 120ms ease;
+}
+.player__ctrl:active {
+  transform: scale(0.92);
+}
+.player__ctrl:disabled {
+  opacity: 0.35;
+}
+.player__ctrl--main {
+  width: 96px;
+  height: 96px;
+  background: #fff;
+  color: var(--phase);
+  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.35);
+}
+
+/* Pauze */
+.player__pause {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  background: rgba(10, 20, 18, 0.62);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  animation: fade-in 200ms ease;
+}
+.player__pause-title {
+  margin: 0;
+  font-size: clamp(34px, 10vw, 60px);
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.player__pause-btn {
+  min-width: 220px;
+  min-height: 72px;
+  font-size: 24px;
+}
+.player__pause-stop {
+  color: #fff;
+  font-size: 19px;
+}
+
+/* Tik om te starten / geluid terug */
+.player__tap {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 24px;
+  border: 0;
+  background: rgba(10, 20, 18, 0.7);
+  color: #fff;
+  text-align: center;
+  cursor: pointer;
+}
+.player__tap-icon {
+  display: grid;
+  place-items: center;
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--phase);
+  animation: tap-pulse 1.4s ease-in-out infinite;
+}
+.player__tap-title {
+  font-size: 28px;
+  font-weight: 800;
+}
+.player__tap-hint {
+  max-width: 30ch;
+  font-size: 17px;
+  opacity: 0.9;
+}
+@keyframes tap-pulse {
+  50% {
+    transform: scale(1.08);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Klaar (tijdelijk; het overzicht komt in stap 6) */
+.player__done {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  text-align: center;
+}
+.player__done-icon {
+  font-size: 88px;
+}
+.player__done-text {
+  max-width: 30ch;
+  font-size: 20px;
+}
+
+.player__debug {
+  position: absolute;
+  right: 8px;
+  bottom: calc(env(safe-area-inset-bottom) + 4px);
+  font: 700 11px/1 ui-monospace, monospace;
+  opacity: 0.6;
+}
+
+/* Kleine schermen (iPhone SE): uitleg weglaten, alles iets compacter */
+@media (max-height: 700px) {
+  .player__instruction {
+    display: none;
+  }
+  .player__ctrl {
+    width: 64px;
+    height: 64px;
+  }
+  .player__ctrl--main {
+    width: 84px;
+    height: 84px;
+  }
+}
+
+/* Liggend: afbeelding en timer naast elkaar */
+@media (orientation: landscape) and (max-height: 600px) {
+  .player__stage {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr;
+    align-items: center;
+    justify-items: center;
+    gap: 4px 16px;
+  }
+  .player__heading {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px 14px;
+  }
+  .player__label {
+    font-size: clamp(26px, 6vh + 8px, 44px);
+  }
+  .player__next {
+    font-size: 20px;
+  }
+  .player__visual {
+    width: min(58vh, 42vw);
+  }
+  .player__timer-wrap {
+    width: min(58vh, 42vw);
+  }
+  .player__instruction {
+    display: none;
+  }
+  .player__controls {
+    position: absolute;
+    right: max(14px, env(safe-area-inset-right));
+    bottom: calc(env(safe-area-inset-bottom) + 10px);
+    flex-direction: column;
+    gap: 10px;
+  }
+  .player__ctrl {
+    width: 56px;
+    height: 56px;
+  }
+  .player__ctrl--main {
+    width: 68px;
+    height: 68px;
+  }
+}

@@ -54,6 +54,23 @@
   color: var(--text-2);
 }
 
+.card--dev {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border: 2px dashed #e0b84f;
+  background: #fffbeb;
+}
+.card--dev h2 {
+  font-size: 16px;
+  color: #7a5300;
+}
+.card--dev__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
 .section-head {
   display: flex;
   align-items: center;

@@ -11,6 +11,10 @@ import { ConfirmDialog, Sheet, SheetAction } from '../components/Sheet';
 import { ExerciseThumb } from '../components/ExerciseThumb';
 import { showToast } from '../components/Toast';
 import { applyUpdate, useUpdateState } from '../engine/update';
+import { prepareWorkoutMedia } from '../engine/media';
+import { setDevMode } from '../engine/devMode';
+import { DEV_WORKOUT_ID } from '../data/devWorkout';
+import { useRef } from 'react';
 import { APP_NAME } from '../config';
 
 function greeting(date = new Date()): string {
@@ -21,19 +25,29 @@ function greeting(date = new Date()): string {
   return 'Goedenavond';
 }
 
-export function Home() {
+export function Home({ devMode = false }: { devMode?: boolean }) {
   const workouts = useStore(workoutsStore);
   const app = useStore(appStateStore);
   const update = useUpdateState();
 
   const [menuFor, setMenuFor] = useState<Workout | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<Workout | null>(null);
+  // Verborgen: 5× snel op het logo tikken zet de ontwikkelaarsmodus aan/uit.
+  const logoTaps = useRef<number[]>([]);
+  const onLogoTap = () => {
+    const now = Date.now();
+    logoTaps.current = [...logoTaps.current.filter((t) => now - t < 2500), now];
+    if (logoTaps.current.length >= 5) {
+      logoTaps.current = [];
+      setDevMode(!devMode);
+    }
+  };
 
   return (
     <div className="screen screen--home">
       <header className="home-header">
         <div className="home-header__brand">
-          <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="" className="home-header__logo" />
+          <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="" className="home-header__logo" onClick={onLogoTap} />
           <div>
             <p className="home-header__greeting">{greeting()}!</p>
             <h1 className="home-header__title">{APP_NAME}</h1>
@@ -66,6 +80,30 @@ export function Home() {
             >
               Begrepen
             </Button>
+          </section>
+        )}
+
+        {devMode && (
+          <section className="card card--dev">
+            <h2>Ontwikkelaarsmodus</h2>
+            <div className="card--dev__actions">
+              <Button
+                variant="primary"
+                icon="play"
+                onClick={() => {
+                  prepareWorkoutMedia();
+                  navigate(`/speel/${DEV_WORKOUT_ID}`);
+                }}
+              >
+                Test-workout (3× 10 s, 2 rondes)
+              </Button>
+              <Button variant="secondary" onClick={() => navigate('/galerij')}>
+                Galerij
+              </Button>
+              <Button variant="ghost" onClick={() => setDevMode(false)}>
+                Uitzetten
+              </Button>
+            </div>
           </section>
         )}
 
@@ -188,7 +226,11 @@ function WorkoutCard({ workout, index, onMore }: { workout: Workout; index: numb
           icon="play"
           className="workout-card__start"
           disabled={count === 0}
-          onClick={() => navigate(`/speel/${workout.id}`)}
+          onClick={() => {
+            // In dezelfde tik: geluid, spraak en scherm-aan ontgrendelen (nodig op iPhone).
+            prepareWorkoutMedia();
+            navigate(`/speel/${workout.id}`);
+          }}
         >
           Start
         </Button>
