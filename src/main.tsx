@@ -5,16 +5,20 @@ import './styles/themes.css';
 import './styles/global.css';
 import './styles/components.css';
 import './styles/home.css';
+import './styles/gate.css';
 import { App } from './App';
 import { migrate, requestPersistentStorage } from './storage/data';
 import { initServiceWorker } from './engine/update';
+import { initDevMode } from './engine/devMode';
 
+const devMode = initDevMode();
 migrate();
 requestPersistentStorage();
+// Ook in de browser registreren: zo is alles al offline beschikbaar zodra de app geïnstalleerd is.
 initServiceWorker();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <App devMode={devMode} />
   </StrictMode>,
 );

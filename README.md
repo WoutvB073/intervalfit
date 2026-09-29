@@ -19,6 +19,10 @@ Dat is eenmalig zo ingesteld:
 
 Je kunt de voortgang volgen onder het tabblad **Actions** van de repository. Een groen vinkje betekent: online.
 
+> **Goed om te weten:** wie de link in een gewone browser opent, ziet alleen een installatiescherm met de stappen
+> voor zijn eigen toestel en browser. De app zelf opent pas vanaf het beginscherm. Op een computer verschijnt een
+> QR-code om de link op je telefoon te openen.
+
 ## 2. Installeren op iPhone
 
 1. Open de link hierboven in **Safari**. (Heb je de link via WhatsApp gekregen? Tik op de link en kies zo nodig
@@ -67,6 +71,9 @@ npm run build    # productieversie in dist/
 npm run preview  # productieversie lokaal bekijken
 ```
 
+- **Testen in een gewone browser (ook op de computer):** open de app met `?dev=1`, bijvoorbeeld
+  `http://localhost:5173/intervalfit/?dev=1`. De keuze wordt onthouden; zet hem uit met `?dev=0`.
+  Linksonder staat dan een klein "dev"-label.
 - De oefeningenbibliotheek staat in één bestand: `src/data/exercises.ts`.
 - De naam van de app staat in `src/config.ts`, `vite.config.ts` en `index.html`.
 - Het app-icoon wordt gemaakt uit `public/logo.svg` (configuratie in `pwa-assets.config.ts`).

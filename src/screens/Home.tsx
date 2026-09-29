@@ -9,11 +9,8 @@ import { Button, IconButton } from '../components/Button';
 import { Icon } from '../components/Icon';
 import { ConfirmDialog, Sheet, SheetAction } from '../components/Sheet';
 import { ExerciseThumb } from '../components/ExerciseThumb';
-import { InstallHelp } from '../components/InstallHelp';
 import { showToast } from '../components/Toast';
-import { useInstallPrompt, promptInstall } from '../engine/install';
 import { applyUpdate, useUpdateState } from '../engine/update';
-import { inAppBrowser, isStandalone } from '../engine/platform';
 import { APP_NAME } from '../config';
 
 function greeting(date = new Date()): string {
@@ -24,31 +21,13 @@ function greeting(date = new Date()): string {
   return 'Goedenavond';
 }
 
-const INSTALL_HINT_SNOOZE_MS = 3 * 24 * 60 * 60 * 1000;
-
 export function Home() {
   const workouts = useStore(workoutsStore);
   const app = useStore(appStateStore);
   const update = useUpdateState();
-  const install = useInstallPrompt();
 
   const [menuFor, setMenuFor] = useState<Workout | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<Workout | null>(null);
-  const [installHelpOpen, setInstallHelpOpen] = useState(false);
-
-  const showInstallCard =
-    !isStandalone() &&
-    !install.installed &&
-    (!app.installHintDismissedAt || Date.now() - app.installHintDismissedAt > INSTALL_HINT_SNOOZE_MS);
-
-  const onInstall = async () => {
-    if (install.canPrompt) {
-      const ok = await promptInstall();
-      if (ok) showToast(`${APP_NAME} is geïnstalleerd 🎉`);
-    } else {
-      setInstallHelpOpen(true);
-    }
-  };
 
   return (
     <div className="screen screen--home">
@@ -87,33 +66,6 @@ export function Home() {
             >
               Begrepen
             </Button>
-          </section>
-        )}
-
-        {showInstallCard && (
-          <section className="card card--install">
-            <div className="card--install__icon">
-              <Icon name="phone" size={26} />
-            </div>
-            <div className="card--install__body">
-              <h2>{inAppBrowser ? 'Open in je browser' : 'Zet de app op je beginscherm'}</h2>
-              <p>
-                {inAppBrowser
-                  ? `In de browser van ${inAppBrowser} werkt niet alles. Open deze pagina in Safari of Chrome.`
-                  : 'Dan opent hij als echte app, ook zonder internet.'}
-              </p>
-              <div className="card--install__actions">
-                <Button variant="primary" icon={install.canPrompt ? 'download' : undefined} onClick={onInstall}>
-                  {install.canPrompt ? 'Installeren' : 'Laat zien hoe'}
-                </Button>
-                <Button
-                  variant="ghost"
-                  onClick={() => appStateStore.set((s) => ({ ...s, installHintDismissedAt: Date.now() }))}
-                >
-                  Later
-                </Button>
-              </div>
-            </div>
           </section>
         )}
 
@@ -195,8 +147,6 @@ export function Home() {
           showToast('Workout verwijderd');
         }}
       />
-
-      <InstallHelp open={installHelpOpen} onClose={() => setInstallHelpOpen(false)} />
     </div>
   );
 }

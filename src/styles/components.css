@@ -332,59 +332,6 @@
   margin-top: 22px;
 }
 
-/* ── Installatie-uitleg ─────────────────────────────────────── */
-.install-help {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  padding: 0 4px;
-}
-.install-help__os {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 17px;
-  margin-bottom: 8px;
-}
-.steps {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  counter-reset: step;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.steps li {
-  counter-increment: step;
-  position: relative;
-  padding-left: 42px;
-  min-height: 30px;
-}
-.steps li::before {
-  content: counter(step);
-  position: absolute;
-  left: 0;
-  top: -2px;
-  display: grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: var(--primary-soft);
-  color: var(--primary-soft-ink);
-  font-weight: 800;
-  font-size: 15px;
-}
-.inline-icon {
-  display: inline-block;
-  vertical-align: -3px;
-}
-.install-help__note {
-  font-size: 15px;
-  color: var(--text-2);
-}
-
 /* ── Toast ───────────────────────────────────────────────────── */
 .toast-host {
   position: fixed;

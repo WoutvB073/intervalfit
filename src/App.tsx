@@ -5,17 +5,42 @@ import { settingsStore } from './storage/data';
 import { applyTheme } from './styles/theme';
 import { Home } from './screens/Home';
 import { Placeholder } from './screens/Placeholder';
+import { InstallScreen } from './screens/gate/InstallScreen';
+import { DesktopScreen } from './screens/gate/DesktopScreen';
 import { ToastHost, showToast } from './components/Toast';
 import { useUpdateState } from './engine/update';
+import { env, isStandalone } from './engine/platform';
 
-export function App() {
-  const route = useRoute();
+/**
+ * - Geïnstalleerd (beginscherm) of `?dev=1`: de app zelf.
+ * - Telefoon/tablet in de browser: alleen het installatiescherm.
+ * - Computer: verwijzing naar de telefoon met QR-code.
+ */
+export function App({ devMode }: { devMode: boolean }) {
   const settings = useStore(settingsStore);
-  const { offlineReady } = useUpdateState();
 
   useEffect(() => {
     applyTheme(settings.theme);
   }, [settings.theme]);
+
+  const inApp = isStandalone() || devMode;
+  return (
+    <>
+      {inApp ? <AppRoutes /> : env.isMobile ? <GateRoutes /> : <DesktopScreen />}
+      {devMode && !isStandalone() && <span className="dev-badge">dev</span>}
+      <ToastHost />
+    </>
+  );
+}
+
+function GateRoutes() {
+  const route = useRoute();
+  return <InstallScreen shareCode={route.name === 'share' ? route.code : undefined} />;
+}
+
+function AppRoutes() {
+  const route = useRoute();
+  const { offlineReady } = useUpdateState();
 
   useEffect(() => {
     if (offlineReady) showToast('Klaar! De app werkt nu ook zonder internet.');
@@ -32,7 +57,13 @@ export function App() {
       screen = <Home />;
       break;
     case 'editor':
-      screen = <Placeholder title={route.id ? 'Workout bewerken' : 'Nieuwe workout'} step={2} text="Hier kun je straks oefeningen kiezen, tijden instellen en de volgorde slepen." />;
+      screen = (
+        <Placeholder
+          title={route.id ? 'Workout bewerken' : 'Nieuwe workout'}
+          step={2}
+          text="Hier kun je straks oefeningen kiezen, tijden instellen en de volgorde slepen."
+        />
+      );
       break;
     case 'player':
       screen = <Placeholder title="Workout" step={3} text="Hier komt de speler met timer, geluid en spraak." />;
@@ -44,18 +75,15 @@ export function App() {
       screen = <Placeholder title="Instellingen" step={4} text="Geluid, aftellen, thema's, gewicht en back-up." />;
       break;
     case 'share':
-      screen = <Placeholder title="Gedeelde workout" step={5} />;
+      screen = <Placeholder title="Gedeelde workout" step={5} text="Importeren binnen de app komt in stap 5." />;
       break;
     default:
       screen = <Placeholder title="Oeps" text="Deze pagina bestaat niet." />;
   }
 
   return (
-    <>
-      <div key={route.name} className="route">
-        {screen}
-      </div>
-      <ToastHost />
-    </>
+    <div key={route.name} className="route">
+      {screen}
+    </div>
   );
 }

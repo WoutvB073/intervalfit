@@ -33,7 +33,6 @@ export const historyStore = createStore<HistoryEntry[]>('history', () => [], (r)
 
 export type AppState = {
   welcomeDismissed: boolean;
-  installHintDismissedAt?: number;
 };
 export const appStateStore = createStore<AppState>('app', () => ({ welcomeDismissed: false }));
 

@@ -17,6 +17,13 @@ De naam "IntervalFit" staat op één plek (`src/config.ts` + manifest in `vite.c
 | Gestopte workouts | Tellen mee in geschiedenis en streak vanaf 1 minuut getraind, met aangepaste positieve boodschap |
 | Kleine extra's | Allemaal akkoord: streak-blokje op Home, "Nog een keer", voortgangsbalk in speler, stemkeuze, omhoog/omlaag-knoppen naast slepen, welkomstkaartje |
 
+### Installatiescherm als toegangspoort (toegevoegd na stap 1)
+- In een gewone browser (niet `display-mode: standalone` / `navigator.standalone`) toont de app alleen een installatiescherm, niet de app zelf.
+- Toestel en browser worden herkend (`src/engine/platform.ts`), met alleen de passende stappen: iPhone Safari (met pijl naar •••/Deel, iOS 26-stappen incl. "Open als webapp"), iPhone met andere browser (naar Safari + Kopieer link), Android Chrome (Installeren-knop of handmatig), Samsung Internet (☰ → Pagina toevoegen aan → Startscherm, of knop), ingebouwde browsers van WhatsApp/Instagram/Facebook enz. (openen in Safari/Chrome + Kopieer link).
+- Gedeelde link (`#/deel/…`) in de browser: eerst voorbeeld van de workout met "Kopieer voor de app", daaronder de installatiestappen.
+- Computer: alleen "Deze app is gemaakt voor je telefoon" + offline gemaakte QR-code. Tablets krijgen de telefoonweergave.
+- Installatiekaart op Home verwijderd. Ontwikkelaarsmodus: `?dev=1` (uit met `?dev=0`).
+
 ### Werkwijze
 - Per stap: bouwen → zelf testen → commit + push → samenvatting, link naar online versie en testlijst (iPhone én Android).
 - Na elke stap wachten op akkoord.
