@@ -1,0 +1,416 @@
+/* ── Knoppen ─────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: var(--radius-btn);
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  transition:
+    transform 120ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease,
+    opacity 160ms ease;
+}
+.btn:active {
+  transform: scale(0.97);
+}
+.btn:disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+.btn--lg {
+  min-height: 56px;
+  font-size: 18px;
+  padding: 0 22px;
+}
+.btn--block {
+  width: 100%;
+}
+.btn--primary {
+  background: var(--primary);
+  color: var(--primary-ink);
+  box-shadow: var(--shadow-primary);
+}
+.btn--primary:active {
+  background: var(--primary-press);
+}
+.btn--secondary {
+  background: var(--surface-2);
+  color: var(--text);
+}
+.btn--secondary:active {
+  background: var(--surface-press);
+}
+.btn--ghost {
+  background: transparent;
+  color: var(--text-2);
+}
+.btn--ghost:active {
+  background: var(--surface-2);
+}
+.btn--danger {
+  background: var(--danger);
+  color: #fff;
+}
+
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  flex: none;
+  border: 0;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow-card);
+  cursor: pointer;
+  transition:
+    transform 120ms ease,
+    background-color 160ms ease;
+}
+.icon-btn:active {
+  transform: scale(0.92);
+  background: var(--surface-2);
+}
+.icon-btn--quiet {
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-2);
+}
+
+/* ── Kopbalk ─────────────────────────────────────────────────── */
+.top-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  margin-bottom: 8px;
+}
+.top-bar__title {
+  flex: 1;
+  text-align: center;
+  font-size: 19px;
+  font-weight: 800;
+}
+.top-bar__spacer {
+  width: 48px;
+  flex: none;
+}
+
+/* ── Kaarten, meldingen ──────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 20px;
+}
+
+.banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 12px 12px 16px;
+  border-radius: var(--radius-card);
+  background: var(--primary-soft);
+  color: var(--primary-soft-ink);
+  font-weight: 600;
+}
+.banner p {
+  flex: 1;
+}
+
+.notice {
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+}
+.notice--warn {
+  background: var(--warn-soft);
+  color: var(--warn-ink);
+}
+
+.empty,
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  padding: 40px 24px;
+  color: var(--text-2);
+}
+.placeholder {
+  flex: 1;
+  justify-content: center;
+}
+.empty h3,
+.placeholder h2 {
+  color: var(--text);
+  font-size: 20px;
+}
+.empty__art {
+  display: grid;
+  place-items: center;
+  width: 80px;
+  height: 80px;
+  margin-bottom: 8px;
+  border-radius: 28px;
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+/* ── Oefening-tegels ─────────────────────────────────────────── */
+.thumb {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  border-radius: 30%;
+  font-weight: 800;
+  color: #fff;
+  background: var(--cat-eigen);
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.08);
+}
+.thumb--benen {
+  background: var(--cat-benen);
+}
+.thumb--boven {
+  background: var(--cat-boven);
+}
+.thumb--core {
+  background: var(--cat-core);
+}
+.thumb--cardio {
+  background: var(--cat-cardio);
+}
+.thumb--more {
+  width: 40px;
+  height: 40px;
+  font-size: 15px;
+  background: var(--surface-2);
+  color: var(--text-2);
+  box-shadow: none;
+}
+
+/* ── Overlay, paneel, dialoog ────────────────────────────────── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: var(--scrim);
+  opacity: 0;
+  transition: opacity 240ms ease;
+}
+.overlay.is-visible {
+  opacity: 1;
+}
+.overlay--center {
+  align-items: center;
+  padding: 24px;
+}
+
+.sheet {
+  width: 100%;
+  max-width: 560px;
+  max-height: calc(100dvh - env(safe-area-inset-top) - 24px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: var(--surface);
+  border-radius: 28px 28px 0 0;
+  padding: 8px max(20px, env(safe-area-inset-left)) calc(env(safe-area-inset-bottom) + 20px);
+  box-shadow: var(--shadow-pop);
+  transform: translateY(100%);
+  transition: transform 300ms cubic-bezier(0.2, 0.9, 0.25, 1);
+}
+.overlay.is-visible .sheet {
+  transform: none;
+}
+.sheet__grip {
+  width: 40px;
+  height: 5px;
+  margin: 4px auto 12px;
+  border-radius: 3px;
+  background: var(--border);
+  background: color-mix(in srgb, var(--text) 18%, transparent);
+}
+.sheet__title {
+  font-size: 20px;
+  font-weight: 800;
+  margin: 4px 4px 12px;
+}
+
+.sheet-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.sheet-action {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 64px;
+  padding: 10px 8px;
+  border: 0;
+  border-radius: 18px;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+.sheet-action:active {
+  background: var(--surface-2);
+}
+.sheet-action__icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  flex: none;
+  border-radius: 14px;
+  background: var(--surface-2);
+  color: var(--text);
+}
+.sheet-action__text {
+  display: flex;
+  flex-direction: column;
+}
+.sheet-action__label {
+  font-weight: 700;
+  font-size: 17px;
+}
+.sheet-action__hint {
+  font-size: 15px;
+  color: var(--text-2);
+}
+.sheet-action--danger .sheet-action__icon {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.sheet-action--danger .sheet-action__label {
+  color: var(--danger);
+}
+
+.dialog {
+  width: 100%;
+  max-width: 400px;
+  background: var(--surface);
+  border-radius: 28px;
+  padding: 24px 20px 20px;
+  box-shadow: var(--shadow-pop);
+  transform: scale(0.94);
+  transition: transform 220ms cubic-bezier(0.2, 0.9, 0.25, 1.2);
+}
+.overlay.is-visible .dialog {
+  transform: none;
+}
+.dialog__title {
+  font-size: 21px;
+  font-weight: 800;
+  text-align: center;
+}
+.dialog__message {
+  margin-top: 8px;
+  text-align: center;
+  color: var(--text-2);
+}
+.dialog__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+/* ── Installatie-uitleg ─────────────────────────────────────── */
+.install-help {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 0 4px;
+}
+.install-help__os {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 17px;
+  margin-bottom: 8px;
+}
+.steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.steps li {
+  counter-increment: step;
+  position: relative;
+  padding-left: 42px;
+  min-height: 30px;
+}
+.steps li::before {
+  content: counter(step);
+  position: absolute;
+  left: 0;
+  top: -2px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--primary-soft);
+  color: var(--primary-soft-ink);
+  font-weight: 800;
+  font-size: 15px;
+}
+.inline-icon {
+  display: inline-block;
+  vertical-align: -3px;
+}
+.install-help__note {
+  font-size: 15px;
+  color: var(--text-2);
+}
+
+/* ── Toast ───────────────────────────────────────────────────── */
+.toast-host {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: calc(env(safe-area-inset-bottom) + 96px);
+  z-index: 60;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  padding: 0 16px;
+}
+.toast {
+  max-width: 420px;
+  padding: 12px 18px;
+  border-radius: 16px;
+  background: var(--text);
+  color: var(--bg);
+  font-weight: 600;
+  font-size: 16px;
+  box-shadow: var(--shadow-pop);
+  animation: toast-in 260ms cubic-bezier(0.2, 0.9, 0.25, 1.2);
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+}

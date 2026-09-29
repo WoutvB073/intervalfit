@@ -1,0 +1,57 @@
+/*
+ * Thema's. Elk thema is een set CSS-variabelen op <html data-theme="…">.
+ * De andere drie thema's (sportief, vrolijk, pastel) worden in stap 4 volledig uitgewerkt.
+ */
+
+:root,
+[data-theme='fris'] {
+  color-scheme: light;
+
+  --font-ui: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: var(--font-ui);
+
+  /* Basis */
+  --bg: #f3faf7;
+  --bg-glow: radial-gradient(120% 60% at 100% 0%, #d9f6ea 0%, rgba(217, 246, 234, 0) 60%),
+    radial-gradient(90% 50% at 0% 0%, #e3f1fb 0%, rgba(227, 241, 251, 0) 55%);
+  --surface: #ffffff;
+  --surface-2: #eaf5f0;
+  --surface-press: #dcefe6;
+  --border: rgba(15, 42, 36, 0.08);
+  --text: #0f2a24;
+  --text-2: #4e655e;
+  --text-3: #7b8f89;
+
+  /* Accent */
+  --primary: #0a8a5a;
+  --primary-press: #077349;
+  --primary-ink: #ffffff;
+  --primary-soft: #d9f3e8;
+  --primary-soft-ink: #07623f;
+  --danger: #d33a3a;
+  --danger-soft: #fde8e8;
+  --warn-soft: #fff4d6;
+  --warn-ink: #7a5300;
+
+  /* Fases (speler) */
+  --work: #12a867;
+  --rest: #2e86de;
+  --countdown: #f2674f;
+  --round-rest: #7a5ce0;
+
+  /* Categorieën */
+  --cat-benen: #ff8a5c;
+  --cat-boven: #4c9bf0;
+  --cat-core: #9b6cf0;
+  --cat-cardio: #f0567a;
+  --cat-eigen: #19a974;
+
+  /* Vorm */
+  --radius-card: 24px;
+  --radius-btn: 16px;
+  --radius-sm: 12px;
+  --shadow-card: 0 1px 2px rgba(16, 40, 32, 0.05), 0 10px 30px -12px rgba(16, 40, 32, 0.18);
+  --shadow-pop: 0 20px 60px -20px rgba(16, 40, 32, 0.35);
+  --shadow-primary: 0 8px 20px -8px rgba(10, 138, 90, 0.55);
+  --scrim: rgba(12, 30, 25, 0.42);
+}
