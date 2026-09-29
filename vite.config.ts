@@ -32,7 +32,8 @@ export default defineConfig({
         categories: ['health', 'fitness', 'sports'],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2,webmanifest}'],
+        // Het manifest voegt de plugin zelf al toe; niet nog eens opnemen (dubbele regel = mislukte installatie).
+        globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
         // Lettertekens voor Vietnamees/Cyrillisch zijn niet nodig voor een Nederlandstalige app.
         globIgnores: ['**/*-vietnamese-*', '**/*-cyrillic*'],
         navigateFallback: `${BASE}index.html`,
