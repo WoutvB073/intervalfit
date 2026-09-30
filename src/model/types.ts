@@ -1,5 +1,8 @@
 export type Category = 'benen' | 'boven' | 'core' | 'cardio';
 
+/** Benodigd materiaal: geen, een stoel/traptrede, dumbbells of een optrekstang. */
+export type Equipment = 'geen' | 'stoel' | 'dumbbells' | 'stang';
+
 export type LibraryExercise = {
   id: string;
   name: string;
@@ -13,6 +16,8 @@ export type LibraryExercise = {
   /** Geschatte MET-waarde voor de calorieberekening. */
   met: number;
   defaultWorkSec: number;
+  /** Benodigd materiaal; leeg = geen. */
+  equipment?: Equipment;
 };
 
 export type WorkoutExercise = {

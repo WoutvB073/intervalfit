@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { parseHash } from '../src/router';
 import { formatClock, formatShort, formatTotal } from '../src/model/format';
-import { EXERCISES, CATEGORIES, getExercise } from '../src/data/exercises';
+import { EXERCISES, CATEGORIES, getExercise, EQUIPMENT, equipmentOf } from '../src/data/exercises';
 
 describe('router', () => {
   it('herkent alle schermen', () => {
@@ -35,9 +35,17 @@ describe('tijdweergave', () => {
 });
 
 describe('oefeningenbibliotheek', () => {
-  it('bevat alle 39 oefeningen met unieke id', () => {
-    expect(EXERCISES).toHaveLength(39);
-    expect(new Set(EXERCISES.map((e) => e.id)).size).toBe(39);
+  it('bevat alle 51 oefeningen met unieke id', () => {
+    expect(EXERCISES).toHaveLength(51);
+    expect(new Set(EXERCISES.map((e) => e.id)).size).toBe(51);
+  });
+  it('heeft per oefening een geldig materiaal; alleen stoel/dumbbells/stang staan erbij', () => {
+    const ids = new Set(EQUIPMENT.map((m) => m.id));
+    for (const e of EXERCISES) expect(ids.has(equipmentOf(e)), e.id).toBe(true);
+    const byEquipment = (m: string) => EXERCISES.filter((e) => equipmentOf(e) === m).map((e) => e.id).sort();
+    expect(byEquipment('dumbbells')).toEqual(['bicep-curls', 'hammer-curls']);
+    expect(byEquipment('stang')).toEqual(['chin-ups', 'hanging-knee-raises', 'pull-ups']);
+    expect(byEquipment('stoel')).toEqual(['step-ups', 'tricep-dips']);
   });
   it('heeft per oefening een geldige categorie, instructie, MET en zoekwoorden', () => {
     const cats = new Set(CATEGORIES.map((c) => c.id));

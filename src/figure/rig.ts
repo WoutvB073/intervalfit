@@ -57,6 +57,10 @@ export const LEN = {
 } as const;
 
 export const GROUND_Y = 186;
+/** Hoogte van de optrekstang (midden van de stang). */
+export const BAR_Y = 14;
+/** Trede/stoel voor step-ups: links, rechts en bovenkant. */
+export const STEP = { x1: 114, x2: 172, top: 156 } as const;
 
 const RAD = Math.PI / 180;
 export const dir = (a: number): V => [Math.sin(a * RAD), Math.cos(a * RAD)];
@@ -179,7 +183,11 @@ export function lerpPose(a: Pose, b: Pose, t: number): Pose {
 
 // ── Animatie ─────────────────────────────────────────────────────
 
-export type Prop = 'wall' | 'bench';
+/**
+ * Rekwisieten: muur, bank/stoel (dips), trede (step-ups), optrekstang in vooraanzicht ('bar')
+ * of in zijaanzicht aan een deurpost ('barSide').
+ */
+export type Prop = 'wall' | 'bench' | 'step' | 'bar' | 'barSide';
 /** Lichaamsdelen voor de accentkleur; met N/F alleen de ene kant (bv. 'legF' = bovenste been bij zijligging). */
 export type Part = 'legs' | 'arms' | 'torso' | 'legN' | 'legF' | 'armN' | 'armF' | 'hipN' | 'hipF';
 
@@ -200,9 +208,18 @@ export type FigureAnim = {
   mirror?: boolean;
   /**
    * Tekenvolgorde in vooraanzicht: 'rear' = van achteren gezien (armen en hoofd achter de romp),
-   * 'legsFront' = benen vóór de romp (zittend met de knieën omhoog).
+   * 'legsFront' = benen vóór de romp (zittend met de knieën omhoog), 'hang' = hoofd vóór de armen (aan de stang).
    */
-  order?: 'rear' | 'legsFront';
+  order?: 'rear' | 'legsFront' | 'hang';
+  /**
+   * Dumbbells in beide handen: 'end' = van opzij op de kop gezien (handvat dwars, bicep curls),
+   * 'side' = hele dumbbell in profiel, haaks op de onderarm (hamergreep).
+   */
+  dumbbells?: 'end' | 'side';
+  /** Handen om de optrekstang: 'over' = bovenhands (pull-ups), 'under' = onderhands (chin-ups). */
+  grip?: 'over' | 'under';
+  /** Van bovenaf gezien (liggend op een matje): geen vloerlijn, figuur verticaal gecentreerd. */
+  topDown?: boolean;
 };
 
 const fitCache = new WeakMap<FigureAnim, [number, number, number, number]>();
@@ -214,7 +231,7 @@ const fitCache = new WeakMap<FigureAnim, [number, number, number, number]>();
 export function fitViewBox(anim: FigureAnim): [number, number, number, number] {
   const cached = fitCache.get(anim);
   if (cached) return cached;
-  let minX = Infinity, maxX = -Infinity, minY = Infinity;
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
   const total = cycleLength(anim);
   for (let i = 0; i < 32; i++) {
     const sk = computeSkeleton(sampleAnim(anim, (i / 32) * total), anim.view);
@@ -223,6 +240,7 @@ export function fitViewBox(anim: FigureAnim): [number, number, number, number] {
       minX = Math.min(minX, p[0] - 8);
       maxX = Math.max(maxX, p[0] + 8);
       minY = Math.min(minY, p[1] - 8);
+      maxY = Math.max(maxY, p[1] + 8);
     }
     minX = Math.min(minX, sk.head[0] - LEN.headR);
     maxX = Math.max(maxX, sk.head[0] + LEN.headR);
@@ -233,6 +251,29 @@ export function fitViewBox(anim: FigureAnim): [number, number, number, number] {
     minY = Math.min(minY, 26);
   }
   if (anim.props?.includes('bench')) minX = Math.min(minX, 14);
+  if (anim.props?.includes('step')) maxX = Math.max(maxX, STEP.x2 + 4);
+  if (anim.props?.includes('bar')) {
+    minY = Math.min(minY, BAR_Y - 10);
+    minX = Math.min(minX, 22);
+    maxX = Math.max(maxX, 178);
+  }
+  if (anim.props?.includes('barSide')) {
+    minX = Math.min(minX, 26);
+    minY = Math.min(minY, BAR_Y - 12);
+  }
+  if (anim.dumbbells) {
+    minX -= 6;
+    maxX += 6;
+  }
+  if (anim.topDown) {
+    // Van bovenaf: vierkant rond de figuur (met ruimte voor het matje).
+    const size = Math.min(210, Math.max(150, maxX - minX + 30, maxY - minY + 30));
+    let x = (minX + maxX) / 2 - size / 2;
+    if (anim.mirror) x = 200 - x - size;
+    const box: [number, number, number, number] = [x, (minY + maxY) / 2 - size / 2, size, size];
+    fitCache.set(anim, box);
+    return box;
+  }
   const bottom = GROUND_Y + 8;
   const size = Math.min(210, Math.max(150, maxX - minX + 24, bottom - minY + 12));
   let x = (minX + maxX) / 2 - size / 2;

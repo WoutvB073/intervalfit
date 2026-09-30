@@ -1,9 +1,12 @@
 import { useMemo, useState } from 'react';
-import { CATEGORIES, EXERCISES } from '../../data/exercises';
-import type { Category, LibraryExercise } from '../../model/types';
+import { CATEGORIES, EQUIPMENT, EXERCISES, equipmentOf } from '../../data/exercises';
+import type { Category, Equipment, LibraryExercise } from '../../model/types';
 import { Sheet } from '../../components/Sheet';
 import { Button } from '../../components/Button';
-import { Icon } from '../../components/Icon';
+import { Icon, type IconName } from '../../components/Icon';
+
+/** Pictogram per soort materiaal (voor filter en labels). */
+export const EQUIPMENT_ICON: Record<Equipment, IconName> = { geen: 'check', stoel: 'stairs', dumbbells: 'dumbbell', stang: 'pullupBar' };
 import { Stepper, timeOptions } from '../../components/Stepper';
 import { Figure } from '../../figure/Figure';
 import { getAnimation } from '../../figure/animations';
@@ -39,18 +42,20 @@ export function LibrarySheet({
 }) {
   const [query, setQuery] = useState('');
   const [cat, setCat] = useState<Category | 'all'>('all');
+  const [gear, setGear] = useState<Equipment | 'all'>('all');
   const [selected, setSelected] = useState<string[]>([]);
   const [custom, setCustom] = useState<{ name: string; workSec: number } | null>(null);
 
   const q = norm(query);
   const list = useMemo(
-    () => EXERCISES.filter((e) => (cat === 'all' || e.category === cat) && matches(e, q)),
-    [cat, q],
+    () => EXERCISES.filter((e) => (cat === 'all' || e.category === cat) && (gear === 'all' || equipmentOf(e) === gear) && matches(e, q)),
+    [cat, gear, q],
   );
 
   const reset = () => {
     setQuery('');
     setCat('all');
+    setGear('all');
     setSelected([]);
     setCustom(null);
   };
@@ -151,6 +156,23 @@ export function LibrarySheet({
             ))}
           </div>
 
+          <div className="chips lib-chips lib-chips--gear" role="group" aria-label="Materiaal">
+            <button type="button" className={`chip chip--small${gear === 'all' ? ' is-active' : ''}`} onClick={() => setGear('all')}>
+              Alle materialen
+            </button>
+            {EQUIPMENT.map((m) => (
+              <button
+                key={m.id}
+                type="button"
+                className={`chip chip--small${gear === m.id ? ' is-active' : ''}`}
+                onClick={() => setGear(m.id)}
+              >
+                {m.id !== 'geen' && <Icon name={EQUIPMENT_ICON[m.id]} size={16} />}
+                {m.label}
+              </button>
+            ))}
+          </div>
+
           <button type="button" className="lib-custom-btn" onClick={() => setCustom({ name: query.trim(), workSec: 30 })}>
             <span className="lib-custom-btn__icon">
               <Icon name="pencil" size={22} />
@@ -162,7 +184,7 @@ export function LibrarySheet({
           </button>
 
           {list.length === 0 ? (
-            <p className="lib-empty">Geen oefening gevonden voor “{query}”. Maak hem als eigen oefening.</p>
+            <p className="lib-empty">{query ? <>Geen oefening gevonden voor “{query}”. Maak hem als eigen oefening.</> : 'Geen oefeningen met deze keuze.'}</p>
           ) : (
             <ul className="lib-grid">
               {list.map((e) => {
@@ -182,6 +204,12 @@ export function LibrarySheet({
                           <span className="lib-tile__letter">{e.name.charAt(0)}</span>
                         )}
                       </span>
+                      {equipmentOf(e) !== 'geen' && (
+                        <span className="lib-tile__gear" title={EQUIPMENT.find((m) => m.id === equipmentOf(e))?.label}>
+                          <Icon name={EQUIPMENT_ICON[equipmentOf(e)]} size={14} />
+                          {EQUIPMENT.find((m) => m.id === equipmentOf(e))?.short}
+                        </span>
+                      )}
                       <span className="lib-tile__name">{e.name}</span>
                       <span className="lib-tile__time">{formatShort(e.defaultWorkSec)}</span>
                       <span className="lib-tile__check" aria-hidden="true">

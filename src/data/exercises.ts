@@ -1,4 +1,4 @@
-import type { Category, LibraryExercise } from '../model/types';
+import type { Category, Equipment, LibraryExercise } from '../model/types';
 
 /**
  * De oefeningenbibliotheek.
@@ -11,6 +11,8 @@ import type { Category, LibraryExercise } from '../model/types';
  * - `instruction`: één korte zin (max. ± 60 tekens), het belangrijkste aandachtspunt
  * - `met`: geschatte inspanning (MET) voor de calorieberekening
  * - `defaultWorkSec`: standaard werktijd bij toevoegen
+ * - `equipment`: (optioneel) 'stoel', 'dumbbells' of 'stang'; weglaten = zonder materiaal
+ * Elke oefening heeft ook een animatie nodig in src/figure/animations.ts (zelfde id); zie README.
  */
 
 export const CATEGORIES: { id: Category; label: string }[] = [
@@ -84,6 +86,25 @@ export const EXERCISES: LibraryExercise[] = [
     instruction: 'Op je linkerzij, rechterbeen gestrekt omhoog.',
   },
   {
+    id: 'step-ups', name: 'Step-ups', category: 'benen', met: 6.0, defaultWorkSec: 40, equipment: 'stoel',
+    aliases: ['step up', 'step ups', 'opstappen', 'op en af stappen', 'traptrede', 'stoel', 'bankje'],
+    spoken: 'step-ups',
+    instruction: 'Hele voet op de trede, omhoog duwen met je voorste been.',
+  },
+  {
+    id: 'single-leg-bridge-left', name: 'Single-leg bridge links', category: 'benen', met: 3.5, defaultWorkSec: 30,
+    aliases: ['single-leg glute bridge', 'single leg glute bridge', 'glute bridge één been', 'bilbrug één been', 'bruggetje één been', 'links'],
+    spoken: 'singul leg bridzj, links',
+    instruction: 'Linkervoet plat, rechterbeen gestrekt, heupen omhoog.',
+  },
+  {
+    id: 'single-leg-bridge-right', name: 'Single-leg bridge rechts', category: 'benen', met: 3.5, defaultWorkSec: 30,
+    aliases: ['single-leg glute bridge', 'single leg glute bridge', 'glute bridge één been', 'bilbrug één been', 'bruggetje één been', 'rechts'],
+    spoken: 'singul leg bridzj, rechts',
+    instruction: 'Rechtervoet plat, linkerbeen gestrekt, heupen omhoog.',
+  },
+
+  {
     id: 'donkey-kicks', name: 'Donkey kicks', category: 'benen', met: 3.5, defaultWorkSec: 30,
     aliases: ['donkey kick', 'ezelschop', 'been naar achteren', 'billen'],
     spoken: 'donkie kiks',
@@ -108,7 +129,7 @@ export const EXERCISES: LibraryExercise[] = [
     instruction: 'Knieën op de grond, rug recht tot je hoofd.',
   },
   {
-    id: 'tricep-dips', name: 'Tricep dips', category: 'boven', met: 3.8, defaultWorkSec: 30,
+    id: 'tricep-dips', name: 'Tricep dips', category: 'boven', met: 3.8, defaultWorkSec: 30, equipment: 'stoel',
     aliases: ['dips', 'dippen', 'triceps', 'stoel dips', 'tricep dip'],
     spoken: 'traiseps dips',
     instruction: 'Handen op de stoel achter je, ellebogen naar achteren.',
@@ -129,6 +150,43 @@ export const EXERCISES: LibraryExercise[] = [
     spoken: 'soeperman',
     instruction: 'Op je buik: armen, borst en benen omhoog.',
   },
+  {
+    id: 'pike-push-ups', name: 'Pike push-ups', category: 'boven', met: 4.0, defaultWorkSec: 30,
+    aliases: ['pike push up', 'pike pushups', 'opdrukken', 'schouders', 'v opdrukken', 'omgekeerde v'],
+    spoken: 'paik poesj-ups',
+    instruction: 'Heupen hoog als een V, hoofd richting de grond.',
+  },
+  {
+    id: 'plank-up-downs', name: 'Plank up-downs', category: 'boven', met: 4.5, defaultWorkSec: 30,
+    aliases: ['plank up down', 'up downs', 'plank op en neer', 'van onderarm naar hand', 'plank'],
+    spoken: 'plenk up-dauns',
+    instruction: 'Om en om van onderarmen naar handen, heupen stil.',
+  },
+  {
+    id: 'bicep-curls', name: 'Bicep curls', category: 'boven', met: 3.5, defaultWorkSec: 40, equipment: 'dumbbells',
+    aliases: ['biceps curls', 'bicep curl', 'arm curls', 'biceps', 'dumbbells', 'halters', 'gewichtjes'],
+    spoken: 'baaiseps kurrls',
+    instruction: 'Ellebogen tegen je zij, handpalmen naar boven.',
+  },
+  {
+    id: 'hammer-curls', name: 'Hammer curls', category: 'boven', met: 3.5, defaultWorkSec: 40, equipment: 'dumbbells',
+    aliases: ['hammer curl', 'hamer curls', 'biceps', 'dumbbells', 'halters', 'gewichtjes'],
+    spoken: 'hemmer kurrls',
+    instruction: 'Duimen naar boven, om en om, ellebogen stil.',
+  },
+  {
+    id: 'pull-ups', name: 'Pull-ups', category: 'boven', met: 8.0, defaultWorkSec: 20, equipment: 'stang',
+    aliases: ['pull up', 'pullups', 'optrekken', 'optrekstang', 'bovenhands', 'rug'],
+    spoken: 'poel-ups',
+    instruction: 'Bovenhands en breed: optrekken tot je kin boven de stang.',
+  },
+  {
+    id: 'chin-ups', name: 'Chin-ups', category: 'boven', met: 8.0, defaultWorkSec: 20, equipment: 'stang',
+    aliases: ['chin up', 'chinups', 'optrekken', 'optrekstang', 'onderhands', 'biceps'],
+    spoken: 'tsjin-ups',
+    instruction: 'Onderhands en smal: optrekken tot je kin boven de stang.',
+  },
+
 
   // ── Core ───────────────────────────────────────────────────────
   {
@@ -202,6 +260,23 @@ export const EXERCISES: LibraryExercise[] = [
     spoken: 'hollo hoold',
     instruction: 'Armen en benen iets omhoog, onderrug op de grond.',
   },
+  {
+    id: 'v-ups', name: 'V-ups', category: 'core', met: 4.0, defaultWorkSec: 30,
+    aliases: ['v up', 'vups', 'v-up', 'zakmes', 'jackknife', 'buikspieren'],
+    spoken: 'vee-ups',
+    instruction: 'Armen en gestrekte benen tegelijk omhoog tot een V.',
+  },
+  {
+    id: 'heel-touches', name: 'Hielen tikken', category: 'core', met: 3.0, defaultWorkSec: 30,
+    aliases: ['heel touches', 'heel touch', 'heel taps', 'hiel aantikken', 'schuine buikspieren'],
+    instruction: 'Schouders los van de grond, om en om je hiel aantikken.',
+  },
+  {
+    id: 'hanging-knee-raises', name: 'Hangend knieheffen', category: 'core', met: 4.0, defaultWorkSec: 30, equipment: 'stang',
+    aliases: ['hanging knee raises', 'hanging knee raise', 'knee raises', 'knieheffen', 'optrekstang', 'hangen'],
+    instruction: 'Hang stil, knieën rustig omhoog tot heuphoogte.',
+  },
+
 
   // ── Cardio ─────────────────────────────────────────────────────
   {
@@ -251,6 +326,17 @@ export const EXERCISES: LibraryExercise[] = [
     instruction: 'Ontspannen joggen op de plaats, armen mee.',
   },
 ];
+
+export const EQUIPMENT: { id: Equipment; label: string; short: string }[] = [
+  { id: 'geen', label: 'Zonder materiaal', short: 'Geen' },
+  { id: 'stoel', label: 'Stoel of trap', short: 'Stoel' },
+  { id: 'dumbbells', label: 'Dumbbells', short: 'Dumbbells' },
+  { id: 'stang', label: 'Optrekstang', short: 'Stang' },
+];
+
+export function equipmentOf(e: LibraryExercise): Equipment {
+  return e.equipment ?? 'geen';
+}
 
 const BY_ID = new Map(EXERCISES.map((e) => [e.id, e]));
 

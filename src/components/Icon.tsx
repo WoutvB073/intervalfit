@@ -233,6 +233,14 @@ const PATHS = {
   ),
   bolt: <path d="M13 2.5 5 13.5h6l-1 8 8-11h-6l1-8Z" />,
   chart: <path d="M4 20h16M7 16v-5M12 16V7M17 16v-8" />,
+  dumbbell: <path d="M6.5 7v10M17.5 7v10M3.5 9.5v5M20.5 9.5v5M6.5 12h11" />,
+  stairs: <path d="M3.5 20h17M4 20v-4.5h5V11h5V6.5h6.5V20" />,
+  pullupBar: (
+    <>
+      <path d="M3 5.5h18M5 3.5v4M19 3.5v4M9 5.5v6M15 5.5v6" />
+      <circle cx="12" cy="14.5" r="2.5" />
+    </>
+  ),
 } as const;
 
 export type IconName = keyof typeof PATHS;

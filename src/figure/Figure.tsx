@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { computeSkeleton, cycleLength, fitViewBox, GROUND_Y, LEN, sampleAnim, type FigureAnim, type Part, type Skeleton, type V } from './rig';
+import { BAR_Y, computeSkeleton, cycleLength, fitViewBox, GROUND_Y, LEN, sampleAnim, STEP, type FigureAnim, type Part, type Skeleton, type V } from './rig';
 import { getAnimation } from './animations';
 import { prefersReducedMotion, subscribeFrame } from './ticker';
 
@@ -20,6 +20,17 @@ type Seg =
   | 'armFU' | 'armFF' | 'legFT' | 'legFS' | 'legFFoot' | 'torso' | 'legNT' | 'legNS' | 'legNFoot' | 'armNU' | 'armNF'
   | 'haloFU' | 'haloFF' | 'haloNU' | 'haloNF';
 
+type Ref = Seg | 'head' | 'torsoPath' | 'hipDotF' | 'hipDotN' | 'gearN' | 'gearF';
+
+/** Materiaal in de hand (dumbbell of handgreep om de stang) meebewegen met de hand. */
+function placeGear(el: SVGElement | undefined, hand: V, elbow: V) {
+  if (!el) return;
+  // Hoek van de onderarm (0 = omlaag); de dumbbell staat haaks daarop.
+  const a = (Math.atan2(hand[0] - elbow[0], hand[1] - elbow[1]) * 180) / Math.PI;
+  const turn = el.classList.contains('fig-grip') ? '' : ` rotate(${(-a).toFixed(1)})`;
+  el.setAttribute('transform', `translate(${hand[0].toFixed(1)} ${hand[1].toFixed(1)})${turn}`);
+}
+
 function setLine(el: SVGLineElement | null | undefined, a: V, b: V) {
   if (!el) return;
   el.setAttribute('x1', a[0].toFixed(1));
@@ -28,7 +39,7 @@ function setLine(el: SVGLineElement | null | undefined, a: V, b: V) {
   el.setAttribute('y2', b[1].toFixed(1));
 }
 
-function draw(sk: Skeleton, refs: Map<Seg | 'head' | 'torsoPath' | 'hipDotF' | 'hipDotN', SVGElement>) {
+function draw(sk: Skeleton, refs: Map<Ref, SVGElement>) {
   const L = (k: Seg) => refs.get(k) as SVGLineElement | undefined;
   setLine(L('armFU'), sk.shF, sk.elbowF);
   setLine(L('armFF'), sk.elbowF, sk.handF);
@@ -57,6 +68,8 @@ function draw(sk: Skeleton, refs: Map<Seg | 'head' | 'torsoPath' | 'hipDotF' | '
     dot?.setAttribute('cx', p[0].toFixed(1));
     dot?.setAttribute('cy', p[1].toFixed(1));
   }
+  placeGear(refs.get('gearN'), sk.handN, sk.elbowN);
+  placeGear(refs.get('gearF'), sk.handF, sk.elbowF);
   const head = refs.get('head');
   head?.setAttribute('cx', sk.head[0].toFixed(1));
   head?.setAttribute('cy', sk.head[1].toFixed(1));
@@ -66,7 +79,7 @@ function draw(sk: Skeleton, refs: Map<Seg | 'head' | 'torsoPath' | 'hipDotF' | '
 export function Figure({ exerciseId, anim: animProp, playing = true, at, frame, className = '', title }: Props) {
   const anim = animProp ?? getAnimation(exerciseId);
   const svgRef = useRef<SVGSVGElement>(null);
-  const refs = useRef(new Map<Seg | 'head' | 'torsoPath' | 'hipDotF' | 'hipDotN', SVGElement>());
+  const refs = useRef(new Map<Ref, SVGElement>());
 
   const staticPose = () => {
     if (!anim) return null;
@@ -116,7 +129,7 @@ export function Figure({ exerciseId, anim: animProp, playing = true, at, frame, 
     const on = focus.has(part) || focus.has(side as Part);
     return `${on ? 'fig-accent' : 'fig-body'}${far && anim.view === 'side' ? ' fig-far' : ''}`;
   };
-  const reg = (k: Seg | 'head' | 'torsoPath' | 'hipDotF' | 'hipDotN') => (el: SVGElement | null) => {
+  const reg = (k: Ref) => (el: SVGElement | null) => {
     if (el) refs.current.set(k, el);
   };
   const line = (k: Seg, part: Part, far: boolean, kind: string) => (
@@ -125,12 +138,44 @@ export function Figure({ exerciseId, anim: animProp, playing = true, at, frame, 
 
   const halo = (k: Seg, kind: string) =>
     anim.view === 'front' ? <line ref={reg(k)} className={`fig-seg fig-halo fig-halo-${kind}`} /> : null;
+  // Dumbbell of handgreep (bij pull-ups/chin-ups) aan de hand.
+  const gear = (k: 'gearN' | 'gearF', far: boolean) => {
+    const cls = `fig-gear${far && anim.view === 'side' ? ' fig-gear--far' : ''}`;
+    if (anim.dumbbells === 'side') {
+      return (
+        <g ref={reg(k)} className={cls}>
+          <line x1={-9} y1={0} x2={9} y2={0} className="fig-gear__handle" />
+          <rect x={-14} y={-8} width={6.5} height={16} rx={2} />
+          <rect x={7.5} y={-8} width={6.5} height={16} rx={2} />
+        </g>
+      );
+    }
+    if (anim.dumbbells === 'end') {
+      return (
+        <g ref={reg(k)} className={cls}>
+          <circle r={8.5} />
+          <circle r={3} className="fig-gear__hub" />
+        </g>
+      );
+    }
+    if (anim.grip) {
+      // Rechtop gehouden (geen draaiing nodig): vuist om de stang, bij onderhands met de handpalm naar voren.
+      return (
+        <g ref={reg(k)} className={`fig-grip fig-grip--${anim.grip}`}>
+          <rect x={-6.5} y={anim.grip === 'over' ? -7.5 : -3.5} width={13} height={11} rx={4.5} />
+          {anim.grip === 'under' && <rect x={-4} y={2.5} width={8} height={3} rx={1.5} className="fig-grip__palm" />}
+        </g>
+      );
+    }
+    return null;
+  };
   const farArm = (
     <>
       {halo('haloFU', 'upper')}
       {halo('haloFF', 'fore')}
       {line('armFU', 'arms', true, 'upper')}
       {line('armFF', 'arms', true, 'fore')}
+      {gear('gearF', true)}
     </>
   );
   const farLeg = (
@@ -153,6 +198,7 @@ export function Figure({ exerciseId, anim: animProp, playing = true, at, frame, 
       {halo('haloNF', 'fore')}
       {line('armNU', 'arms', false, 'upper')}
       {line('armNF', 'arms', false, 'fore')}
+      {gear('gearN', false)}
     </>
   );
   const torso =
@@ -181,6 +227,9 @@ export function Figure({ exerciseId, anim: animProp, playing = true, at, frame, 
     >
       {title && <title>{title}</title>}
       <g transform={anim.mirror ? 'matrix(-1 0 0 1 200 0)' : undefined}>
+        {anim.topDown ? (
+          <rect x={vx + 12} y={vy + vs * 0.22} width={vs - 24} height={vs * 0.56} rx="14" className="fig-mat" />
+        ) : (
         <line
           x1={(anim.mirror ? 200 - vx - vs : vx) + 10}
           y1={GROUND_Y}
@@ -188,12 +237,34 @@ export function Figure({ exerciseId, anim: animProp, playing = true, at, frame, 
           y2={GROUND_Y}
           className="fig-ground"
         />
+        )}
         {anim.props?.includes('wall') && <rect x="40" y="26" width="18" height={GROUND_Y - 26} rx="3" className="fig-prop" />}
         {anim.props?.includes('bench') && (
           <g className="fig-prop">
             <rect x="14" y="129" width="62" height="8" rx="3" />
             <rect x="20" y="135" width="6" height={GROUND_Y - 135} rx="2" />
             <rect x="64" y="135" width="6" height={GROUND_Y - 135} rx="2" />
+          </g>
+        )}
+        {anim.props?.includes('step') && (
+          <g className="fig-prop">
+            <rect x={STEP.x1} y={STEP.top} width={STEP.x2 - STEP.x1} height={GROUND_Y - STEP.top + 1} rx="4" />
+            <rect x={STEP.x1} y={STEP.top} width={STEP.x2 - STEP.x1} height="6" rx="3" className="fig-prop__edge" />
+          </g>
+        )}
+        {anim.props?.includes('bar') && (
+          <g className="fig-bar">
+            {/* Deurpost met de stang ertussen */}
+            <rect x="26" y={BAR_Y - 30} width="8" height={GROUND_Y - BAR_Y + 30} rx="3" className="fig-bar__post" />
+            <rect x="166" y={BAR_Y - 30} width="8" height={GROUND_Y - BAR_Y + 30} rx="3" className="fig-bar__post" />
+            <rect x="30" y={BAR_Y - 3} width="140" height="6" rx="3" />
+          </g>
+        )}
+        {anim.props?.includes('barSide') && (
+          <g className="fig-bar">
+            <rect x="26" y={BAR_Y - 30} width="8" height={GROUND_Y - BAR_Y + 30} rx="3" className="fig-bar__post" />
+            <rect x="30" y={BAR_Y - 3} width="70" height="6" rx="3" />
+            <circle cx="100" cy={BAR_Y} r="5.5" />
           </g>
         )}
         {anim.view === 'side' ? (
@@ -213,6 +284,15 @@ export function Figure({ exerciseId, anim: animProp, playing = true, at, frame, 
             {torso}
             {farLeg}
             {nearLeg}
+          </>
+        ) : anim.order === 'hang' ? (
+          <>
+            {farLeg}
+            {nearLeg}
+            {torso}
+            {farArm}
+            {nearArm}
+            {head}
           </>
         ) : anim.order === 'legsFront' ? (
           <>

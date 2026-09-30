@@ -73,3 +73,37 @@
 .fig-prop rect {
   fill: var(--fig-prop);
 }
+
+/* Materiaal: dumbbells, optrekstang, handgrepen (metaal in de themakleur voor tekst) */
+.fig-gear,
+.fig-bar {
+  fill: var(--fig-gear, var(--text-2));
+}
+.fig-gear__handle {
+  stroke: var(--fig-gear, var(--text-2));
+  stroke-width: 4px;
+  stroke-linecap: round;
+}
+.fig-gear__hub {
+  fill: var(--fig-gear-hub, var(--surface));
+}
+.fig-gear--far {
+  opacity: 0.55;
+}
+.fig-bar__post {
+  fill: var(--fig-prop);
+}
+.fig-prop .fig-prop__edge {
+  fill: var(--fig-gear, var(--text-2));
+  opacity: 0.35;
+}
+.fig-grip rect {
+  fill: var(--fig);
+}
+.fig-grip .fig-grip__palm {
+  fill: var(--fig-far);
+}
+.fig-mat {
+  fill: var(--fig-ground);
+  opacity: 0.7;
+}
