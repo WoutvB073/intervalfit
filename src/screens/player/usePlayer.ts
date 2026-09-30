@@ -201,6 +201,8 @@ export function usePlayer(workout: Workout, settings: Settings, debug: boolean) 
       audio.cancelAll();
       speech.cancel();
       keepAwake.stop();
+      // "Altijd laten klinken" weer uit, zodat muziek van andere apps verder kan.
+      audio.setAlwaysAudible(false);
     },
     [],
   );

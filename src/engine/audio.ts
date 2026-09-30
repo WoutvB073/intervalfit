@@ -223,6 +223,11 @@ class AudioEngine {
     }
   }
 
+  /** Wacht tot alle geluiden klaar zijn (na unlock). */
+  whenReady(): Promise<void> {
+    return this.rendering ?? Promise.resolve();
+  }
+
   setVolume(v: number): void {
     this.volume = v;
     if (this.master && this.ctx) this.master.gain.setTargetAtTime(v, this.ctx.currentTime, 0.02);

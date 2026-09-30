@@ -35,6 +35,12 @@ const PATHS = {
       <path d="M5 5v14" strokeWidth="2.6" />
     </>
   ),
+  soundLow: (
+    <>
+      <path d="M5 9.5v5h3.5L13 19V5L8.5 9.5H5Z" fill="currentColor" />
+      <path d="M16.5 9.5a3.5 3.5 0 0 1 0 5" />
+    </>
+  ),
   sound: (
     <>
       <path d="M4 9.5v5h3.5L12 19V5L7.5 9.5H4Z" fill="currentColor" />

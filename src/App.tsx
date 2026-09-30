@@ -8,6 +8,7 @@ import { Placeholder } from './screens/Placeholder';
 import { Gallery } from './screens/Gallery';
 import { Editor } from './screens/editor/Editor';
 import { Player } from './screens/player/Player';
+import { Settings } from './screens/settings/Settings';
 import { InstallScreen } from './screens/gate/InstallScreen';
 import { DesktopScreen } from './screens/gate/DesktopScreen';
 import { ToastHost, showToast } from './components/Toast';
@@ -70,7 +71,7 @@ function AppRoutes({ devMode }: { devMode: boolean }) {
       screen = <Placeholder title="Goed gedaan!" step={6} />;
       break;
     case 'settings':
-      screen = <Placeholder title="Instellingen" step={4} text="Geluid, aftellen, thema's, gewicht en back-up." />;
+      screen = <Settings />;
       break;
     case 'gallery':
       screen = <Gallery poses={route.poses} />;

@@ -63,6 +63,35 @@ export async function cleanupPhotos(workouts: Workout[]): Promise<void> {
   }
 }
 
+/** Foto's als data-URL (voor de back-up). */
+export async function exportPhotos(ids: string[]): Promise<Record<string, string>> {
+  const out: Record<string, string> = {};
+  for (const id of new Set(ids)) {
+    const blob = await get<Blob>(id, db);
+    if (!blob) continue;
+    out[id] = await new Promise<string>((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve(String(r.result));
+      r.onerror = () => reject(r.error);
+      r.readAsDataURL(blob);
+    });
+  }
+  return out;
+}
+
+/** Foto's uit een back-up terugzetten (bestaande blijven staan). Geeft het aantal nieuwe terug. */
+export async function importPhotos(map: Record<string, string>): Promise<number> {
+  const have = new Set((await keys(db)) as string[]);
+  let n = 0;
+  for (const [id, url] of Object.entries(map)) {
+    if (have.has(id) || typeof url !== 'string' || !url.startsWith('data:image/')) continue;
+    const blob = await (await fetch(url)).blob();
+    await set(id, blob, db);
+    n++;
+  }
+  return n;
+}
+
 const urlCache = new Map<string, string>();
 
 /** Object-URL van een opgeslagen foto (of undefined zolang hij laadt / niet bestaat). */

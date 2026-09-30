@@ -1,8 +1,12 @@
 /*
  * Thema's. Elk thema is een set CSS-variabelen op <html data-theme="…">.
- * De andere drie thema's (sportief, vrolijk, pastel) worden in stap 4 volledig uitgewerkt.
+ * Een los element met data-theme (bv. de voorbeeldtegels in Instellingen) krijgt ook dat thema.
+ *
+ * Speler (zie player.css): --work/--rest/--countdown/--round-rest (fasekleur),
+ * optioneel --*-bg (achtergrond), --*-ink (tekst), --*-accent (timer/ring/hoofdknop), --main-ink.
  */
 
+/* ── Licht & fris (standaard) ─────────────────────────────────── */
 :root,
 [data-theme='fris'] {
   color-scheme: light;
@@ -10,7 +14,6 @@
   --font-ui: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-display: var(--font-ui);
 
-  /* Basis */
   --bg: #f3faf7;
   --bg-glow: radial-gradient(120% 60% at 100% 0%, #d9f6ea 0%, rgba(217, 246, 234, 0) 60%),
     radial-gradient(90% 50% at 0% 0%, #e3f1fb 0%, rgba(227, 241, 251, 0) 55%);
@@ -22,7 +25,6 @@
   --text-2: #4e655e;
   --text-3: #7b8f89;
 
-  /* Accent */
   --primary: #0a8a5a;
   --primary-press: #077349;
   --primary-ink: #ffffff;
@@ -33,20 +35,17 @@
   --warn-soft: #fff4d6;
   --warn-ink: #7a5300;
 
-  /* Fases (speler) */
   --work: #12a867;
   --rest: #2e86de;
   --countdown: #f2674f;
   --round-rest: #7a5ce0;
 
-  /* Categorieën */
   --cat-benen: #ff8a5c;
   --cat-boven: #4c9bf0;
   --cat-core: #9b6cf0;
   --cat-cardio: #f0567a;
   --cat-eigen: #19a974;
 
-  /* Figuurtjes */
   --fig: #1f3d35;
   --fig-far: #9bb9af;
   --fig-accent: #0f9d63;
@@ -54,7 +53,6 @@
   --fig-ground: #d3e6de;
   --fig-prop: #cfe0d9;
 
-  /* Vorm */
   --radius-card: 24px;
   --radius-btn: 16px;
   --radius-sm: 12px;
@@ -62,4 +60,222 @@
   --shadow-pop: 0 20px 60px -20px rgba(16, 40, 32, 0.35);
   --shadow-primary: 0 8px 20px -8px rgba(10, 138, 90, 0.55);
   --scrim: rgba(12, 30, 25, 0.42);
+}
+
+/* ── Donker & sportief (neon-accenten) ───────────────────────── */
+[data-theme='sportief'] {
+  color-scheme: dark;
+
+  --font-ui: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Barlow Condensed', 'Plus Jakarta Sans Variable', system-ui, sans-serif;
+
+  --bg: #0b0f13;
+  --bg-glow: radial-gradient(100% 55% at 100% 0%, rgba(46, 242, 143, 0.13) 0%, rgba(46, 242, 143, 0) 60%),
+    radial-gradient(90% 50% at 0% 0%, rgba(54, 197, 255, 0.1) 0%, rgba(54, 197, 255, 0) 55%);
+  --surface: #151b21;
+  --surface-2: #1e262e;
+  --surface-press: #28323c;
+  --border: rgba(255, 255, 255, 0.08);
+  --text: #f1f5f8;
+  --text-2: #a9b4bf;
+  --text-3: #6f7c88;
+
+  --primary: #2ef28f;
+  --primary-press: #20d97d;
+  --primary-ink: #03170c;
+  --primary-soft: rgba(46, 242, 143, 0.14);
+  --primary-soft-ink: #7af7b8;
+  --danger: #ff5c6c;
+  --danger-soft: rgba(255, 92, 108, 0.16);
+  --warn-soft: rgba(255, 200, 80, 0.13);
+  --warn-ink: #ffd27a;
+
+  --work: #2ef28f;
+  --rest: #36c5ff;
+  --countdown: #ffb020;
+  --round-rest: #b58cff;
+  /* Speler: donkere achtergrond met een gloed in de fasekleur; timer en ring in neon */
+  --work-bg: radial-gradient(120% 75% at 50% 18%, rgba(46, 242, 143, 0.3) 0%, rgba(46, 242, 143, 0.05) 55%, #0b0f13 100%), #0b0f13;
+  --rest-bg: radial-gradient(120% 75% at 50% 18%, rgba(54, 197, 255, 0.3) 0%, rgba(54, 197, 255, 0.05) 55%, #0b0f13 100%), #0b0f13;
+  --countdown-bg: radial-gradient(120% 75% at 50% 18%, rgba(255, 176, 32, 0.3) 0%, rgba(255, 176, 32, 0.05) 55%, #0b0f13 100%), #0b0f13;
+  --round-rest-bg: radial-gradient(120% 75% at 50% 18%, rgba(181, 140, 255, 0.32) 0%, rgba(181, 140, 255, 0.05) 55%, #0b0f13 100%), #0b0f13;
+  --work-ink: #f1f5f8;
+  --rest-ink: #f1f5f8;
+  --countdown-ink: #f1f5f8;
+  --round-rest-ink: #f1f5f8;
+  --work-accent: #2ef28f;
+  --rest-accent: #36c5ff;
+  --countdown-accent: #ffb020;
+  --round-rest-accent: #b58cff;
+  --main-ink: #06110b;
+
+  --cat-benen: #ff7a45;
+  --cat-boven: #36a3ff;
+  --cat-core: #a07bff;
+  --cat-cardio: #ff4d7d;
+  --cat-eigen: #20c77a;
+
+  --fig: #e9eff4;
+  --fig-far: #5d6a76;
+  --fig-accent: #2ef28f;
+  --fig-accent-far: #1b8a55;
+  --fig-ground: #26303a;
+  --fig-prop: #26303a;
+
+  --radius-card: 20px;
+  --radius-btn: 14px;
+  --radius-sm: 10px;
+  --shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 12px 30px -14px rgba(0, 0, 0, 0.7);
+  --shadow-pop: 0 24px 60px -18px rgba(0, 0, 0, 0.85);
+  --shadow-primary: 0 8px 26px -8px rgba(46, 242, 143, 0.55);
+  --scrim: rgba(0, 0, 0, 0.62);
+}
+
+/* ── Kleurrijk & vrolijk ──────────────────────────────────────── */
+[data-theme='vrolijk'] {
+  color-scheme: light;
+
+  --font-ui: 'Fredoka Variable', 'Plus Jakarta Sans Variable', system-ui, sans-serif;
+  --font-display: 'Fredoka Variable', system-ui, sans-serif;
+
+  --bg: #fff6ec;
+  --bg-glow: radial-gradient(110% 55% at 100% 0%, #ffd9e8 0%, rgba(255, 217, 232, 0) 60%),
+    radial-gradient(90% 50% at 0% 0%, #fff0b8 0%, rgba(255, 240, 184, 0) 55%);
+  --surface: #ffffff;
+  --surface-2: #fff0e3;
+  --surface-press: #ffe3cc;
+  --border: rgba(80, 30, 90, 0.1);
+  --text: #2d1846;
+  --text-2: #6b5780;
+  --text-3: #9a88ab;
+
+  --primary: #ff3d7f;
+  --primary-press: #e82e6e;
+  --primary-ink: #ffffff;
+  --primary-soft: #ffe0ec;
+  --primary-soft-ink: #b8175a;
+  --danger: #e5383b;
+  --danger-soft: #ffe3e3;
+  --warn-soft: #fff1c2;
+  --warn-ink: #7a5000;
+
+  --work: #ff5a5f;
+  --rest: #1fa8d6;
+  --countdown: #f5a300;
+  --round-rest: #a855f7;
+  --work-bg: linear-gradient(165deg, #ff4f8b 0%, #ff8a3d 100%);
+  --rest-bg: linear-gradient(165deg, #14c4b4 0%, #3b82f6 100%);
+  --countdown-bg: linear-gradient(165deg, #ffe14d 0%, #ffae1a 100%);
+  --round-rest-bg: linear-gradient(165deg, #8b5cf6 0%, #e14ce6 100%);
+  --countdown-ink: #3a2300;
+
+  --cat-benen: #ff7a3d;
+  --cat-boven: #3b8bff;
+  --cat-core: #a855f7;
+  --cat-cardio: #ff3d7f;
+  --cat-eigen: #14b8a6;
+
+  --fig: #2d1846;
+  --fig-far: #bca9cf;
+  --fig-accent: #ff3d7f;
+  --fig-accent-far: #ffb3cd;
+  --fig-ground: #ffe3cc;
+  --fig-prop: #ffe3cc;
+
+  --radius-card: 30px;
+  --radius-btn: 22px;
+  --radius-sm: 16px;
+  --shadow-card: 0 2px 0 rgba(80, 30, 90, 0.06), 0 12px 28px -12px rgba(255, 61, 127, 0.28);
+  --shadow-pop: 0 24px 60px -20px rgba(80, 30, 90, 0.4);
+  --shadow-primary: 0 8px 20px -8px rgba(255, 61, 127, 0.6);
+  --scrim: rgba(45, 24, 70, 0.45);
+}
+
+/* ── Zacht pastel ─────────────────────────────────────────────── */
+[data-theme='pastel'] {
+  color-scheme: light;
+
+  --font-ui: 'Nunito Variable', 'Plus Jakarta Sans Variable', system-ui, sans-serif;
+  --font-display: 'Nunito Variable', system-ui, sans-serif;
+
+  --bg: #fbf7f2;
+  --bg-glow: radial-gradient(110% 55% at 100% 0%, #efe8fb 0%, rgba(239, 232, 251, 0) 60%),
+    radial-gradient(90% 50% at 0% 0%, #fde8df 0%, rgba(253, 232, 223, 0) 55%);
+  --surface: #fffdfa;
+  --surface-2: #f4eee8;
+  --surface-press: #ebe2d9;
+  --border: rgba(60, 50, 70, 0.08);
+  --text: #3f3a4d;
+  --text-2: #6f6880;
+  --text-3: #a09aae;
+
+  --primary: #7e6cc0;
+  --primary-press: #6d5bb0;
+  --primary-ink: #ffffff;
+  --primary-soft: #eee9f8;
+  --primary-soft-ink: #5b4a96;
+  --danger: #cf5f5f;
+  --danger-soft: #fbe9e9;
+  --warn-soft: #fbf1d9;
+  --warn-ink: #7a5a18;
+
+  /* Speler: zachte pastelvlakken met donkere tekst */
+  --work: #e8977d;
+  --rest: #8fa2e3;
+  --countdown: #e5bd4f;
+  --round-rest: #a893dc;
+  --work-bg: linear-gradient(170deg, #fde0d5 0%, #f7c3b1 100%);
+  --rest-bg: linear-gradient(170deg, #e2e8fb 0%, #c5d0f4 100%);
+  --countdown-bg: linear-gradient(170deg, #fdf1c7 0%, #f7e09b 100%);
+  --round-rest-bg: linear-gradient(170deg, #ece5fa 0%, #d6caf2 100%);
+  --work-ink: #3f3a4d;
+  --rest-ink: #3f3a4d;
+  --countdown-ink: #3f3a4d;
+  --round-rest-ink: #3f3a4d;
+  --main-ink: #fffdfa;
+
+  --cat-benen: #eea58c;
+  --cat-boven: #93a9e8;
+  --cat-core: #b39be2;
+  --cat-cardio: #ea9bb4;
+  --cat-eigen: #8cc9b0;
+
+  --fig: #3f3a4d;
+  --fig-far: #cbc3d8;
+  --fig-accent: #d9826a;
+  --fig-accent-far: #f2c4b5;
+  --fig-ground: #efe7df;
+  --fig-prop: #efe7df;
+
+  --radius-card: 26px;
+  --radius-btn: 18px;
+  --radius-sm: 14px;
+  --shadow-card: 0 1px 2px rgba(60, 50, 70, 0.04), 0 10px 30px -14px rgba(60, 50, 70, 0.16);
+  --shadow-pop: 0 20px 60px -22px rgba(60, 50, 70, 0.32);
+  --shadow-primary: 0 8px 20px -10px rgba(126, 108, 192, 0.55);
+  --scrim: rgba(63, 58, 77, 0.35);
+}
+
+/* Extra's per thema */
+[data-theme='sportief'] .player__digits {
+  text-shadow: 0 0 18px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+[data-theme='sportief'] .player__label,
+[data-theme='sportief'] .player__digits,
+[data-theme='sportief'] .player__pause-title {
+  letter-spacing: 0.01em;
+}
+[data-theme='sportief'] .player__visual {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 18px 40px -18px rgba(0, 0, 0, 0.8);
+}
+[data-theme='vrolijk'] .player__label,
+[data-theme='vrolijk'] .home-header__title,
+[data-theme='vrolijk'] .gate__title {
+  letter-spacing: 0;
+}
+[data-theme='pastel'] .player__visual {
+  box-shadow: 0 16px 36px -20px rgba(63, 58, 77, 0.35);
+}
+[data-theme='pastel'] .player__ring-track {
+  fill: rgba(255, 255, 255, 0.35);
 }
