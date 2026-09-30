@@ -4,6 +4,29 @@ Persoonlijke interval/tabata-trainingsapp als Progressive Web App. Draait volled
 (geen backend, geen accounts), is installeerbaar op iPhone en Android en werkt offline.
 De naam "IntervalFit" staat op één plek (`src/config.ts` + manifest in `vite.config.ts`).
 
+## Status (30-09-2026)
+
+| Stap | Status |
+|---|---|
+| 1. Basisstructuur (+ installatiescherm) | ✅ af, getest op iPhone 14 |
+| 2. Workout-editor + figuurtjes/galerij | ✅ af, getest |
+| 3. Speler | ✅ af, getest (incl. aanpassingen: kleinere timer, automatisch pauzeren, korte instructies) |
+| 4. Instellingen + 4 thema's + back-up | ✅ af, getest |
+| 5. Delen | ✅ gebouwd en online, automatische tests slagen. **Nog te testen door de gebruiker**: op de telefoon van zijn moeder en op een Android-toestel (samen, twee telefoons) |
+| 6. Overzicht na afloop (geschiedenis, streak, calorieën, confetti, boodschappen) | ⏳ volgende stap — speler toont nu een tijdelijk "Klaar!"-scherm; `Session.workStats()`/`activeSec()` leveren de gegevens al |
+| 7. Afwerking (definitief logo/splash, overgangen, toegankelijkheid, Lighthouse, README) | ⏳ |
+
+## Aanvullende besluiten (onderweg genomen)
+- **Stil-knop:** optie C — standaard mengen met muziek; schakelaar "Geluid altijd laten klinken" (alleen iPhone) zet `navigator.audioSession.type = 'playback'` (oudere iOS: stil `<audio>`-lusje); na de workout/test weer uit. Stem is met stil-knop meestal wél hoorbaar.
+- **Vergrendelen/andere app/telefoontje:** workout **pauzeert automatisch**; pauzescherm met "Gepauzeerd omdat je de app verliet". Eenmalige tips bij de eerste workout (`appState.playerTipsSeen`).
+- **Instructies:** max. ± 60 tekens, het belangrijkste aandachtspunt (unit-test bewaakt dit). In de speler (aftellen/rust) max. 2 regels via `FitText` (letters krimpen i.p.v. afkappen).
+- **Speler-layout:** raster (kop / voortgang / midden / bediening); afbeelding krimpt mee, timer kleiner (± 172 px op iPhone 14). Nooit overlap — getest op SE, 14, groot Android en liggend.
+- **Extra oefeningen:** "Side leg raises links/rechts" (39 oefeningen totaal). Links = liggend op rechterzij, linkerbeen omhoog. Spraaktekst met kant ("zijplank, links").
+- **Ontwikkelaarsmodus:** `?dev=1` (uit: `?dev=0`) of in de geïnstalleerde app **5× op het logo tikken** → geel blok op Home met test-workout (3× 10 s, 2 rondes) en galerij (`#/galerij`, `#/galerij/houdingen`).
+- **Delen:** deelbericht "Ik heb een workout voor je: … Open de link om hem in IntervalFit te zetten: …"; linkcode zonder `+`/`$` (vervangen door `~`/`_`, oude links werken nog); "Workout importeren" op Home (plakken herkent link/code/WhatsApp-bericht); dubbele workout → "Nog een keer toevoegen?"; nieuwe workout bovenaan en licht op. Link in Android Chrome: direct toevoegen (gedeeld geheugen met de app); in iPhone Safari: stappenplan "Kopieer voor de app".
+- **Thema's:** Licht & fris (standaard), Donker & sportief (Barlow Condensed, neon), Kleurrijk & vrolijk (Fredoka, kleurverlopen), Zacht pastel (Nunito, donkere tekst op pastel). Fasekleuren per thema via `--work/-bg/-ink/-accent` in `themes.css`.
+- **Back-up:** JSON incl. foto's (data-URL), geschiedenis; instellingen niet. Terugzetten voegt toe (geen dubbelen).
+
 ## 0. Besluiten (na overleg)
 
 | Onderwerp | Besluit |
