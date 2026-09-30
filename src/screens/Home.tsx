@@ -5,9 +5,8 @@ import type { HistoryEntry, Workout } from '../model/types';
 import { currentStreak, entriesThisWeek } from '../model/stats';
 import { WeekDots } from '../components/WeekDots';
 import { DevHistorySheet } from './progress/DevHistorySheet';
-import { formatDay } from './summary/Summary';
 import { totalDurationSec } from '../model/timeline';
-import { formatTotal, plural } from '../model/format';
+import { formatDay, formatTotal, plural } from '../model/format';
 import { navigate } from '../router';
 import { Button, IconButton } from '../components/Button';
 import { Icon } from '../components/Icon';
@@ -50,12 +49,12 @@ export function Home({ devMode = false }: { devMode?: boolean }) {
     const t = setTimeout(() => setHighlight(null), 3500);
     return () => clearTimeout(t);
   }, [highlight]);
-  // Verborgen: 5× snel op het logo tikken zet de ontwikkelaarsmodus aan/uit.
+  // Verborgen: 7× snel op het logo tikken zet de ontwikkelaarsmodus aan/uit (niet per ongeluk te doen).
   const logoTaps = useRef<number[]>([]);
   const onLogoTap = () => {
     const now = Date.now();
-    logoTaps.current = [...logoTaps.current.filter((t) => now - t < 2500), now];
-    if (logoTaps.current.length >= 5) {
+    logoTaps.current = [...logoTaps.current.filter((t) => now - t < 3000), now];
+    if (logoTaps.current.length >= 7) {
       logoTaps.current = [];
       setDevMode(!devMode);
     }

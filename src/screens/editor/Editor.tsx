@@ -16,7 +16,7 @@ import type { Workout, WorkoutExercise } from '../../model/types';
 import { newId } from '../../model/id';
 import { restAfter, totalDurationSec } from '../../model/timeline';
 import { formatClock, formatShort } from '../../model/format';
-import { getWorkout, saveWorkout } from '../../storage/data';
+import { appStateStore, getWorkout, saveWorkout } from '../../storage/data';
 import { goBack } from '../../router';
 import { Button, IconButton } from '../../components/Button';
 import { Icon } from '../../components/Icon';
@@ -95,6 +95,8 @@ export function Editor({ id }: { id?: string }) {
       return;
     }
     saveWorkout({ ...draft, name: draft.name.trim() });
+    // Eigen workout gemaakt: het welkomstkaartje heeft zijn werk gedaan.
+    if (!appStateStore.get().welcomeDismissed) appStateStore.set((s) => ({ ...s, welcomeDismissed: true }));
     leave(isNew ? 'Workout aangemaakt' : 'Wijzigingen opgeslagen');
   };
 

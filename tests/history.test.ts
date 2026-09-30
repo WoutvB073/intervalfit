@@ -100,6 +100,9 @@ describe('reeks en totalen', () => {
     expect(countsForHistory(false, 59)).toBe(false);
     expect(countsForHistory(false, 60)).toBe(true);
     expect(countsForHistory(true, 20)).toBe(true);
+    // afgerond maar alles doorgespoeld: telt niet mee; korte workout echt gedaan: wel
+    expect(countsForHistory(true, 6, 420)).toBe(false);
+    expect(countsForHistory(true, 40, 70)).toBe(true);
   });
 });
 

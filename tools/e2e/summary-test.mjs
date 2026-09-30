@@ -17,6 +17,12 @@ page.on('pageerror', (e) => errors.push(e.message));
 page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
 await page.setUserAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.0 Mobile/15E148 Safari/604.1');
 await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
+// Versnelde klok: de speler rekent met Date.now, zo loopt een workout in een paar seconden echt af.
+await page.evaluateOnNewDocument(() => {
+  const real = Date.now.bind(Date);
+  window.__off = 0;
+  Date.now = () => real() + window.__off;
+});
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 let n = 0;
 let fails = 0;
@@ -86,15 +92,15 @@ const layoutProblems = () =>
 await reset('fris', { sound: { voice: false } });
 await page.evaluate(() => [...document.querySelectorAll('.card--dev button')].find((b) => b.textContent.includes('Test-workout')).click());
 await sleep(800);
-for (let i = 0; i < 40; i++) {
+for (let i = 0; i < 200; i++) {
   const done = await page.evaluate(() => {
     const s = window.__player?.session;
     if (!s || s.status === 'finished') return true;
-    s.skip();
+    window.__off += 2000;
     return false;
   });
   if (done) break;
-  await sleep(60);
+  await sleep(40);
 }
 await sleep(1500);
 check(page.url().includes('#/klaar/'), `na afloop naar het overzicht (${page.url().split('#')[1]})`);

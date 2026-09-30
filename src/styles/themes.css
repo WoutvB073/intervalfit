@@ -1,3 +1,4 @@
+/* Contrast gecontroleerd (WCAG AA): witte tekst op --primary en --danger ≥ 4,5; --text-3 ≥ 3 op --surface. */
 /*
  * Thema's. Elk thema is een set CSS-variabelen op <html data-theme="…">.
  * Een los element met data-theme (bv. de voorbeeldtegels in Instellingen) krijgt ook dat thema.
@@ -25,8 +26,8 @@
   --text-2: #4e655e;
   --text-3: #7b8f89;
 
-  --primary: #0a8a5a;
-  --primary-press: #077349;
+  --primary: #0a8657;
+  --primary-press: #077046;
   --primary-ink: #ffffff;
   --primary-soft: #d9f3e8;
   --primary-soft-ink: #07623f;
@@ -149,12 +150,12 @@
   --text-2: #6b5780;
   --text-3: #9a88ab;
 
-  --primary: #ff3d7f;
-  --primary-press: #e82e6e;
+  --primary: #d6336b;
+  --primary-press: #bd2b5d;
   --primary-ink: #ffffff;
   --primary-soft: #ffe0ec;
   --primary-soft-ink: #b8175a;
-  --danger: #e5383b;
+  --danger: #da3538;
   --danger-soft: #ffe3e3;
   --warn-soft: #fff1c2;
   --warn-ink: #7a5000;
@@ -207,14 +208,14 @@
   --border: rgba(60, 50, 70, 0.08);
   --text: #3f3a4d;
   --text-2: #6f6880;
-  --text-3: #a09aae;
+  --text-3: #958fa2;
 
-  --primary: #7e6cc0;
+  --primary: #7a69ba;
   --primary-press: #6d5bb0;
   --primary-ink: #ffffff;
   --primary-soft: #eee9f8;
   --primary-soft-ink: #5b4a96;
-  --danger: #cf5f5f;
+  --danger: #ba5555;
   --danger-soft: #fbe9e9;
   --warn-soft: #fbf1d9;
   --warn-ink: #7a5a18;

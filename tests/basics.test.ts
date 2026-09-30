@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseHash } from '../src/router';
-import { formatClock, formatShort, formatTotal } from '../src/model/format';
+import { formatClock, formatShort, formatTotal, formatTrained } from '../src/model/format';
 import { EXERCISES, CATEGORIES, getExercise, EQUIPMENT, equipmentOf } from '../src/data/exercises';
 
 describe('router', () => {
@@ -27,6 +27,11 @@ describe('tijdweergave', () => {
     expect(formatTotal(585)).toBe('10 min');
     expect(formatTotal(20)).toBe('1 min');
     expect(formatTotal(3900)).toBe('1 u 5 min');
+  });
+  it('toont getrainde tijd gewoon afgerond', () => {
+    expect(formatTrained(371)).toBe('6 min');
+    expect(formatTrained(20)).toBe('1 min');
+    expect(formatTrained(3900)).toBe('1 u 5 min');
   });
   it('toont een klok', () => {
     expect(formatClock(585)).toBe('9:45');

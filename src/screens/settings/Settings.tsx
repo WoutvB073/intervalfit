@@ -4,7 +4,7 @@ import { useStore } from '../../storage/store';
 import { settingsStore, workoutsStore } from '../../storage/data';
 import { buildBackup, importBackup, shareFile } from '../../storage/backup';
 import { THEMES } from '../../styles/theme';
-import { goBack } from '../../router';
+import { goBack, navigate } from '../../router';
 import { Button, IconButton } from '../../components/Button';
 import { Icon } from '../../components/Icon';
 import { SwitchRow } from '../../components/Switch';
@@ -185,6 +185,16 @@ export function Settings() {
         <section className="settings-group" aria-labelledby="set-help">
           <h2 id="set-help">Hulp</h2>
           <div className="card settings-card help">
+            <button type="button" className="help-manual" onClick={() => navigate('/handleiding')}>
+              <span className="help-manual__icon">
+                <Icon name="list" size={22} />
+              </span>
+              <span>
+                <strong>Handleiding</strong>
+                <small>Installeren, workout maken, afspelen, delen en importeren</small>
+              </span>
+              <Icon name="chevron" size={20} />
+            </button>
             <details>
               <summary>Hoor ik geen piepjes op mijn iPhone?</summary>
               <p>

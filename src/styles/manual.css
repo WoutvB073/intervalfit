@@ -1,0 +1,167 @@
+/* ── Handleiding (in de app en als pdf) ─────────────────────────── */
+.manual__main {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 24px;
+}
+.manual__intro {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.manual__logo {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+}
+.manual__title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+}
+.manual__intro p {
+  color: var(--text-2);
+}
+.manual-step {
+  display: flex;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+.manual-step__icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--primary-soft);
+  color: var(--primary-soft-ink);
+}
+.manual-step h3 {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+.manual-step p {
+  color: var(--text-2);
+  line-height: 1.45;
+}
+.manual-step p + p {
+  margin-top: 6px;
+}
+.manual-step strong {
+  color: var(--text);
+}
+.manual-step p svg,
+.manual__tip span svg {
+  display: inline-block;
+  vertical-align: -3px;
+}
+.manual__tip {
+  display: flex;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: var(--radius-card);
+  background: var(--primary-soft);
+  color: var(--primary-soft-ink);
+}
+.manual__tip > svg {
+  flex: none;
+  margin-top: 3px;
+}
+
+.manual__link {
+  text-align: center;
+  color: var(--text-3);
+  font-size: 14px;
+}
+
+/* Knop naar de handleiding bij Hulp (Instellingen) */
+.help-manual {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 64px;
+  padding: 10px 0 14px;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: none;
+  color: var(--text);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+.help-manual > span:nth-child(2) {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.help-manual strong {
+  font-size: 17px;
+}
+.help-manual small {
+  font-size: 14px;
+  color: var(--text-2);
+}
+.help-manual__icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--primary-soft);
+  color: var(--primary-soft-ink);
+}
+
+/* Afdrukken / pdf: één A4-pagina, zonder knoppen en achtergrond */
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm 14mm;
+  }
+  html,
+  body {
+    background: #fff !important;
+  }
+  .dev-badge,
+  .manual__top,
+  .toast-host {
+    display: none !important;
+  }
+  .screen.manual {
+    max-width: none;
+    min-height: 0;
+    padding: 0;
+  }
+  .route {
+    animation: none;
+  }
+  .manual__main {
+    gap: 7px;
+    padding: 0;
+    font-size: 12.5px;
+  }
+  .manual__title {
+    font-size: 21px;
+  }
+  .manual-step {
+    padding: 8px 12px;
+    box-shadow: none;
+    border: 1px solid #dfe9e4;
+    break-inside: avoid;
+  }
+  .manual-step h3 {
+    font-size: 14.5px;
+    margin-bottom: 2px;
+  }
+  .manual-step__icon {
+    width: 30px;
+    height: 30px;
+  }
+}

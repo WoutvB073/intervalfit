@@ -4,4 +4,4 @@ export const APP_NAME = 'IntervalFit';
 /** Voorvoegsel voor alle opslagsleutels. Niet wijzigen: dan raken gebruikers hun gegevens kwijt. */
 export const STORAGE_PREFIX = 'intervalfit';
 
-export const APP_VERSION = '0.6.0';
+export const APP_VERSION = '1.0.0';

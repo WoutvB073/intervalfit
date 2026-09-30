@@ -1,83 +1,135 @@
 # IntervalFit
 
 Een persoonlijke interval- en tabata-trainingsapp. Iedere oefening heeft een eigen werktijd, en tijdens het trainen
-zie je groot welke oefening bezig is. De app draait helemaal op je telefoon: geen account, geen server, en na de
-eerste keer openen werkt hij ook zonder internet.
+zie je groot welke oefening bezig is, met een bewegend figuurtje, piepjes en een stem. De app draait helemaal op de
+telefoon: geen account, geen server, en na de eerste keer openen werkt hij ook zonder internet.
 
-**Online versie:** https://woutvb073.github.io/intervalfit/
-
----
-
-## 1. De app online zetten
-
-De app staat op GitHub Pages en wordt **automatisch** online gezet zodra er iets naar de `main`-branch wordt gepusht.
-Dat is eenmalig zo ingesteld:
-
-1. De code staat in de repository `WoutvB073/intervalfit` op GitHub.
-2. Onder **Settings → Pages** staat bij *Source* de optie **GitHub Actions** geselecteerd.
-3. Het bestand `.github/workflows/deploy.yml` test en bouwt de app en zet hem online.
-
-Je kunt de voortgang volgen onder het tabblad **Actions** van de repository. Een groen vinkje betekent: online.
-
-> **Goed om te weten:** wie de link in een gewone browser opent, ziet alleen een installatiescherm met de stappen
-> voor zijn eigen toestel en browser. De app zelf opent pas vanaf het beginscherm. Op een computer verschijnt een
-> QR-code om de link op je telefoon te openen.
-
-## 2. Installeren op iPhone
-
-1. Open de link hierboven in **Safari**. (Heb je de link via WhatsApp gekregen? Tik op de link en kies zo nodig
-   *Open in Safari*.)
-2. Tik onderin op **•••** of op het deel-icoon (vierkantje met pijl omhoog).
-3. Kies **Deel** en daarna **Zet op beginscherm**. Zie je het niet? Scroll dan een stukje omlaag.
-4. Zorg dat **Open als webapp** aan staat en tik op **Voeg toe**.
-5. Open IntervalFit voortaan via het nieuwe icoon op je beginscherm. De app opent dan zonder adresbalk.
-
-> Let op: op iPhone heeft de app op het beginscherm een **eigen geheugen**, los van Safari. Gebruik daarom altijd
-> het icoon op je beginscherm.
-
-## 3. Installeren op Android
-
-1. Open de link hierboven in **Chrome**.
-2. Tik op de knop **Installeren** in de app, of tik rechtsboven op **⋮** en kies **App installeren**
-   (of **Toevoegen aan startscherm**).
-3. Bevestig met **Installeren**. Het icoon verschijnt op je startscherm.
-
-## 4. Later een nieuwe versie online zetten
-
-1. Pas de code aan en controleer lokaal:
-   ```bash
-   npm test
-   npm run build
-   ```
-2. Sla de wijziging op en stuur hem naar GitHub:
-   ```bash
-   git add -A
-   git commit -m "Korte beschrijving van de wijziging"
-   git push
-   ```
-3. Na een paar minuten staat de nieuwe versie online. Wie de app al heeft, ziet op het beginscherm van de app de
-   melding **"Er is een nieuwe versie"** met de knop **Bijwerken**. (Die melding verschijnt nooit tijdens een
-   workout.)
+- **Online:** https://woutvb073.github.io/intervalfit/
+- **Handleiding voor gebruikers (1 pagina, pdf):** https://woutvb073.github.io/intervalfit/handleiding.pdf
+  (ook in de app: Instellingen → Hulp → Handleiding)
 
 ---
 
-## Voor ontwikkelaars
+## 1. Installeren
+
+**iPhone** (iOS 16.4 of nieuwer)
+1. Open de link in **Safari**. (Via WhatsApp gekregen? Tik op de link en kies zo nodig *Open in Safari*.)
+2. Tik op **•••** of op het deel-icoon (vierkantje met pijl omhoog).
+3. Kies **Zet op beginscherm**. Zie je het niet? Scroll een stukje omlaag.
+4. Laat **Open als webapp** aan staan en tik op **Voeg toe**.
+5. Open IntervalFit voortaan via het icoon op het beginscherm.
+
+> Op iPhone heeft de app op het beginscherm een **eigen geheugen**, los van Safari. Gebruik daarom altijd het icoon.
+
+**Android** (Chrome)
+1. Open de link in **Chrome**.
+2. Tik op **Installeren** in de app, of op **⋮** → **App installeren** / **Toevoegen aan startscherm**.
+
+Wie de link in een gewone browser opent, ziet alleen een installatiescherm met de stappen voor het eigen toestel en
+de eigen browser. Op een computer verschijnt een QR-code.
+
+## 2. Een nieuwe versie online zetten
+
+De app staat op GitHub Pages en gaat **automatisch** online na een push naar `main`
+(`.github/workflows/deploy.yml` test, bouwt en publiceert; volgen via het tabblad **Actions** of `gh run watch`).
+
+```bash
+npm test
+npm run build
+git add -A
+git commit -m "Korte beschrijving"
+git push
+```
+
+Wie de app al heeft, ziet op Home de melding **"Er is een nieuwe versie"** met **Bijwerken**; die melding komt
+nooit tijdens een workout.
+
+---
+
+## 3. Zelf iets aanpassen (of laten aanpassen)
+
+Je kunt dit zelf doen of aan Claude Code vragen. Geef dan altijd mee: *"Lees eerst CLAUDE.md en PLAN.md."*
+Voorbeeld: *"Lees eerst CLAUDE.md en PLAN.md. Voeg de oefening 'Burpee met opdrukken' toe aan de bibliotheek, met
+animatie, zoals de bestaande oefeningen."*
+
+### Een oefening toevoegen
+1. **Gegevens** – voeg een blok toe in `src/data/exercises.ts` (in de juiste categorie):
+   ```ts
+   {
+     id: 'good-mornings',              // uniek, kleine letters; nooit meer wijzigen (staat in gedeelde links)
+     name: 'Good mornings',            // Engels als dat in NL gebruikelijk is, anders Nederlands
+     category: 'benen',                // 'benen' | 'boven' | 'core' | 'cardio'
+     met: 3.5,                         // inspanning voor de calorieschatting
+     defaultWorkSec: 30,
+     equipment: 'dumbbells',           // weglaten = zonder materiaal; anders 'stoel' | 'dumbbells' | 'stang'
+     aliases: ['good morning', 'heupscharnier', 'rugstrekken'],   // Nederlandse én Engelse zoekwoorden
+     spoken: 'goed mornings',          // alleen als de Nederlandse stem de naam anders verkeerd uitspreekt
+     instruction: 'Rug recht, heupen naar achteren, knieën licht gebogen.', // max. ± 60 tekens
+   },
+   ```
+2. **Animatie** – voeg in `src/figure/animations.ts` een animatie toe met dezelfde `id` (sleutelhoudingen + tijden).
+   Links/rechts-varianten: de ene maken, de andere gespiegeld (`mirror: true`, zie zijplank). Zonder animatie krijgt de
+   oefening vanzelf een nette letter-tegel.
+3. **Controleren**:
+   - `npm test` (o.a. aantal oefeningen in `tests/basics.test.ts` ophogen, instructielengte, animatie-checks);
+   - galerij: `…/intervalfit/?dev=1#/galerij`, en per oefening 8 momenten via de knop *Houdingen*
+     (of `cd tools/e2e && node poses.mjs <id>`);
+   - de stem: speel een workout af met de nieuwe oefening.
+
+### Teksten, kleuren en logo
+- **Boodschappen na afloop**: `src/data/messages.ts` (per soort een lijst varianten; `{naam}`, `{tijd}` enz. worden
+  ingevuld).
+- **Thema's/kleuren**: `src/styles/themes.css`. `npm test` controleert het contrast (leesbaarheid) van de
+  belangrijkste kleuren.
+- **Naam van de app**: `src/config.ts`, `vite.config.ts` (manifest) en `index.html`.
+- **Logo/app-icoon**: `public/logo.svg` (volledig gevuld vierkant, inhoud binnen een cirkel met straal 205 rond het
+  midden). Alle icoonformaten (ook Android maskable en favicon) ontstaan vanzelf bij `npm run build`. Daarna de
+  iPhone-opstartschermen opnieuw maken: `node tools/splash.mjs`.
+- **Handleiding**: tekst in `src/screens/manual/Manual.tsx`; daarna de pdf opnieuw maken met de ontwikkelserver aan:
+  `node tools/manual-pdf.mjs` (schrijft `public/handleiding.pdf`).
+
+### Opgeslagen gegevens
+Alles staat in `localStorage` (workouts, instellingen, geschiedenis) en IndexedDB (eigen foto's), met een
+schemaversie in `src/storage/data.ts`. Verander je de vorm van opgeslagen gegevens, verhoog dan `SCHEMA_VERSION` en
+voeg een stap toe in `migrate()`, zodat bestaande workouts nooit kapotgaan.
+
+---
+
+## 4. Voor ontwikkelaars
 
 ```bash
 npm install      # eenmalig
-npm run dev      # ontwikkelserver op http://localhost:5173/intervalfit/
-npm test         # automatische tests
-npm run build    # productieversie in dist/
-npm run preview  # productieversie lokaal bekijken
+npm run dev      # ontwikkelserver (poort 5183 via .claude/launch.json)
+npm test         # unit-tests (Vitest)
+npm run build    # productieversie in dist/ (tsc + vite build)
+npm run preview  # productieversie lokaal
 ```
 
-- **Testen in een gewone browser (ook op de computer):** open de app met `?dev=1`, bijvoorbeeld
-  `http://localhost:5173/intervalfit/?dev=1`. De keuze wordt onthouden; zet hem uit met `?dev=0`.
-  Linksonder staat dan een klein "dev"-label.
-- **Galerij met alle animaties:** `…/intervalfit/?dev=1#/galerij` (ook op de telefoon). Met de knop *Houdingen*
-  zie je per oefening 8 momenten uit de beweging.
-- De oefeningenbibliotheek staat in één bestand: `src/data/exercises.ts`. De animaties staan in
-  `src/figure/animations.ts`; een oefening zonder animatie krijgt vanzelf een letter-tegel.
-- De naam van de app staat in `src/config.ts`, `vite.config.ts` en `index.html`.
-- Het app-icoon wordt gemaakt uit `public/logo.svg` (configuratie in `pwa-assets.config.ts`).
-- Het volledige plan en de gemaakte keuzes staan in `PLAN.md`.
+**Ontwikkelaarsmodus** (verborgen voor gewone gebruikers)
+- In een browser: open de app met `?dev=1` (uit met `?dev=0`); de keuze wordt onthouden. Linksonder staat dan "dev".
+- In de geïnstalleerde app: **7× snel op het logo** op Home tikken (nog eens 7× = uit).
+- Dan verschijnt op Home een geel blok met: test-workout (3× 10 s, 2 rondes), **Galerij** en **Nep-geschiedenis**
+  (scenario's voor mijlpalen, en een workout nep-afronden; de echte geschiedenis wordt bewaard en is terug te zetten).
+- Zonder ontwikkelaarsmodus geeft `#/galerij` "Niet gevonden".
+
+**Browsertests** (`tools/e2e/`, puppeteer-core + lokale Chrome): `cd tools/e2e && node <script>.mjs [basis-url]`.
+Belangrijkste: `walkthrough.mjs` (rondgang als nieuwe gebruiker + controle op zichtbare ontwikkelaarsfuncties),
+`summary-test.mjs`, `library-test.mjs`, `player-test.mjs`, `layout-test.mjs`, `share-test.mjs`, `backup-test.mjs`,
+`bg-test.mjs`, `pwa-check.mjs` (installeerbaarheid + offline starten). Zie `CLAUDE.md` voor de volledige lijst.
+
+**Mappen**
+```
+src/
+  data/       oefeningen, voorbeeldworkouts, boodschappen, nep-geschiedenis (dev)
+  model/      types, tijdlijn, calorieën, reeks/statistiek, opmaak
+  engine/     tijdmotor, geluid, spraak, scherm-aan, platformherkenning, confetti
+  figure/     het figuurtje (skelet, animaties, tekenen)
+  storage/    opslag, geschiedenis, foto's, back-up, delen
+  screens/    Home, editor, speler, overzicht, voortgang, instellingen, handleiding, delen, installatiescherm
+  components/ knoppen, panelen, pictogrammen, …
+  styles/     thema's en opmaak
+tools/        splash.mjs, manual-pdf.mjs, e2e/ (browsertests)
+design/icon/  ontwerpstudies voor het icoon + beginscherm-voorbeeld
+```
+
+Het volledige plan, alle besluiten en de status staan in **`PLAN.md`**; werkafspraken voor Claude in **`CLAUDE.md`**.

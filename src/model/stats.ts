@@ -117,7 +117,10 @@ export function favoriteExercise(entries: HistoryEntry[]): { key: string; name: 
   return best;
 }
 
-/** Telt een (gestopte) workout mee? Afgerond altijd; gestopt vanaf 1 minuut. */
-export function countsForHistory(completed: boolean, activeSec: number): boolean {
-  return completed || activeSec >= 60;
+/**
+ * Telt een workout mee? Vanaf 1 minuut altijd (ook gestopt). Korter alleen als hij is afgerond
+ * en minstens de helft van de geplande tijd echt gedaan is (dus niet: alles doorgespoeld).
+ */
+export function countsForHistory(completed: boolean, activeSec: number, plannedSec = 0): boolean {
+  return activeSec >= 60 || (completed && activeSec >= plannedSec / 2);
 }

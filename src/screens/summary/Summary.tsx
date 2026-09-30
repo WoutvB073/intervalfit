@@ -4,7 +4,7 @@ import { useStore } from '../../storage/store';
 import { getWorkout, historyStore } from '../../storage/data';
 import { clearFresh, isFresh } from '../../storage/history';
 import { currentStreak } from '../../model/stats';
-import { formatClock } from '../../model/format';
+import { formatClock, formatDay } from '../../model/format';
 import { DEV_WORKOUT_ID } from '../../data/devWorkout';
 import { goBack, navigate } from '../../router';
 import { Button, IconButton } from '../../components/Button';
@@ -229,18 +229,4 @@ function useCountUp(target: number, animate: boolean): number {
     return () => cancelAnimationFrame(raf);
   }, [target, animate]);
   return v;
-}
-
-const DAYS = ['zondag', 'maandag', 'dinsdag', 'woensdag', 'donderdag', 'vrijdag', 'zaterdag'];
-const MONTHS = ['januari', 'februari', 'maart', 'april', 'mei', 'juni', 'juli', 'augustus', 'september', 'oktober', 'november', 'december'];
-
-/** "Vandaag", "Gisteren" of "maandag 28 september". */
-export function formatDay(d: Date, now = new Date()): string {
-  const a = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
-  const b = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-  const diff = Math.round((b - a) / 86_400_000);
-  if (diff === 0) return 'Vandaag';
-  if (diff === 1) return 'Gisteren';
-  const s = `${DAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`;
-  return d.getFullYear() === now.getFullYear() ? s : `${s} ${d.getFullYear()}`;
 }

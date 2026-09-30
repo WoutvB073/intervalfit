@@ -4,7 +4,8 @@ import { estimateKcal } from '../model/calories';
 import { countsForHistory } from '../model/stats';
 import { composeSummary } from '../data/messages';
 import { newId } from '../model/id';
-import { historyStore, settingsStore } from './data';
+import { totalDurationSec } from '../model/timeline';
+import { appStateStore, historyStore, settingsStore } from './data';
 
 export type FinishedWorkout = {
   workout: Workout;
@@ -42,14 +43,16 @@ export function buildEntry(f: FinishedWorkout, previous: HistoryEntry[], opts: {
 }
 
 /**
- * Bewaart een afgeronde (of gestopte) workout. Gestopt onder 1 minuut telt niet mee: dan `null`.
+ * Bewaart een afgeronde (of gestopte) workout. Telt hij niet mee (zie countsForHistory), dan `null`.
  */
 export function recordWorkout(f: FinishedWorkout): HistoryEntry | null {
-  if (!countsForHistory(f.completed, f.activeSec)) return null;
+  if (!countsForHistory(f.completed, f.activeSec, totalDurationSec(f.workout))) return null;
   const settings = settingsStore.get();
   const previous = historyStore.get();
   const entry = buildEntry(f, previous, { weightKg: settings.weightKg, name: settings.name });
   historyStore.set((list) => [...list, entry].sort((a, b) => a.date.localeCompare(b.date)));
+  // Na de eerste workout is het welkomstkaartje niet meer nodig.
+  if (!appStateStore.get().welcomeDismissed) appStateStore.set((s) => ({ ...s, welcomeDismissed: true }));
   freshId = entry.id;
   return entry;
 }

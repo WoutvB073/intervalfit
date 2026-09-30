@@ -40,7 +40,7 @@ export function ShareSheet({ workout, onClose }: { workout: Workout | null; onCl
     <Sheet open={!!workout} onClose={onClose} title="Workout delen">
       {workout && (
         <div className="share-sheet">
-          <p className="share-sheet__intro">Dit bericht wordt verstuurd. Wie de link opent, kan de workout in zijn eigen app zetten.</p>
+          <p className="share-sheet__intro">Dit bericht wordt verstuurd. Wie de link opent, kan de workout zo in IntervalFit zetten.</p>
           <div className="share-sheet__message">{message}</div>
           {hasPhotos && (
             <p className="notice notice--warn">Eigen foto's gaan niet mee (te groot voor een link). De ander ziet de standaardfiguurtjes.</p>

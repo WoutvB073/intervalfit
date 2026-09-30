@@ -46,5 +46,7 @@ export default defineConfig({
   test: {
     environment: 'node',
     include: ['tests/**/*.test.ts'],
+    // themes.css echt inlezen (voor de contrasttest); andere CSS blijft leeg in tests.
+    css: { include: [/themes\.css/] },
   },
 });

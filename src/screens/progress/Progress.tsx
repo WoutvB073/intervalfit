@@ -4,12 +4,11 @@ import { useStore } from '../../storage/store';
 import { historyStore } from '../../storage/data';
 import { currentStreak, entriesThisWeek, favoriteExercise, longestStreak, totals } from '../../model/stats';
 import { durationText } from '../../data/messages';
-import { formatTotal, plural } from '../../model/format';
+import { formatDay, formatTrained, plural } from '../../model/format';
 import { goBack, navigate } from '../../router';
 import { IconButton, Button } from '../../components/Button';
 import { Icon } from '../../components/Icon';
 import { WeekDots } from '../../components/WeekDots';
-import { formatDay } from '../summary/Summary';
 
 const PAGE = 20;
 
@@ -66,7 +65,7 @@ export function Progress() {
               <span className="summary-tile__label">
                 <Icon name="clock" size={16} /> Getraind
               </span>
-              <span className="summary-tile__value">{formatTotal(all.totalSec)}</span>
+              <span className="summary-tile__value">{formatTrained(all.totalSec)}</span>
             </div>
             <div className="summary-tile">
               <span className="summary-tile__label">
@@ -127,7 +126,7 @@ function HistoryRow({ entry }: { entry: HistoryEntry }) {
         <span className="history-row__main">
           <strong>{entry.workoutName}</strong>
           <small>
-            {formatDay(d)}, {time} · {formatTotal(entry.totalSec)} · ≈ {entry.kcal} kcal
+            {formatDay(d)}, {time} · {formatTrained(entry.totalSec)} · ≈ {entry.kcal} kcal
             {!entry.completed && ' · eerder gestopt'}
           </small>
         </span>

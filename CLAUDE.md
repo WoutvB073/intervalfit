@@ -18,9 +18,15 @@ Persoonlijke interval/tabata-PWA (Vite + React + TS) voor de moeder van de gebru
 ## Testen
 - Unit-tests in `tests/` (tijdlijn, tijdmotor, geluids-/spraakplanning, delen, figuren, bibliotheek, geschiedenis/reeks/calorieën/boodschappen).
 - Browsertests in `tools/e2e/` (puppeteer-core + lokale Chrome): `cd tools/e2e && node <script>.mjs [basis-url]`. Standaard `http://localhost:5183/intervalfit/`; geef de live-URL mee om online te controleren.
-  - `library-test.mjs` (materiaalfilter/-labels, zoeken; screenshots bibliotheek `lib-*.png` en galerij met de nieuwe oefeningen `gal-*.png` per thema), `summary-test.mjs` (stap 6: speler → overzicht, gestopt < 1 min, mijlpalen via nep-geschiedenis, 4 thema's, 6 formaten, naamveld; screenshots `sum-*.png`), `layout-test.mjs` (speler: 5 formaten × 5 fases, overlap-check), `instr-test.mjs` (uitleg niet afgekapt: 40 oefeningen × 5 formaten × 4 thema's), `theme-shots.mjs` (per thema Home/editor/speler), `share-test.mjs` (delen/importeren end-to-end), `backup-test.mjs`, `player-test.mjs` (geluid/spraak-logboek `window.__cueLog`), `bg-test.mjs` (wegschakelen → automatisch pauzeren), `poses.mjs` + `sheet.cjs` (8 momenten per animatie), `matrix.mjs` (installatiescherm per toestel/browser).
+  - `walkthrough.mjs` (rondgang als nieuwe gebruiker zonder dev-modus, 23 screenshots `wt-*.png`, meldt zichtbare ontwikkelaarsfuncties), `pwa-check.mjs` (installeerbaarheid volgens Chrome, manifest, offline starten; tegen `npm run preview` op poort 4183 = launch-config `intervalfit-preview`), `library-test.mjs` (materiaalfilter/-labels, zoeken; screenshots bibliotheek `lib-*.png` en galerij met de nieuwe oefeningen `gal-*.png` per thema), `summary-test.mjs` (stap 6: speler → overzicht, gestopt < 1 min, mijlpalen via nep-geschiedenis, 4 thema's, 6 formaten, naamveld; screenshots `sum-*.png`), `layout-test.mjs` (speler: 5 formaten × 5 fases, overlap-check), `instr-test.mjs` (uitleg niet afgekapt: 40 oefeningen × 5 formaten × 4 thema's), `theme-shots.mjs` (per thema Home/editor/speler), `share-test.mjs` (delen/importeren end-to-end), `backup-test.mjs`, `player-test.mjs` (geluid/spraak-logboek `window.__cueLog`), `bg-test.mjs` (wegschakelen → automatisch pauzeren), `poses.mjs` + `sheet.cjs` (8 momenten per animatie), `matrix.mjs` (installatiescherm per toestel/browser).
 - Formaten: iPhone SE 375×667, iPhone 14 390×844, groot Android 412×915, liggend 844×390 / 915×412.
 - Wat niet automatisch kan (echt geluid, stem, stil-knop, deelmenu, WhatsApp): in de testlijst voor de gebruiker zetten.
+
+## Hulpscripts
+- `node tools/splash.mjs` – iPhone-opstartschermen uit `public/logo.svg` (na een logowijziging).
+- `node tools/manual-pdf.mjs` – `public/handleiding.pdf` uit `#/handleiding` (dev-server aan; na een tekstwijziging).
+- `tools/e2e/combine.cjs` – screenshots naast elkaar; `tools/e2e/icon-shots.mjs` – icoon op een nagemaakt iPhone-beginscherm.
+- Lighthouse: `npx -y lighthouse@12 <url> --only-categories=performance,accessibility,best-practices,seo` (met `CHROME_PATH`); in de browser alleen het installatiescherm, dus voor de app zelf `?dev=1`.
 
 ## Valkuilen
 - De ingebouwde browser-pane maakt verkeerde uitsneden bij scrollen → screenshots via puppeteer-scripts.
@@ -30,4 +36,7 @@ Persoonlijke interval/tabata-PWA (Vite + React + TS) voor de moeder van de gebru
 - Workbox: manifest niet dubbel in `globPatterns` (anders geen precache/offline).
 - iOS: audio/spraak/wake-lock alleen na een tik (`prepareWorkoutMedia()` synchroon in de klikhandler); geen geluid bij vergrendeld scherm; installed app heeft eigen opslag (los van Safari). Deelmenu voor bestanden moet direct in de tik → back-upbestand vooraf maken.
 - Figuren: gestrekte ledematen 71,9 (been) / 51,5 (arm), anders zichtbare knik; voeten met `footAbs` plat houden; `npm test` bevat animatie-checks. Beweging die een boog volgt (curls, chin-ups): veel frames met `ease: 'linear'` en zelf berekende versnelling, anders drijft de elleboog weg. Armen die via een hoek lopen (bv. V-ups): hoek zo kiezen dat ze niet door de vloer draaien (-265 i.p.v. 95). Vooraanzicht aan de stang: `order: 'hang'` (hoofd vóór de armranden).
+- Schermen worden lui geladen (`React.lazy`): in browsertests op een selector wachten (`waitForSelector`) in plaats van vaste pauzes.
+- Een workout laten aflopen in tests: niet overslaan (telt niet mee), maar `Date.now` versnellen via `evaluateOnNewDocument` (zie `summary-test.mjs`).
+- Vitest laadt CSS leeg; alleen `themes.css` wordt echt ingelezen (`test.css.include` in `vite.config.ts`) voor de contrasttest.
 - Voorbeeldworkouts worden alleen bij de allereerste start aangemaakt (`migrate()`); opslag heeft een schemaversie — bij wijziging een migratiestap toevoegen.

@@ -1,17 +1,21 @@
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import { useRoute } from './router';
 import { useStore } from './storage/store';
 import { settingsStore } from './storage/data';
 import { applyTheme } from './styles/theme';
 import { Home } from './screens/Home';
 import { Placeholder } from './screens/Placeholder';
-import { Gallery } from './screens/Gallery';
-import { Editor } from './screens/editor/Editor';
 import { Player } from './screens/player/Player';
-import { Settings } from './screens/settings/Settings';
-import { SharePreview } from './screens/share/SharePreview';
-import { Summary } from './screens/summary/Summary';
-import { Progress } from './screens/progress/Progress';
+
+// Schermen die niet direct bij het opstarten nodig zijn, apart laden (sneller starten op trage telefoons).
+// Ze staan wel in de offline-cache, dus ook zonder internet openen ze direct.
+const Gallery = lazy(() => import('./screens/Gallery').then((m) => ({ default: m.Gallery })));
+const Editor = lazy(() => import('./screens/editor/Editor').then((m) => ({ default: m.Editor })));
+const Settings = lazy(() => import('./screens/settings/Settings').then((m) => ({ default: m.Settings })));
+const SharePreview = lazy(() => import('./screens/share/SharePreview').then((m) => ({ default: m.SharePreview })));
+const Summary = lazy(() => import('./screens/summary/Summary').then((m) => ({ default: m.Summary })));
+const Progress = lazy(() => import('./screens/progress/Progress').then((m) => ({ default: m.Progress })));
+const Manual = lazy(() => import('./screens/manual/Manual').then((m) => ({ default: m.Manual })));
 import { InstallScreen } from './screens/gate/InstallScreen';
 import { DesktopScreen } from './screens/gate/DesktopScreen';
 import { ToastHost, showToast } from './components/Toast';
@@ -73,6 +77,9 @@ function AppRoutes({ devMode }: { devMode: boolean }) {
     case 'summary':
       screen = <Summary id={route.id} devMode={devMode} />;
       break;
+    case 'manual':
+      screen = <Manual />;
+      break;
     case 'progress':
       screen = <Progress />;
       break;
@@ -80,7 +87,8 @@ function AppRoutes({ devMode }: { devMode: boolean }) {
       screen = <Settings />;
       break;
     case 'gallery':
-      screen = <Gallery poses={route.poses} />;
+      // Alleen voor ontwikkelaars; gewone gebruikers zien hier 'niet gevonden'.
+      screen = devMode ? <Gallery poses={route.poses} /> : <Placeholder title="Oeps" text="Deze pagina bestaat niet." />;
       break;
     case 'share':
       screen = <SharePreview code={route.code} />;
@@ -91,7 +99,7 @@ function AppRoutes({ devMode }: { devMode: boolean }) {
 
   return (
     <div key={route.name} className="route">
-      {screen}
+      <Suspense fallback={null}>{screen}</Suspense>
     </div>
   );
 }

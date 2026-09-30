@@ -80,13 +80,15 @@ for (const theme of THEMES) {
 
   // Galerij: alleen de nieuwe oefeningen (stilstaand beeld per kaart)
   await page.goto(`${BASE}?dev=1&r=${n++}#/galerij`, { waitUntil: 'load' });
-  await sleep(600);
+  await page.waitForSelector('.gallery-card');
+  await sleep(300);
   await page.setViewport({ width: 900, height: 1100, deviceScaleFactor: 1 });
   await page.evaluate((keep) => {
     document.querySelectorAll('.gallery-card').forEach((c) => {
       c.style.display = keep.includes(c.querySelector('.gallery-card__name').textContent) ? '' : 'none';
     });
-    document.querySelector('.chips').style.display = 'none';
+    const chips = document.querySelector('.gallery .chips');
+    if (chips) chips.style.display = 'none';
   }, NEW_NAMES);
   await sleep(1300);
   await page.screenshot({ path: `gal-${theme}.png`, fullPage: true });
