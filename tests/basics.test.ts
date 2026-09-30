@@ -44,6 +44,7 @@ describe('oefeningenbibliotheek', () => {
     for (const e of EXERCISES) {
       expect(cats.has(e.category), e.id).toBe(true);
       expect(e.instruction.length, e.id).toBeGreaterThan(20);
+      expect(e.instruction.length, `te lange instructie: ${e.id}`).toBeLessThanOrEqual(60);
       expect(e.met, e.id).toBeGreaterThan(1);
       expect(e.aliases.length, e.id).toBeGreaterThan(0);
     }

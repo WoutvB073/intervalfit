@@ -16,6 +16,7 @@ import { ExerciseVisual } from '../../components/ExerciseThumb';
 import { mediaPrepared, prepareWorkoutMedia } from '../../engine/media';
 import { Placeholder } from '../Placeholder';
 import { usePlayer } from './usePlayer';
+import { FitText } from './FitText';
 
 /** Welke kant (links/rechts) hoort bij deze oefening? */
 function sideOf(e: { libraryId?: string; name: string }): 'links' | 'rechts' | null {
@@ -35,7 +36,7 @@ export function Player({ id, devMode }: { id: string; devMode: boolean }) {
 
 function PlayerView({ workout, devMode }: { workout: Workout; devMode: boolean }) {
   const settings = useStore(settingsStore);
-  const { phases, session, snap, controls, needsTap, setNeedsTap, onFrame, awaySec, clearAway } = usePlayer(workout, settings, devMode);
+  const { phases, session, snap, controls, needsTap, setNeedsTap, onFrame, pauseReason } = usePlayer(workout, settings, devMode);
   const [showTips, setShowTips] = useState(() => !appStateStore.get().playerTipsSeen);
   const [confirmStop, setConfirmStop] = useState(false);
   const [wasRunning, setWasRunning] = useState(false);
@@ -45,13 +46,6 @@ function PlayerView({ workout, devMode }: { workout: Workout; devMode: boolean }
   useEffect(() => {
     if (!startTap && !showTips && snap.status === 'ready') controls.start();
   }, [startTap, showTips, snap.status, controls]);
-
-  // Melding na terugkomen verdwijnt vanzelf na 8 seconden.
-  useEffect(() => {
-    if (awaySec === null) return;
-    const t = setTimeout(clearAway, 8000);
-    return () => clearTimeout(t);
-  }, [awaySec, clearAway]);
 
   const running = snap.status === 'running';
   const paused = snap.status === 'paused';
@@ -141,7 +135,8 @@ function PlayerView({ workout, devMode }: { workout: Workout; devMode: boolean }
           </div>
         </div>
 
-        {!isWork && lib && <p className="player__instruction">{lib.instruction}</p>}
+        {/* Korte uitleg tijdens aftellen en rust (eigen oefeningen hebben er geen). */}
+        {!isWork && lib && <FitText className="player__instruction" text={lib.instruction} />}
       </div>
 
       <footer className="player__controls">
@@ -164,6 +159,7 @@ function PlayerView({ workout, devMode }: { workout: Workout; devMode: boolean }
       {paused && !confirmStop && (
         <div className="player__pause" onClick={controls.resume}>
           <p className="player__pause-title">Gepauzeerd</p>
+          {pauseReason === 'left' && <p className="player__pause-reason">Gepauzeerd omdat je de app verliet.</p>}
           <Button variant="primary" size="lg" icon="play" className="player__pause-btn" onClick={controls.resume}>
             Verder
           </Button>
@@ -180,26 +176,6 @@ function PlayerView({ workout, devMode }: { workout: Workout; devMode: boolean }
         </div>
       )}
 
-      {awaySec !== null && running && (
-        <div className="player__notice" role="status">
-          <p>De workout is doorgelopen terwijl je weg was ({formatActive(awaySec)}).</p>
-          <Button
-            variant="primary"
-            icon="pause"
-            onClick={() => {
-              controls.pause();
-              clearAway();
-            }}
-          >
-            Pauzeren
-          </Button>
-          <Button variant="ghost" onClick={clearAway}>
-            Doorgaan
-          </Button>
-
-        </div>
-      )}
-
       {showTips && (
         <div className="player__tips" role="dialog" aria-modal="true" aria-labelledby="tips-title">
           <div className="player__tips-card">
@@ -210,8 +186,8 @@ function PlayerView({ workout, devMode }: { workout: Workout; devMode: boolean }
                   <Icon name="phone" size={24} />
                 </span>
                 <span>
-                  Vergrendel je telefoon niet tijdens een workout, anders hoor je de geluiden niet. Het scherm blijft
-                  vanzelf aan.
+                  Het scherm blijft vanzelf aan. Vergrendel je je telefoon of open je een andere app, dan pauzeert de
+                  workout vanzelf.
                 </span>
               </li>
               {isIOS && (

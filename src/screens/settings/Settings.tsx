@@ -170,8 +170,8 @@ export function Settings() {
             <details>
               <summary>Mag ik mijn telefoon vergrendelen tijdens een workout?</summary>
               <p>
-                Liever niet: dan hoor je geen geluiden. De workout loopt wel door en de tijd klopt als je terugkomt. Het scherm blijft
-                tijdens een workout vanzelf aan.
+                Dat hoeft niet: het scherm blijft tijdens een workout vanzelf aan. Vergrendel je toch je telefoon of open je een
+                andere app, dan pauzeert de workout vanzelf. Tik daarna op <strong>Verder</strong>.
               </p>
             </details>
             <details>

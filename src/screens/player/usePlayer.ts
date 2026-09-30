@@ -48,9 +48,8 @@ export function usePlayer(workout: Workout, settings: Settings, debug: boolean) 
 
   const [snap, setSnap] = useState<PlayerSnapshot>({ status: 'ready', index: 0, secLeft: Math.ceil(phases[0]?.durationSec ?? 0) });
   const [needsTap, setNeedsTap] = useState(false);
-  /** Hoe lang de app weg was (s) als de workout intussen doorliep; null = geen melding. */
-  const [awaySec, setAwaySec] = useState<number | null>(null);
-  const hiddenAt = useRef(0);
+  /** Waarom de workout gepauzeerd is: 'left' = automatisch, omdat de app werd verlaten. */
+  const [pauseReason, setPauseReason] = useState<'left' | null>(null);
   const spoken = useRef(new Set<string>());
   const frameListeners = useRef(new Set<() => void>());
   const finishTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -160,15 +159,15 @@ export function usePlayer(workout: Workout, settings: Settings, debug: boolean) 
   useEffect(() => {
     const onVis = () => {
       if (document.visibilityState === 'hidden') {
-        if (session.status === 'running' && !hiddenAt.current) hiddenAt.current = Date.now();
+        // App verlaten, telefoon vergrendeld of een telefoontje: automatisch pauzeren.
+        if (session.status === 'running') {
+          session.pause();
+          setPauseReason('left');
+          log({ type: 'cancel', what: 'automatisch gepauzeerd' });
+        }
         cancelPlanned('verborgen');
+        refresh();
         return;
-      }
-      // Terug na vergrendelen of een andere app: laten weten dat de workout is doorgelopen.
-      if (hiddenAt.current) {
-        const away = (Date.now() - hiddenAt.current) / 1000;
-        hiddenAt.current = 0;
-        if (away > 2 && session.status === 'running') setAwaySec(Math.round(away));
       }
       void audio.resume().then((ok) => {
         if (!ok && (sound.beeps || sound.whistle) && session.status === 'running') setNeedsTap(true);
@@ -177,11 +176,13 @@ export function usePlayer(workout: Workout, settings: Settings, debug: boolean) 
     };
     document.addEventListener('visibilitychange', onVis);
     window.addEventListener('pageshow', onVis);
+    window.addEventListener('pagehide', onVis);
     return () => {
       document.removeEventListener('visibilitychange', onVis);
       window.removeEventListener('pageshow', onVis);
+      window.removeEventListener('pagehide', onVis);
     };
-  }, [cancelPlanned, tick, session, sound.beeps, sound.whistle]);
+  }, [cancelPlanned, tick, refresh, session, sound.beeps, sound.whistle]);
 
   // Geluid onderbroken (bv. door een telefoontje) terwijl de app zichtbaar is: om een tik vragen.
   useEffect(() => {
@@ -214,11 +215,16 @@ export function usePlayer(workout: Workout, settings: Settings, debug: boolean) 
         tick();
       },
       pause() {
+        setPauseReason(null);
         session.pause();
         cancelPlanned('pauze');
         refresh();
       },
       resume() {
+        setPauseReason(null);
+        // De tik op Verder is een gebruikersactie: geluid en scherm-aan meteen weer activeren.
+        void audio.resume();
+        keepAwake.start();
         session.resume();
         tick();
       },
@@ -262,5 +268,5 @@ export function usePlayer(workout: Workout, settings: Settings, debug: boolean) 
     };
   }, []);
 
-  return { phases, session, snap, controls, needsTap, setNeedsTap, onFrame, awaySec, clearAway: () => setAwaySec(null) };
+  return { phases, session, snap, controls, needsTap, setNeedsTap, onFrame, pauseReason };
 }
