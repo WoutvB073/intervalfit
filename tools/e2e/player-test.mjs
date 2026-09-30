@@ -20,7 +20,7 @@ await page.goto(`${BASE}?dev=1`, { waitUntil: 'networkidle0' });
 await page.evaluate(() => {
   localStorage.clear();
   localStorage.setItem('intervalfit.dev', '1');
-  localStorage.setItem('intervalfit.app', JSON.stringify({ welcomeDismissed: true }));
+  localStorage.setItem('intervalfit.app', JSON.stringify({ welcomeDismissed: true, playerTipsSeen: true }));
 });
 await page.reload({ waitUntil: 'networkidle0' });
 
@@ -82,6 +82,8 @@ await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 2, isMobile
 await waitFor((p) => p.status === 'finished', 120000);
 await sleep(2500);
 await page.screenshot({ path: 'pl-done.png' });
+const summary = await page.evaluate(() => ({ hash: location.hash, headline: document.querySelector('.summary__headline')?.textContent, history: JSON.parse(localStorage.getItem('intervalfit.history') || '[]').length }));
+console.log('overzicht:', JSON.stringify(summary));
 
 const log = await page.evaluate(() => window.__cueLog);
 const phases = await page.evaluate(() => window.__player.session.phases.map((p) => ({ type: p.type, d: p.durationSec, name: p.exercise.name })));

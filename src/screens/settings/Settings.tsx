@@ -123,10 +123,35 @@ export function Settings() {
           </div>
         </section>
 
-        {/* ── Gewicht ── */}
+        {/* ── Over jou: naam en gewicht ── */}
         <section className="settings-group" aria-labelledby="set-weight">
-          <h2 id="set-weight">Lichaamsgewicht</h2>
+          <h2 id="set-weight">Over jou</h2>
           <div className="card settings-card">
+            <label className="settings-row settings-row--field">
+              <span className="settings-row__text">
+                <span className="settings-row__label">Je naam</span>
+                <span className="settings-row__hint">Voor persoonlijke berichten na je workout. Mag leeg blijven.</span>
+              </span>
+              <input
+                className="field__input settings-name"
+                type="text"
+                value={settings.name ?? ''}
+                placeholder="Voornaam"
+                maxLength={30}
+                autoComplete="given-name"
+                autoCapitalize="words"
+                enterKeyHint="done"
+                onChange={(e) => update({ name: e.target.value })}
+                onBlur={(e) => {
+                  const v = e.target.value.trim();
+                  if (v) update({ name: v });
+                  else settingsStore.set(({ name: _drop, ...rest }) => rest);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') e.currentTarget.blur();
+                }}
+              />
+            </label>
             <SwitchRow
               label="Mijn gewicht invullen"
               hint="Alleen voor het schatten van verbrande calorieën. Zonder gewicht rekenen we met 70 kg."

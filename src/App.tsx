@@ -10,6 +10,8 @@ import { Editor } from './screens/editor/Editor';
 import { Player } from './screens/player/Player';
 import { Settings } from './screens/settings/Settings';
 import { SharePreview } from './screens/share/SharePreview';
+import { Summary } from './screens/summary/Summary';
+import { Progress } from './screens/progress/Progress';
 import { InstallScreen } from './screens/gate/InstallScreen';
 import { DesktopScreen } from './screens/gate/DesktopScreen';
 import { ToastHost, showToast } from './components/Toast';
@@ -69,7 +71,10 @@ function AppRoutes({ devMode }: { devMode: boolean }) {
       screen = <Player id={route.id} devMode={devMode} />;
       break;
     case 'summary':
-      screen = <Placeholder title="Goed gedaan!" step={6} />;
+      screen = <Summary id={route.id} devMode={devMode} />;
+      break;
+    case 'progress':
+      screen = <Progress />;
       break;
     case 'settings':
       screen = <Settings />;

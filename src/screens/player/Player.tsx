@@ -7,11 +7,13 @@ import { isIOS } from '../../engine/platform';
 import { createDevWorkout, DEV_WORKOUT_ID } from '../../data/devWorkout';
 import { getExercise } from '../../data/exercises';
 import { formatClock, formatShort } from '../../model/format';
-import { goBack } from '../../router';
+import { goBack, navigate } from '../../router';
 import { Icon } from '../../components/Icon';
 import { Button } from '../../components/Button';
 import { ConfirmDialog } from '../../components/Sheet';
-import { useOverlay } from '../../components/overlay';
+import { leaveOverlays, useOverlay } from '../../components/overlay';
+import { showToast } from '../../components/Toast';
+import { recordWorkout } from '../../storage/history';
 import { ExerciseVisual } from '../../components/ExerciseThumb';
 import { mediaPrepared, prepareWorkoutMedia } from '../../engine/media';
 import { Placeholder } from '../Placeholder';
@@ -73,9 +75,31 @@ function PlayerView({ workout, devMode }: { workout: Workout; devMode: boolean }
     };
   }, [phase, finished]);
 
-  if (finished) {
-    return <FinishedView workout={workout} activeSec={session.activeSec()} workSec={session.totalWorkSec()} />;
-  }
+  // Klaar of gestopt: bewaren in de geschiedenis en door naar het overzicht.
+  // Gestopt onder 1 minuut telt niet mee: dan terug naar Home met een korte melding.
+  const recorded = useRef(false);
+  useEffect(() => {
+    if (!finished || recorded.current) return;
+    recorded.current = true;
+    const entry = recordWorkout({
+      workout,
+      activeSec: session.activeSec(),
+      workStats: session.workStats(),
+      completed: !session.stoppedEarly,
+      roundsDone: session.roundsReached(),
+    });
+    // Eerst de terugknop-bewaking uit de geschiedenis halen, dan het spelerscherm vervangen:
+    // zo gaat "terug" vanaf het overzicht naar Home en niet naar de speler.
+    leaveOverlays(() => {
+      if (entry) navigate(`/klaar/${entry.id}`, { replace: true });
+      else {
+        goBack();
+        showToast('Workout gestopt. Workouts korter dan 1 minuut tellen niet mee.');
+      }
+    });
+  }, [finished, workout, session]);
+
+  if (finished) return <div className="player player--done" />;
   if (!phase) return null;
 
   const total = phases.length;
@@ -250,7 +274,11 @@ function PlayerView({ workout, devMode }: { workout: Workout; devMode: boolean }
       <ConfirmDialog
         open={confirmStop}
         title="Workout stoppen?"
-        message={`Je hebt ${formatActive(session.activeSec())} getraind.`}
+        message={
+          session.activeSec() < 60
+            ? `Je hebt ${formatActive(session.activeSec())} getraind. Workouts korter dan 1 minuut tellen niet mee.`
+            : `Je hebt ${formatActive(session.activeSec())} getraind. Dat telt gewoon mee!`
+        }
         cancelLabel="Doorgaan"
         confirmLabel="Stoppen"
         danger
@@ -335,24 +363,6 @@ function OverallProgress({ phases, session, onFrame }: { phases: Phase[]; sessio
   return (
     <div className="player__progress" aria-hidden="true">
       <div ref={ref} className="player__progress-fill" />
-    </div>
-  );
-}
-
-/** Tijdelijk eindscherm (het feestelijke overzicht komt in stap 6). */
-function FinishedView({ workout, activeSec, workSec }: { workout: Workout; activeSec: number; workSec: number }) {
-  return (
-    <div className="player player--done">
-      <div className="player__done">
-        <div className="player__done-icon">🎉</div>
-        <h1 className="player__label">Klaar!</h1>
-        <p className="player__done-text">
-          {workout.name}: {formatActive(activeSec)} getraind, waarvan {formatActive(workSec)} werk.
-        </p>
-        <Button variant="secondary" size="lg" icon="home" onClick={() => goBack()}>
-          Naar Home
-        </Button>
-      </div>
     </div>
   );
 }

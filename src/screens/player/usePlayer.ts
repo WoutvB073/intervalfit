@@ -85,14 +85,16 @@ export function usePlayer(workout: Workout, settings: Settings, debug: boolean) 
       if (!late) {
         vibrate(HAPTIC.finish);
         if (sound.voice) {
+          const name = settings.name?.trim();
+          const text = name ? `Goed gedaan, ${name}! Je workout is klaar.` : FINISH_TEXT;
           finishTimer.current = setTimeout(() => {
-            speech.speak(FINISH_TEXT, sound.volume);
-            log({ type: 'speak', what: FINISH_TEXT });
+            speech.speak(text, sound.volume);
+            log({ type: 'speak', what: text });
           }, 2100); // na de slotmelodie
         }
       }
     },
-    [sound.voice, sound.volume],
+    [sound.voice, sound.volume, settings.name],
   );
 
   const tick = useCallback(() => {
@@ -198,14 +200,19 @@ export function usePlayer(workout: Workout, settings: Settings, debug: boolean) 
   // Opruimen bij verlaten.
   useEffect(
     () => () => {
+      keepAwake.stop();
+      if (session.status === 'finished' && !session.stoppedEarly) {
+        // Helemaal klaar: slotmelodie en "Goed gedaan!" laten uitklinken op het overzicht.
+        setTimeout(() => audio.setAlwaysAudible(false), 6000);
+        return;
+      }
       clearTimeout(finishTimer.current);
       audio.cancelAll();
       speech.cancel();
-      keepAwake.stop();
       // "Altijd laten klinken" weer uit, zodat muziek van andere apps verder kan.
       audio.setAlwaysAudible(false);
     },
-    [],
+    [session],
   );
 
   const controls = useMemo(

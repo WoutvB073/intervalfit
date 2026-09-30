@@ -16,9 +16,9 @@ Persoonlijke interval/tabata-PWA (Vite + React + TS) voor de moeder van de gebru
 - In de browser de app zelf openen: `…/intervalfit/?dev=1` (anders zie je het installatiescherm).
 
 ## Testen
-- Unit-tests in `tests/` (tijdlijn, tijdmotor, geluids-/spraakplanning, delen, figuren, bibliotheek).
+- Unit-tests in `tests/` (tijdlijn, tijdmotor, geluids-/spraakplanning, delen, figuren, bibliotheek, geschiedenis/reeks/calorieën/boodschappen).
 - Browsertests in `tools/e2e/` (puppeteer-core + lokale Chrome): `cd tools/e2e && node <script>.mjs [basis-url]`. Standaard `http://localhost:5183/intervalfit/`; geef de live-URL mee om online te controleren.
-  - `layout-test.mjs` (speler: 5 formaten × 5 fases, overlap-check), `instr-test.mjs` (uitleg niet afgekapt: 40 oefeningen × 5 formaten × 4 thema's), `theme-shots.mjs` (per thema Home/editor/speler), `share-test.mjs` (delen/importeren end-to-end), `backup-test.mjs`, `player-test.mjs` (geluid/spraak-logboek `window.__cueLog`), `bg-test.mjs` (wegschakelen → automatisch pauzeren), `poses.mjs` + `sheet.cjs` (8 momenten per animatie), `matrix.mjs` (installatiescherm per toestel/browser).
+  - `summary-test.mjs` (stap 6: speler → overzicht, gestopt < 1 min, mijlpalen via nep-geschiedenis, 4 thema's, 6 formaten, naamveld; screenshots `sum-*.png`), `layout-test.mjs` (speler: 5 formaten × 5 fases, overlap-check), `instr-test.mjs` (uitleg niet afgekapt: 40 oefeningen × 5 formaten × 4 thema's), `theme-shots.mjs` (per thema Home/editor/speler), `share-test.mjs` (delen/importeren end-to-end), `backup-test.mjs`, `player-test.mjs` (geluid/spraak-logboek `window.__cueLog`), `bg-test.mjs` (wegschakelen → automatisch pauzeren), `poses.mjs` + `sheet.cjs` (8 momenten per animatie), `matrix.mjs` (installatiescherm per toestel/browser).
 - Formaten: iPhone SE 375×667, iPhone 14 390×844, groot Android 412×915, liggend 844×390 / 915×412.
 - Wat niet automatisch kan (echt geluid, stem, stil-knop, deelmenu, WhatsApp): in de testlijst voor de gebruiker zetten.
 

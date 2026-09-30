@@ -1,7 +1,11 @@
 import { useState } from 'react';
 import { useStore } from '../storage/store';
-import { appStateStore, deleteWorkout, duplicateWorkout, workoutsStore } from '../storage/data';
-import type { Workout } from '../model/types';
+import { appStateStore, deleteWorkout, duplicateWorkout, historyStore, workoutsStore } from '../storage/data';
+import type { HistoryEntry, Workout } from '../model/types';
+import { currentStreak, entriesThisWeek } from '../model/stats';
+import { WeekDots } from '../components/WeekDots';
+import { DevHistorySheet } from './progress/DevHistorySheet';
+import { formatDay } from './summary/Summary';
 import { totalDurationSec } from '../model/timeline';
 import { formatTotal, plural } from '../model/format';
 import { navigate } from '../router';
@@ -37,6 +41,8 @@ export function Home({ devMode = false }: { devMode?: boolean }) {
   const [confirmDelete, setConfirmDelete] = useState<Workout | null>(null);
   const [shareFor, setShareFor] = useState<Workout | null>(null);
   const [importOpen, setImportOpen] = useState(false);
+  const [devHistoryOpen, setDevHistoryOpen] = useState(false);
+  const history = useStore(historyStore);
   // Net toegevoegde workout kort laten oplichten.
   const [highlight, setHighlight] = useState<string | null>(() => takeHighlight());
   useEffect(() => {
@@ -112,12 +118,17 @@ export function Home({ devMode = false }: { devMode?: boolean }) {
               <Button variant="secondary" onClick={() => navigate('/galerij')}>
                 Galerij
               </Button>
+              <Button variant="secondary" icon="chart" onClick={() => setDevHistoryOpen(true)}>
+                Nep-geschiedenis
+              </Button>
               <Button variant="ghost" onClick={() => setDevMode(false)}>
                 Uitzetten
               </Button>
             </div>
           </section>
         )}
+
+        {history.length > 0 && <StreakCard history={history} />}
 
         <div className="section-head">
           <h2>Mijn workouts</h2>
@@ -211,6 +222,7 @@ export function Home({ devMode = false }: { devMode?: boolean }) {
       />
 
       <ShareSheet workout={shareFor} onClose={() => setShareFor(null)} />
+      {devMode && <DevHistorySheet open={devHistoryOpen} onClose={() => setDevHistoryOpen(false)} />}
       <ImportSheet
         open={importOpen}
         onClose={() => setImportOpen(false)}
@@ -222,6 +234,33 @@ export function Home({ devMode = false }: { devMode?: boolean }) {
         }}
       />
     </div>
+  );
+}
+
+/** Reeks-blokje: dagen op rij en deze week; tik voor Mijn voortgang. */
+function StreakCard({ history }: { history: HistoryEntry[] }) {
+  const streak = currentStreak(history);
+  const week = entriesThisWeek(history).length;
+  const last = history[history.length - 1]!;
+  return (
+    <button type="button" className="streak-card" onClick={() => navigate('/voortgang')}>
+      <span className="streak-card__head">
+        <span className={`streak-badge${streak === 0 ? ' is-off' : ''}`}>
+          <Icon name="flame" size={22} />
+          <b>{streak}</b>
+        </span>
+        <span className="streak-card__text">
+          <strong>{streak === 0 ? 'Mijn voortgang' : streak === 1 ? '1 dag op rij' : `${streak} dagen op rij`}</strong>
+          <small>
+            {streak === 0
+              ? `Laatste workout: ${formatDay(new Date(last.date)).toLowerCase()}`
+              : `${plural(history.length, 'workout', 'workouts')} · deze week ${week}×`}
+          </small>
+        </span>
+        <Icon name="chevron" size={20} className="streak-card__chevron" />
+      </span>
+      <WeekDots entries={history} compact />
+    </button>
   );
 }
 

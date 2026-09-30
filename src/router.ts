@@ -8,6 +8,7 @@ import { useSyncExternalStore } from 'react';
  *   #/speel/:id           Workout afspelen
  *   #/klaar/:historyId    Overzicht na afloop
  *   #/instellingen        Instellingen
+ *   #/voortgang           Mijn voortgang (geschiedenis)
  *   #/deel/:code          Gedeelde workout bekijken
  */
 export type Route =
@@ -16,6 +17,7 @@ export type Route =
   | { name: 'player'; id: string }
   | { name: 'summary'; id: string }
   | { name: 'settings' }
+  | { name: 'progress' }
   | { name: 'share'; code: string }
   | { name: 'gallery'; poses: boolean }
   | { name: 'notFound' };
@@ -30,6 +32,7 @@ export function parseHash(hash: string): Route {
   if (a === 'speel' && b) return { name: 'player', id: decodeURIComponent(b) };
   if (a === 'klaar' && b) return { name: 'summary', id: decodeURIComponent(b) };
   if (a === 'instellingen') return { name: 'settings' };
+  if (a === 'voortgang') return { name: 'progress' };
   if (a === 'galerij') return { name: 'gallery', poses: b === 'houdingen' };
   // De code bevat geen '/' (lz-string URI-veilig), maar neem voor de zekerheid alles mee.
   if (a === 'deel' && b) return { name: 'share', code: parts.slice(1).join('/') };

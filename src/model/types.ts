@@ -58,6 +58,31 @@ export type Settings = {
   theme: ThemeId;
   weightKg?: number;
   voiceURI?: string;
+  /** Voornaam voor persoonlijke boodschappen (optioneel). */
+  name?: string;
+};
+
+/** Soort boodschap; bepaalt het pictogram en de medaille op het overzicht. */
+export type MessageKind =
+  | 'first'
+  | 'count'
+  | 'streak'
+  | 'record'
+  | 'hours'
+  | 'comeback'
+  | 'exercise'
+  | 'week'
+  | 'time'
+  | 'stopped'
+  | 'compliment';
+
+export type Message = {
+  /** Sjabloon-id (bv. "reeks-mijlpaal.2"), om herhaling te vermijden. */
+  key: string;
+  kind: MessageKind;
+  text: string;
+  /** Getal op de medaille (bv. 5 bij de 5e workout, 3 bij 3 dagen op rij). */
+  badge?: number;
 };
 
 export type HistoryEntry = {
@@ -66,11 +91,20 @@ export type HistoryEntry = {
   date: string;
   workoutId: string;
   workoutName: string;
+  /** Actieve trainingstijd (werk + rust, zonder aftellen en pauzes). */
   totalSec: number;
   workSec: number;
   kcal: number;
+  /** Rondes waarin getraind is (bij afgerond: alle rondes). */
   rounds: number;
+  /** Aantal verschillende oefeningen dat (deels) gedaan is. */
   exercisesDone: number;
   completed: boolean;
   perExercise: { key: string; name: string; workSec: number }[];
+  /** Hoeveel rondes/oefeningen de workout had (voor "2 van 3"). */
+  roundsPlanned?: number;
+  exercisesPlanned?: number;
+  /** Kop en boodschappen zoals getoond op het overzicht (vast, zodat ze later hetzelfde blijven). */
+  headline?: string;
+  messages?: Message[];
 };

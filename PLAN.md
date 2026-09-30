@@ -12,8 +12,8 @@ De naam "IntervalFit" staat op één plek (`src/config.ts` + manifest in `vite.c
 | 2. Workout-editor + figuurtjes/galerij | ✅ af, getest |
 | 3. Speler | ✅ af, getest (incl. aanpassingen: kleinere timer, automatisch pauzeren, korte instructies) |
 | 4. Instellingen + 4 thema's + back-up | ✅ af, getest |
-| 5. Delen | ✅ gebouwd en online, automatische tests slagen. **Nog te testen door de gebruiker**: op de telefoon van zijn moeder en op een Android-toestel (samen, twee telefoons) |
-| 6. Overzicht na afloop (geschiedenis, streak, calorieën, confetti, boodschappen) | ⏳ volgende stap — speler toont nu een tijdelijk "Klaar!"-scherm; `Session.workStats()`/`activeSec()` leveren de gegevens al |
+| 5. Delen | ✅ getest op iPhone 14 (WhatsApp-voorbeeld + importeren). **Nog te testen**: op de telefoon van de moeder en op Android (gebruiker meldt dit later) |
+| 6. Overzicht na afloop (geschiedenis, streak, calorieën, confetti, boodschappen) | ✅ gebouwd en online, automatische tests slagen. **Wacht op test door de gebruiker** |
 | 7. Afwerking (definitief logo/splash, overgangen, toegankelijkheid, Lighthouse, README) | ⏳ |
 
 ## Aanvullende besluiten (onderweg genomen)
@@ -26,6 +26,13 @@ De naam "IntervalFit" staat op één plek (`src/config.ts` + manifest in `vite.c
 - **Delen:** deelbericht "Ik heb een workout voor je: … Open de link om hem in IntervalFit te zetten: …"; linkcode zonder `+`/`$` (vervangen door `~`/`_`, oude links werken nog); "Workout importeren" op Home (plakken herkent link/code/WhatsApp-bericht); dubbele workout → "Nog een keer toevoegen?"; nieuwe workout bovenaan en licht op. Link in Android Chrome: direct toevoegen (gedeeld geheugen met de app); in iPhone Safari: stappenplan "Kopieer voor de app".
 - **Thema's:** Licht & fris (standaard), Donker & sportief (Barlow Condensed, neon), Kleurrijk & vrolijk (Fredoka, kleurverlopen), Zacht pastel (Nunito, donkere tekst op pastel). Fasekleuren per thema via `--work/-bg/-ink/-accent` in `themes.css`.
 - **Back-up:** JSON incl. foto's (data-URL), geschiedenis; instellingen niet. Terugzetten voegt toe (geen dubbelen).
+- **Overzicht na afloop (stap 6):** route `#/klaar/:id`; bij afloop wordt de workout direct bewaard (`storage/history.ts`) en vervangt het overzicht de speler (terug = Home). Net afgerond: confetti in themakleuren (`canvas-confetti`, niet bij "Verminder beweging"), medaille met pictogram/getal van de belangrijkste boodschap, optellende tegels (getraind, werktijd, ≈ kcal, rondes, oefeningen; gestopt: "2 van 3"), reeks + dagen van deze week, *Klaar* en *Nog een keer*. Vanuit de geschiedenis: zelfde overzicht zonder feest, met terugknop.
+- **Gestopt:** vanaf 1 minuut bewaard met eigen kop ("Goed bezig!" e.d.) en positieve boodschap; onder 1 minuut → Home + melding (stopvraag zegt dit al).
+- **Boodschappen** (`data/messages.ts`): kandidaten met prioriteit (eerste workout 100, aantal-mijlpaal 95, gestopt 92, reeks-mijlpaal 90 — alleen als nieuw record of ≥ 7 dagen, record 80/78, welkom terug 75, uren totaal 74, week/vandaag/oefeningtotaal/lopende reeks/topoefening/tijdstip lager, compliment 20). Max. 2 uit verschillende soorten, belangrijkste eerst. Varianten van de laatste 14 workouts worden overgeslagen; gewone soorten die de laatste 2 keer kwamen zakken in prioriteit. Kop en boodschappen worden in de geschiedenis bewaard (keuze vast per workout-id).
+- **Naam:** optioneel veld "Je naam" in Instellingen (Over jou); hooguit één keer per overzicht gebruikt, ook in de slotzin van de stem ("Goed gedaan, Ria!").
+- **Mijn voortgang** (`#/voortgang`): via reeks-blokje op Home (verschijnt na de eerste workout). Reeks (0 = "Tijd voor een nieuwe reeks"), langste reeks, deze week, totalen, meest gedane oefening, lijst afgelopen workouts (20 per keer).
+- **Reeks:** dagen op rij t/m vandaag, of t/m gisteren als er vandaag nog niet getraind is. Week = ma t/m zo.
+- **Nep-geschiedenis** (ontwikkelaarsmodus, knop op Home): scenario's (leeg, 4, 9, 2/6 dagen op rij, pauze 12 dagen, 49 workouts ≈ 10 u, 2 maanden gevarieerd) + nep-afronden (15/45 min, gestopt 6 min/40 s, 7:05). Echte geschiedenis wordt bij de eerste keer bewaard (`intervalfit.historyBackup`) en is terug te zetten.
 
 ## 0. Besluiten (na overleg)
 

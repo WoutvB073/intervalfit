@@ -29,6 +29,10 @@ export class Session {
   /** Opgetelde actieve tijd (zonder pauzes) in eerder afgeronde fases. */
   private activeBefore = 0;
   private work = new Map<string, WorkStat>();
+  /** Hoogste ronde (1-gebaseerd) waarin gewerkt is. */
+  private maxRound = 0;
+  /** Met ✕ gestopt (in plaats van helemaal afgerond). */
+  stoppedEarly = false;
   private now: () => number;
 
   constructor(phases: Phase[], now: () => number = Date.now) {
@@ -162,7 +166,13 @@ export class Session {
     if (this.status === 'running' || this.status === 'paused') {
       this.leavePhase(this.elapsed());
       this.status = 'finished';
+      this.stoppedEarly = true;
     }
+  }
+
+  /** Aantal rondes waarin (een deel van) een oefening is gedaan. */
+  roundsReached(): number {
+    return this.maxRound;
   }
 
   /** Per oefening de gedane werktijd (voor het overzicht en de geschiedenis). */
@@ -191,7 +201,10 @@ export class Session {
     if (!p) return;
     const done = Math.max(0, Math.min(sec, p.durationSec));
     if (p.type !== 'countdown') this.activeBefore += done;
-    if (p.type === 'work') addWork(this.work, p, done);
+    if (p.type === 'work' && done > 0) {
+      addWork(this.work, p, done);
+      this.maxRound = Math.max(this.maxRound, p.round + 1);
+    }
   }
 }
 
