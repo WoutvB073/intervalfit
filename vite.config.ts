@@ -35,7 +35,8 @@ export default defineConfig({
         // Het manifest voegt de plugin zelf al toe; niet nog eens opnemen (dubbele regel = mislukte installatie).
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
         // Lettertekens voor Vietnamees/Cyrillisch zijn niet nodig voor een Nederlandstalige app.
-        globIgnores: ['**/*-vietnamese-*', '**/*-cyrillic*'],
+        // Opstartschermen haalt iOS zelf op bij het installeren; niet in de offline-cache (scheelt ruim 1 MB).
+        globIgnores: ['**/*-vietnamese-*', '**/*-cyrillic*', '**/splash/**'],
         navigateFallback: `${BASE}index.html`,
         cleanupOutdatedCaches: true,
       },
