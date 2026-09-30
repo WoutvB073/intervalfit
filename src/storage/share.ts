@@ -37,8 +37,12 @@ export function encodeWorkout(w: Workout): string {
       return row;
     }),
   };
-  return compressToEncodedURIComponent(JSON.stringify(compact));
+  // lz-string gebruikt ook + en $; die kunnen in chat-apps de link breken → vervangen door ~ en _.
+  return compressToEncodedURIComponent(JSON.stringify(compact)).replace(/\+/g, '~').replace(/\$/g, '_');
 }
+
+/** Terug naar de lz-string-tekens (ook oude links met + en $ blijven werken). */
+const toLz = (code: string) => code.replace(/~/g, '+').replace(/_/g, '$');
 
 const int = (v: unknown, min: number, max: number, fallback: number): number =>
   typeof v === 'number' && Number.isFinite(v) ? Math.min(max, Math.max(min, Math.round(v))) : fallback;
@@ -48,7 +52,7 @@ const text = (v: unknown, max: number): string => (typeof v === 'string' ? v.tri
 /** Zet een code terug om naar een workout (met nieuwe id's). Geeft null bij een kapotte code. */
 export function decodeWorkout(code: string, now = Date.now()): Workout | null {
   try {
-    const json = decompressFromEncodedURIComponent(code.trim());
+    const json = decompressFromEncodedURIComponent(toLz(code.trim()));
     if (!json) return null;
     const c = JSON.parse(json) as Partial<Compact>;
     if (c.v !== 1 || !Array.isArray(c.e)) return null;
@@ -90,8 +94,34 @@ export function shareUrl(w: Workout, base = `${location.origin}${import.meta.env
 
 /** Haalt de code uit geplakte tekst: een hele link, een WhatsApp-bericht met link, of alleen de code. */
 export function extractShareCode(input: string): string | null {
-  const fromLink = /#\/deel\/([A-Za-z0-9+\-$]+)/.exec(input);
+  let text = input.trim();
+  // Sommige apps coderen tekens in links (bv. %24 voor $).
+  try {
+    text = decodeURIComponent(text);
+  } catch {
+    /* geen geldige codering: gewoon de tekst gebruiken */
+  }
+  const fromLink = /#\/deel\/([A-Za-z0-9+\-$_~]+)/.exec(text);
   if (fromLink) return fromLink[1]!;
-  const bare = input.trim();
-  return /^[A-Za-z0-9+\-$]{16,}$/.test(bare) ? bare : null;
+  // Losse code: het langste "woord" met alleen codetekens.
+  const words = text.split(/[\s"'“”‘’<>()[\]{},;:!?]+/).filter((w) => /^[A-Za-z0-9+\-$_~]{24,}$/.test(w));
+  words.sort((a, b) => b.length - a.length);
+  return words[0] ?? null;
+}
+
+/** Vingerafdruk van de inhoud (zonder id's en datums), om dubbele workouts te herkennen. */
+export function workoutSignature(w: Pick<Workout, 'name' | 'rounds' | 'restSec' | 'roundRestSec' | 'exercises'>): string {
+  return JSON.stringify([
+    w.name.trim().toLowerCase(),
+    w.rounds,
+    w.restSec,
+    w.roundRestSec,
+    w.exercises.map((e) => [e.libraryId ?? '', e.name.trim().toLowerCase(), e.workSec, e.restSec ?? null]),
+  ]);
+}
+
+/** Het vriendelijke bericht dat bij "Delen" wordt verstuurd. */
+export function shareMessage(w: Workout, url: string, totalLabel: string): string {
+  const n = w.exercises.length;
+  return `Ik heb een workout voor je: ${w.name} (${n} ${n === 1 ? 'oefening' : 'oefeningen'}, ${totalLabel}). Open de link om hem in IntervalFit te zetten: ${url}`;
 }

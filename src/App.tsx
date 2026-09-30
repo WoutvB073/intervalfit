@@ -9,6 +9,7 @@ import { Gallery } from './screens/Gallery';
 import { Editor } from './screens/editor/Editor';
 import { Player } from './screens/player/Player';
 import { Settings } from './screens/settings/Settings';
+import { SharePreview } from './screens/share/SharePreview';
 import { InstallScreen } from './screens/gate/InstallScreen';
 import { DesktopScreen } from './screens/gate/DesktopScreen';
 import { ToastHost, showToast } from './components/Toast';
@@ -77,7 +78,7 @@ function AppRoutes({ devMode }: { devMode: boolean }) {
       screen = <Gallery poses={route.poses} />;
       break;
     case 'share':
-      screen = <Placeholder title="Gedeelde workout" step={5} text="Importeren binnen de app komt in stap 5." />;
+      screen = <SharePreview code={route.code} />;
       break;
     default:
       screen = <Placeholder title="Oeps" text="Deze pagina bestaat niet." />;

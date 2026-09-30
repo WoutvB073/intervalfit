@@ -1,0 +1,208 @@
+/* ── Delen en importeren ─────────────────────────────────────── */
+.wpreview {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.wpreview__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--primary-soft-ink);
+}
+.wpreview__name {
+  font-size: 24px;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+.wpreview__meta {
+  color: var(--text-2);
+  font-weight: 600;
+}
+.wpreview__list {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.wpreview__list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.wpreview__ex {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wpreview__time {
+  color: var(--text-2);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.wpreview__more {
+  color: var(--text-3);
+  padding-left: 46px;
+}
+
+/* Deelpaneel */
+.share-sheet,
+.import-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 0 4px 8px;
+}
+.share-sheet__intro,
+.import-sheet__intro {
+  color: var(--text-2);
+}
+.share-sheet__message {
+  padding: 14px 16px;
+  border-radius: 18px 18px 18px 6px;
+  background: var(--primary-soft);
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+/* Importeerpaneel */
+.import-sheet__text {
+  min-height: 96px;
+  padding: 12px 14px;
+  font-size: 16px;
+  font-weight: 500;
+  resize: none;
+}
+.import-sheet__found {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+  border-radius: var(--radius-card);
+  background: var(--surface-2);
+  animation: found-in 260ms cubic-bezier(0.2, 0.9, 0.25, 1.2);
+}
+@keyframes found-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+.import-sheet__help summary {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  color: var(--text-2);
+  cursor: pointer;
+}
+.import-sheet__help p {
+  color: var(--text-2);
+}
+
+/* Knop "Workout importeren" op Home */
+.import-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-card);
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+.import-btn:active {
+  background: var(--surface-2);
+}
+.import-btn__icon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  flex: none;
+  border-radius: 16px;
+  background: var(--primary-soft);
+  color: var(--primary-soft-ink);
+}
+.import-btn strong {
+  display: block;
+  font-size: 17px;
+}
+.import-btn small {
+  font-size: 14px;
+  color: var(--text-2);
+}
+
+/* Net toegevoegde workout licht even op */
+.workout-card.is-new {
+  animation:
+    card-in 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both,
+    new-glow 1.6s ease-in-out 2;
+}
+@keyframes new-glow {
+  0%,
+  100% {
+    box-shadow: var(--shadow-card);
+  }
+  50% {
+    box-shadow:
+      0 0 0 4px var(--primary),
+      var(--shadow-card);
+  }
+}
+
+/* Gedeelde link in de app */
+.share-preview__main {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Gedeelde link in de browser (installatiescherm) */
+.gate-share__how {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 6px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-size: 17px;
+  color: var(--text);
+}
+.gate-share__how h3 {
+  font-size: 18px;
+  font-weight: 800;
+}
+.gate-share__steps {
+  margin: 0;
+  padding-left: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.gate-share__note {
+  font-size: 15px;
+  color: var(--text-2);
+}
+.gate-share__done {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 14px;
+  border-radius: var(--radius-sm);
+  background: var(--primary-soft);
+  color: var(--primary-soft-ink);
+  font-weight: 600;
+}

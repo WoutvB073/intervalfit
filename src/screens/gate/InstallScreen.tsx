@@ -103,7 +103,8 @@ export function InstallScreen({ shareCode }: { shareCode?: string }) {
         Heb je {APP_NAME} al op je beginscherm? Open hem dan via het icoon.
       </p>
 
-      {guide.arrow && !showInstallButton && (
+      {/* Bij een gedeelde link geen pijl: wie de app al heeft, hoeft niet te installeren. */}
+      {guide.arrow && !showInstallButton && !shareCode && (
         <div className={`gate-arrow gate-arrow--${guide.arrow}`} aria-hidden="true">
           <div className="gate-arrow__inner">
             <span className="gate-arrow__label">Begin hier</span>

@@ -14,7 +14,10 @@ import { applyUpdate, useUpdateState } from '../engine/update';
 import { prepareWorkoutMedia } from '../engine/media';
 import { setDevMode } from '../engine/devMode';
 import { DEV_WORKOUT_ID } from '../data/devWorkout';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import { ShareSheet } from './share/ShareSheet';
+import { ImportSheet } from './share/ImportSheet';
+import { takeHighlight } from './share/addWorkout';
 import { APP_NAME } from '../config';
 
 function greeting(date = new Date()): string {
@@ -32,6 +35,15 @@ export function Home({ devMode = false }: { devMode?: boolean }) {
 
   const [menuFor, setMenuFor] = useState<Workout | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<Workout | null>(null);
+  const [shareFor, setShareFor] = useState<Workout | null>(null);
+  const [importOpen, setImportOpen] = useState(false);
+  // Net toegevoegde workout kort laten oplichten.
+  const [highlight, setHighlight] = useState<string | null>(() => takeHighlight());
+  useEffect(() => {
+    if (!highlight) return;
+    const t = setTimeout(() => setHighlight(null), 3500);
+    return () => clearTimeout(t);
+  }, [highlight]);
   // Verborgen: 5× snel op het logo tikken zet de ontwikkelaarsmodus aan/uit.
   const logoTaps = useRef<number[]>([]);
   const onLogoTap = () => {
@@ -121,12 +133,24 @@ export function Home({ devMode = false }: { devMode?: boolean }) {
             <p>Maak je eerste workout en kies zelf de oefeningen en tijden.</p>
           </div>
         ) : (
+          <>
           <ul className="workout-list">
             {workouts.map((w, i) => (
-              <WorkoutCard key={w.id} workout={w} index={i} onMore={() => setMenuFor(w)} />
+              <WorkoutCard key={w.id} workout={w} index={i} isNew={w.id === highlight} onMore={() => setMenuFor(w)} />
             ))}
           </ul>
+          </>
         )}
+
+        <button type="button" className="import-btn" onClick={() => setImportOpen(true)}>
+          <span className="import-btn__icon">
+            <Icon name="download" size={24} />
+          </span>
+          <span>
+            <strong>Workout importeren</strong>
+            <small>Heb je een workout gekregen? Plak hier de link.</small>
+          </span>
+        </button>
       </main>
 
       <div className="bottom-bar">
@@ -152,8 +176,8 @@ export function Home({ devMode = false }: { devMode?: boolean }) {
             label="Delen"
             hint="Stuur deze workout naar iemand anders"
             onClick={() => {
+              setShareFor(menuFor);
               setMenuFor(null);
-              showToast('Delen komt in een volgende stap');
             }}
           />
           <SheetAction
@@ -185,17 +209,29 @@ export function Home({ devMode = false }: { devMode?: boolean }) {
           showToast('Workout verwijderd');
         }}
       />
+
+      <ShareSheet workout={shareFor} onClose={() => setShareFor(null)} />
+      <ImportSheet
+        open={importOpen}
+        onClose={() => setImportOpen(false)}
+        onAdded={(w) => {
+          setImportOpen(false);
+          setHighlight(w.id);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          showToast(`${w.name} staat nu bovenaan je lijst`);
+        }}
+      />
     </div>
   );
 }
 
-function WorkoutCard({ workout, index, onMore }: { workout: Workout; index: number; onMore: () => void }) {
+function WorkoutCard({ workout, index, isNew, onMore }: { workout: Workout; index: number; isNew?: boolean; onMore: () => void }) {
   const total = totalDurationSec(workout);
   const count = workout.exercises.length;
   const maxThumbs = 6;
   const extra = count - maxThumbs;
   return (
-    <li className="workout-card" style={{ animationDelay: `${Math.min(index, 6) * 50}ms` }}>
+    <li className={`workout-card${isNew ? ' is-new' : ''}`} style={{ animationDelay: `${Math.min(index, 6) * 50}ms` }}>
       <div className="workout-card__head">
         <h3 className="workout-card__name">{workout.name}</h3>
         <IconButton icon="more" label={`Meer opties voor ${workout.name}`} onClick={onMore} className="icon-btn--quiet" />

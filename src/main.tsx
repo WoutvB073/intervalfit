@@ -15,6 +15,7 @@ import './styles/gallery.css';
 import './styles/editor.css';
 import './styles/player.css';
 import './styles/settings.css';
+import './styles/share.css';
 import { App } from './App';
 import { migrate, requestPersistentStorage, workoutsStore } from './storage/data';
 import { cleanupPhotos } from './storage/photos';
