@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { Workout } from '../../model/types';
 import type { Phase } from '../../model/timeline';
 import { useStore } from '../../storage/store';
-import { getWorkout, settingsStore } from '../../storage/data';
+import { appStateStore, getWorkout, settingsStore } from '../../storage/data';
+import { isIOS } from '../../engine/platform';
 import { createDevWorkout, DEV_WORKOUT_ID } from '../../data/devWorkout';
 import { getExercise } from '../../data/exercises';
 import { formatClock, formatShort } from '../../model/format';
@@ -34,15 +35,23 @@ export function Player({ id, devMode }: { id: string; devMode: boolean }) {
 
 function PlayerView({ workout, devMode }: { workout: Workout; devMode: boolean }) {
   const settings = useStore(settingsStore);
-  const { phases, session, snap, controls, needsTap, setNeedsTap, onFrame } = usePlayer(workout, settings, devMode);
+  const { phases, session, snap, controls, needsTap, setNeedsTap, onFrame, awaySec, clearAway } = usePlayer(workout, settings, devMode);
+  const [showTips, setShowTips] = useState(() => !appStateStore.get().playerTipsSeen);
   const [confirmStop, setConfirmStop] = useState(false);
   const [wasRunning, setWasRunning] = useState(false);
   const [startTap, setStartTap] = useState(() => !mediaPrepared());
 
   // Automatisch starten als er op Start is getikt (geluid ontgrendeld); anders eerst een tik vragen.
   useEffect(() => {
-    if (!startTap && snap.status === 'ready') controls.start();
-  }, [startTap, snap.status, controls]);
+    if (!startTap && !showTips && snap.status === 'ready') controls.start();
+  }, [startTap, showTips, snap.status, controls]);
+
+  // Melding na terugkomen verdwijnt vanzelf na 8 seconden.
+  useEffect(() => {
+    if (awaySec === null) return;
+    const t = setTimeout(clearAway, 8000);
+    return () => clearTimeout(t);
+  }, [awaySec, clearAway]);
 
   const running = snap.status === 'running';
   const paused = snap.status === 'paused';
@@ -171,7 +180,77 @@ function PlayerView({ workout, devMode }: { workout: Workout; devMode: boolean }
         </div>
       )}
 
-      {(startTap || needsTap) && (
+      {awaySec !== null && running && (
+        <div className="player__notice" role="status">
+          <p>De workout is doorgelopen terwijl je weg was ({formatActive(awaySec)}).</p>
+          <Button
+            variant="primary"
+            icon="pause"
+            onClick={() => {
+              controls.pause();
+              clearAway();
+            }}
+          >
+            Pauzeren
+          </Button>
+          <Button variant="ghost" onClick={clearAway}>
+            Doorgaan
+          </Button>
+
+        </div>
+      )}
+
+      {showTips && (
+        <div className="player__tips" role="dialog" aria-modal="true" aria-labelledby="tips-title">
+          <div className="player__tips-card">
+            <h2 id="tips-title">Goed om te weten</h2>
+            <ul className="player__tips-list">
+              <li>
+                <span className="player__tips-icon">
+                  <Icon name="phone" size={24} />
+                </span>
+                <span>
+                  Vergrendel je telefoon niet tijdens een workout, anders hoor je de geluiden niet. Het scherm blijft
+                  vanzelf aan.
+                </span>
+              </li>
+              {isIOS && (
+                <li>
+                  <span className="player__tips-icon">
+                    <Icon name="sound" size={24} />
+                  </span>
+                  <span>
+                    Hoor je geen piepjes? Zet de stil-knop aan de zijkant van je iPhone uit, of zet in Instellingen{' '}
+                    <strong>Geluid altijd laten klinken</strong> aan.
+                  </span>
+                </li>
+              )}
+              <li>
+                <span className="player__tips-icon">
+                  <Icon name="pause" size={24} />
+                </span>
+                <span>Even stoppen? Tik op de pauzeknop. Met ✕ stop je de workout.</span>
+              </li>
+            </ul>
+            <Button
+              variant="primary"
+              size="lg"
+              icon="play"
+              block
+              onClick={() => {
+                prepareWorkoutMedia();
+                appStateStore.set((s) => ({ ...s, playerTipsSeen: true }));
+                setStartTap(false);
+                setShowTips(false);
+              }}
+            >
+              Begrepen, start!
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {!showTips && (startTap || needsTap) && (
         <button
           type="button"
           className="player__tap"

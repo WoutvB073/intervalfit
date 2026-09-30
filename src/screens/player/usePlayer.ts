@@ -48,6 +48,9 @@ export function usePlayer(workout: Workout, settings: Settings, debug: boolean) 
 
   const [snap, setSnap] = useState<PlayerSnapshot>({ status: 'ready', index: 0, secLeft: Math.ceil(phases[0]?.durationSec ?? 0) });
   const [needsTap, setNeedsTap] = useState(false);
+  /** Hoe lang de app weg was (s) als de workout intussen doorliep; null = geen melding. */
+  const [awaySec, setAwaySec] = useState<number | null>(null);
+  const hiddenAt = useRef(0);
   const spoken = useRef(new Set<string>());
   const frameListeners = useRef(new Set<() => void>());
   const finishTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -157,8 +160,15 @@ export function usePlayer(workout: Workout, settings: Settings, debug: boolean) 
   useEffect(() => {
     const onVis = () => {
       if (document.visibilityState === 'hidden') {
+        if (session.status === 'running' && !hiddenAt.current) hiddenAt.current = Date.now();
         cancelPlanned('verborgen');
         return;
+      }
+      // Terug na vergrendelen of een andere app: laten weten dat de workout is doorgelopen.
+      if (hiddenAt.current) {
+        const away = (Date.now() - hiddenAt.current) / 1000;
+        hiddenAt.current = 0;
+        if (away > 2 && session.status === 'running') setAwaySec(Math.round(away));
       }
       void audio.resume().then((ok) => {
         if (!ok && (sound.beeps || sound.whistle) && session.status === 'running') setNeedsTap(true);
@@ -250,5 +260,5 @@ export function usePlayer(workout: Workout, settings: Settings, debug: boolean) 
     };
   }, []);
 
-  return { phases, session, snap, controls, needsTap, setNeedsTap, onFrame };
+  return { phases, session, snap, controls, needsTap, setNeedsTap, onFrame, awaySec, clearAway: () => setAwaySec(null) };
 }

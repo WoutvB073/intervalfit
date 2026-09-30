@@ -33,6 +33,8 @@ export const historyStore = createStore<HistoryEntry[]>('history', () => [], (r)
 
 export type AppState = {
   welcomeDismissed: boolean;
+  /** Tips bij de eerste workout al getoond? */
+  playerTipsSeen?: boolean;
 };
 export const appStateStore = createStore<AppState>('app', () => ({ welcomeDismissed: false }));
 
