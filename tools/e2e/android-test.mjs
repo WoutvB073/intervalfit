@@ -115,11 +115,12 @@ for (const [name, ua, opts] of cases) {
 // 3. Gedeelde link in Samsung Internet: niet direct toevoegen (ander geheugen), wel Chrome of kopiëren
 {
   const maker = await open(UA.chrome, { dev: true });
-  const code = await maker.evaluate(async () => {
-    const m = await import('/intervalfit/src/storage/share.ts');
-    const w = JSON.parse(localStorage.getItem('intervalfit.workouts'))[0];
-    return m.encodeWorkout(w);
-  });
+  // Deellink maken via het echte Delen-scherm (werkt lokaal én online).
+  await maker.evaluate(() => document.querySelector('.workout-card .icon-btn--quiet').click());
+  await sleep(500);
+  await maker.evaluate(() => [...document.querySelectorAll('.sheet-action')].find((b) => b.textContent.includes('Delen')).click());
+  await sleep(700);
+  const code = await maker.evaluate(() => /#\/deel\/(\S+)/.exec(document.body.innerText)?.[1]);
   await maker.close();
   const page = await open(UA.samsung, { hash: `#/deel/${code}` });
   const t = await texts(page);
