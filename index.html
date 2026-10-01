@@ -6,6 +6,27 @@
     <title>IntervalFit</title>
     <meta name="description" content="Jouw persoonlijke interval- en tabata-trainingen, met een eigen tijd per oefening." />
     <meta name="format-detection" content="telephone=no" />
+    <!--
+      Kleuren: de app kiest zelf zijn thema. "only light/dark" verbiedt browsers om de pagina automatisch donker
+      te maken (donkere modus van Chrome, Samsung Internet, Opera, WebView). Het script hieronder zet het gekozen
+      thema al vóór het eerste beeld, zodat er geen lichte/donkere flits is.
+    -->
+    <meta name="color-scheme" content="only light" />
+    <meta name="theme-color" content="#f3faf7" />
+    <script>
+      (function () {
+        var dark = { sportief: '#0b0f13' };
+        var bg = { fris: '#f3faf7', sportief: '#0b0f13', vrolijk: '#fff6ec', pastel: '#fbf7f2' };
+        var theme = 'fris';
+        try {
+          var s = JSON.parse(localStorage.getItem('intervalfit.settings') || '{}');
+          if (s && bg[s.theme]) theme = s.theme;
+        } catch (e) {}
+        document.documentElement.setAttribute('data-theme', theme);
+        document.querySelector('meta[name="color-scheme"]').setAttribute('content', dark[theme] ? 'only dark' : 'only light');
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', bg[theme]);
+      })();
+    </script>
     <!-- Voorbeeld van de link in WhatsApp e.d. -->
     <meta property="og:title" content="IntervalFit – een workout voor jou" />
     <meta property="og:description" content="Open de link om de workout in IntervalFit te zetten: interval- en tabata-trainingen met een eigen tijd per oefening." />

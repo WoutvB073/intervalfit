@@ -23,7 +23,10 @@ import { migrate, requestPersistentStorage, workoutsStore } from './storage/data
 import { cleanupPhotos } from './storage/photos';
 import { initServiceWorker } from './engine/update';
 import { initDevMode } from './engine/devMode';
+import { applyShareParam } from './engine/chrome';
 
+// Gedeelde workout via een "Openen in Chrome"-link (?deel=…) → gewone route #/deel/….
+applyShareParam();
 const devMode = initDevMode();
 migrate();
 requestPersistentStorage();

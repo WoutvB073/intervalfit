@@ -35,8 +35,8 @@ export function Manual() {
             aan staan en tik op <strong>Voeg toe</strong>.
           </p>
           <p>
-            <strong>Android:</strong> open de link in <strong>Chrome</strong> en tik op <strong>Installeren</strong> (of via
-            het menu ⋮ → <strong>App installeren</strong>).
+            <strong>Android:</strong> open de link in <strong>Chrome</strong> (niet in Samsung Internet: daar krijg je vaak
+            een melding dat het onveilig is) en tik op <strong>Installeren</strong> (of ⋮ → <strong>App installeren</strong>).
           </p>
           <p>Open de app daarna altijd via het nieuwe icoon op je beginscherm.</p>
         </Step>

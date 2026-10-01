@@ -15,7 +15,8 @@ export default defineConfig({
       // (nooit midden in een workout).
       registerType: 'prompt',
       injectRegister: false,
-      pwaAssets: { config: true, overrideManifestIcons: true },
+      // theme-color staat zelf in index.html (per thema gezet vóór het eerste beeld); niet nog eens toevoegen.
+      pwaAssets: { config: true, overrideManifestIcons: true, injectThemeColor: false },
       manifest: {
         id: BASE,
         name: 'IntervalFit',

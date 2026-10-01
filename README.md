@@ -21,9 +21,14 @@ telefoon: geen account, geen server, en na de eerste keer openen werkt hij ook z
 
 > Op iPhone heeft de app op het beginscherm een **eigen geheugen**, los van Safari. Gebruik daarom altijd het icoon.
 
-**Android** (Chrome)
-1. Open de link in **Chrome**.
+**Android** (altijd via **Chrome**)
+1. Open de link in **Chrome**. Open je hem in een andere browser (bijv. Samsung Internet), dan staat er een knop
+   **Openen in Chrome**.
 2. Tik op **Installeren** in de app, of op **⋮** → **App installeren** / **Toevoegen aan startscherm**.
+
+> Waarom Chrome? Via Samsung Internet geeft Android vaak de melding *"Gevaarlijke app geblokkeerd / gemaakt voor een
+> oudere versie van Android"* en kan Samsung Internet de kleuren van de app donker maken. Via Chrome gebeurt dat niet.
+> Al via Samsung Internet geïnstalleerd? Maak een back-up, verwijder de app, installeer via Chrome en zet de back-up terug.
 
 Wie de link in een gewone browser opent, ziet alleen een installatiescherm met de stappen voor het eigen toestel en
 de eigen browser. Op een computer verschijnt een QR-code.

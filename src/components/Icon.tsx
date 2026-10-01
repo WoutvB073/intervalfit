@@ -233,6 +233,12 @@ const PATHS = {
   ),
   bolt: <path d="M13 2.5 5 13.5h6l-1 8 8-11h-6l1-8Z" />,
   chart: <path d="M4 20h16M7 16v-5M12 16V7M17 16v-8" />,
+  shield: (
+    <>
+      <path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.6 7.5 9.5 4.3-.9 7.5-4.9 7.5-9.5V6L12 3Z" />
+      <path d="m9 12 2 2 4-4" />
+    </>
+  ),
   dumbbell: <path d="M6.5 7v10M17.5 7v10M3.5 9.5v5M20.5 9.5v5M6.5 12h11" />,
   stairs: <path d="M3.5 20h17M4 20v-4.5h5V11h5V6.5h6.5V20" />,
   pullupBar: (

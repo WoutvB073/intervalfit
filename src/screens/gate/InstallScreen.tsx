@@ -2,11 +2,12 @@ import { useMemo, useState } from 'react';
 import { env } from '../../engine/platform';
 import { promptInstall, useInstallPrompt } from '../../engine/install';
 import { copyText, currentLink } from '../../engine/clipboard';
+import { chromeMissing, openInChrome } from '../../engine/chrome';
 import { Button } from '../../components/Button';
 import { Icon } from '../../components/Icon';
 import { showToast } from '../../components/Toast';
 import { APP_NAME } from '../../config';
-import { getGuide } from './guide';
+import { getGuide, type Guide } from './guide';
 import { SharedWorkoutPreview } from './SharedWorkoutPreview';
 
 /**
@@ -43,8 +44,9 @@ export function InstallScreen({ shareCode }: { shareCode?: string }) {
     );
   }
 
-  // Android-browsers die zelf een installatieknop aanbieden (Chrome, Samsung Internet, Edge…).
-  const showInstallButton = install.canPrompt && env.browser !== 'inapp';
+  // Eigen "Installeren"-knop alleen in Chrome (en iOS kent hem niet). In Samsung Internet e.d. zou die knop
+  // een installatie met veiligheidswaarschuwing starten; daar sturen we eerst naar Chrome.
+  const showInstallButton = install.canPrompt && env.browser !== 'inapp' && !guide.viaChrome;
 
   return (
     <div className={`gate${guide.arrow ? ` gate--arrow-${guide.arrow}` : ''}`}>
@@ -60,10 +62,12 @@ export function InstallScreen({ shareCode }: { shareCode?: string }) {
 
       <section className="gate__card" aria-labelledby="gate-steps-title">
         <h2 id="gate-steps-title" className="gate__card-title">
-          {showInstallButton ? 'Installeer de app' : guide.title}
+          {guide.viaChrome && shareCode ? 'Nog geen app?' : showInstallButton ? 'Installeer de app' : guide.title}
         </h2>
 
-        {showInstallButton ? (
+        {guide.viaChrome ? (
+          <ViaChromeBlock guide={guide} shareCode={shareCode} onCopyLink={onCopyLink} />
+        ) : showInstallButton ? (
           <>
             <Button variant="primary" size="lg" icon="download" block onClick={onInstall} className="gate__install-btn">
               Installeren
@@ -71,16 +75,18 @@ export function InstallScreen({ shareCode }: { shareCode?: string }) {
             <details className="gate__manual">
               <summary>Lukt het niet? Zo doe je het zelf</summary>
               <StepList steps={guide.steps} />
+              {guide.warning && <Warning>{guide.warning}</Warning>}
             </details>
           </>
         ) : (
           <>
             {guide.intro && <p className="gate__intro">{guide.intro}</p>}
             <StepList steps={guide.steps} />
+            {guide.warning && <Warning>{guide.warning}</Warning>}
           </>
         )}
 
-        {guide.copyLink && (
+        {guide.copyLink && !guide.viaChrome && (
           <div className="gate__copy">
             <Button variant="primary" size="lg" icon="copy" block onClick={onCopyLink}>
               Kopieer link
@@ -96,7 +102,7 @@ export function InstallScreen({ shareCode }: { shareCode?: string }) {
         )}
 
         {/* De tip gaat over openen vanuit een andere app; overbodig als de installatieknop werkt. */}
-        {guide.hint && !showInstallButton && <p className="gate__hint">{guide.hint}</p>}
+        {guide.hint && !showInstallButton && !guide.viaChrome && <p className="gate__hint">{guide.hint}</p>}
       </section>
 
       <p className="gate__footer">
@@ -104,7 +110,7 @@ export function InstallScreen({ shareCode }: { shareCode?: string }) {
       </p>
 
       {/* Bij een gedeelde link geen pijl: wie de app al heeft, hoeft niet te installeren. */}
-      {guide.arrow && !showInstallButton && !shareCode && (
+      {guide.arrow && !showInstallButton && !guide.viaChrome && !shareCode && (
         <div className={`gate-arrow gate-arrow--${guide.arrow}`} aria-hidden="true">
           <div className="gate-arrow__inner">
             <span className="gate-arrow__label">Begin hier</span>
@@ -115,6 +121,60 @@ export function InstallScreen({ shareCode }: { shareCode?: string }) {
         </div>
       )}
     </div>
+  );
+}
+
+/**
+ * Android, andere browser dan Chrome: knop "Openen in Chrome" met de stappen, link kopiëren als het niet lukt,
+ * en uitklapbaar hoe het toch in de eigen browser kan (met uitleg bij een veiligheidsmelding).
+ */
+function ViaChromeBlock({ guide, shareCode, onCopyLink }: { guide: Guide; shareCode?: string; onCopyLink: () => void }) {
+  const via = guide.viaChrome!;
+  const missing = chromeMissing();
+  return (
+    <>
+      {missing && (
+        <p className="gate__notice">
+          Chrome kon niet worden geopend. Staat Chrome niet op deze telefoon? Gebruik dan de stappen voor {via.browserName}{' '}
+          hieronder.
+        </p>
+      )}
+      {shareCode ? (
+        // Bij een gedeelde link staat de knop "Openen in Chrome" al bij de workout hierboven.
+        <p className="gate__intro">
+          Tik hierboven op <strong>Openen in Chrome</strong>. In Chrome kun je de workout toevoegen en daarna de app
+          installeren (⋮ → <strong>App installeren</strong>).
+        </p>
+      ) : (
+        <>
+          <p className="gate__intro">{via.intro}</p>
+          <Button variant="primary" size="lg" icon="compass" block onClick={() => openInChrome()} className="gate__install-btn">
+            Openen in Chrome
+          </Button>
+          <StepList steps={guide.steps} />
+        </>
+      )}
+      <div className="gate__copy">
+        <p className="gate__hint">Gaat Chrome niet open? Kopieer de link en plak hem in de adresbalk van Chrome.</p>
+        <Button variant="secondary" size="lg" icon="copy" block onClick={onCopyLink}>
+          Kopieer link
+        </Button>
+      </div>
+      <details className="gate__manual" open={missing}>
+        <summary>{via.altTitle ?? `Liever in ${via.browserName}? Zo doe je het daar`}</summary>
+        <StepList steps={via.steps} />
+        {via.warning && <Warning>{via.warning}</Warning>}
+      </details>
+    </>
+  );
+}
+
+function Warning({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="gate__warning">
+      <Icon name="shield" size={20} />
+      <span>{children}</span>
+    </p>
   );
 }
 

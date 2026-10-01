@@ -4,7 +4,7 @@ Persoonlijke interval/tabata-trainingsapp als Progressive Web App. Draait volled
 (geen backend, geen accounts), is installeerbaar op iPhone en Android en werkt offline.
 De naam "IntervalFit" staat op één plek (`src/config.ts` + manifest in `vite.config.ts`).
 
-## Status (30-09-2026)
+## Status (01-10-2026)
 
 | Stap | Status |
 |---|---|
@@ -16,6 +16,8 @@ De naam "IntervalFit" staat op één plek (`src/config.ts` + manifest in `vite.c
 | 6. Overzicht na afloop (geschiedenis, streak, calorieën, confetti, boodschappen) | ✅ af, getest op iPhone 14 |
 | 6b. Extra oefeningen (12) + materiaal-filter | ✅ af, getest op iPhone 14 |
 | 7. Afwerking (definitief logo/splash, rondgang, toegankelijkheid, Lighthouse, README, handleiding) | ✅ gebouwd en online (versie 1.0.0). **Eindtest door de gebruiker**: met de moeder (iPhone) en op Android, volgens de testlijst |
+
+| 7b. Android-fixes na test moeder (thema's bleven donker; melding "onveilig" bij installeren) | ✅ gebouwd en online (versie 1.0.1). **Wacht op test** op de telefoon van de moeder (opnieuw installeren via Chrome) |
 
 **Na de eindtest:** alleen nog onderhoud en eventuele wensen; zie README → "Zelf iets aanpassen".
 
@@ -35,6 +37,16 @@ De naam "IntervalFit" staat op één plek (`src/config.ts` + manifest in `vite.c
   - *Toegankelijkheid:* contrast volgens WCAG AA in alle thema's (knoppen iets donkerder: fris #0a8657, vrolijk #d6336b, pastel #7a69ba; rood en lichtste grijs in pastel/vrolijk aangepast); `tests/contrast.test.ts` bewaakt dit.
   - *Prestaties:* editor, instellingen, overzicht, voortgang, handleiding, galerij en deel-voorbeeld worden apart geladen (wel in de offline-cache). Lighthouse (mobiel, trage Android-emulatie): app 95–96 prestaties / 100 toegankelijkheid / 100 best practices / 100 SEO; installatiescherm 95/100/100/100. PWA: installeerbaar zonder fouten, offline starten werkt (`tools/e2e/pwa-check.mjs`).
   - *Handleiding:* 1 pagina, in de app (Instellingen → Hulp → Handleiding, `#/handleiding`) en als pdf `public/handleiding.pdf` (online), gemaakt met `tools/manual-pdf.mjs`.
+- **Android: thema's en donkere modus (7b):**
+  - *Oorzaak:* browsers die webpagina's zelf donker maken (Chrome "Auto Dark"/"Websites donker maken", Samsung Internet donkere modus, Android WebView, Opera-vlag) kleurden de lichte thema's om. Nagebootst met Chrome-emulatie (`Emulation.setAutoDarkModeOverride`).
+  - *Oplossing:* per thema `color-scheme: only light` / `only dark` in de CSS én `<meta name="color-scheme">` (gezet door `applyTheme` en al vóór het eerste beeld door een klein script in `index.html`, samen met `theme-color` voor de statusbalk). PWA-plugin voegt geen eigen theme-color meer toe.
+  - *Grenzen:* oudere Samsung Internet-versies negeren de opt-out (eigen "force dark"); daarvoor een tip in Instellingen → Thema (alleen Samsung Internet + donkere modus aan) en het advies via Chrome te installeren. De navigatiebalk van Android en het Android-opstartscherm (manifest `background_color`, licht) kan een web-app niet per thema kleuren.
+  - *Test:* `tools/e2e/darkmode-test.mjs` (4 thema's × Home/Instellingen/speler/installatiescherm × licht/donker/geforceerd).
+- **Android: installeren (7b):**
+  - *Oorzaak melding:* Samsung Internet verpakt de app (WebAPK) voor een oude Android-versie → Android 14+ / Play Protect: "Gevaarlijke app geblokkeerd … gemaakt voor een oudere versie van Android". Chrome verpakt actueel → geen melding.
+  - *Besluit:* op Android in elke andere browser dan Chrome (Samsung Internet, Firefox, Edge, Opera, ingebouwde browsers van WhatsApp/Instagram/Facebook) adviseert het installatiescherm Chrome met de knop **Openen in Chrome** (`intent://…;package=com.android.chrome;S.browser_fallback_url=…?geenchrome=1`, `src/engine/chrome.ts`); daaronder "Liever in <browser>?" met de eigen stappen en uitleg bij de melding. Geen eigen Installeren-knop buiten Chrome. Geen Chrome → melding + eigen stappen open.
+  - *Gedeelde link* in een andere Android-browser: niet direct toevoegen (ander geheugen dan de via Chrome geïnstalleerde app) maar **Openen in Chrome** (`?deel=CODE` → `#/deel/CODE`) of **Kopieer voor de app**.
+  - Hulp-vraag "Melding dat de app onveilig is (Android)?" en handleiding aangepast. Tests: `tests/android.test.ts`, `tools/e2e/android-test.mjs`.
 - **Materiaal:** `equipment` per oefening: geen (standaard), `stoel` (stoel/trap: step-ups, tricep dips), `dumbbells`, `stang`. Bibliotheek: tweede rij keuzeknopjes (Alle materialen · Zonder materiaal · Stoel of trap · Dumbbells · Optrekstang) en een klein label linksboven op tegels met materiaal. Figuren: rekwisieten `step`, `bar`, `barSide`; `dumbbells: 'end' | 'side'`, `grip: 'over' | 'under'` (kleur `--fig-gear`, standaard `--text-2`).
 - **Back-up:** JSON incl. foto's (data-URL), geschiedenis; instellingen niet. Terugzetten voegt toe (geen dubbelen).
 - **Overzicht na afloop (stap 6):** route `#/klaar/:id`; bij afloop wordt de workout direct bewaard (`storage/history.ts`) en vervangt het overzicht de speler (terug = Home). Net afgerond: confetti in themakleuren (`canvas-confetti`, niet bij "Verminder beweging"), medaille met pictogram/getal van de belangrijkste boodschap, optellende tegels (getraind, werktijd, ≈ kcal, rondes, oefeningen; gestopt: "2 van 3"), reeks + dagen van deze week, *Klaar* en *Nog een keer*. Vanuit de geschiedenis: zelfde overzicht zonder feest, met terugknop.

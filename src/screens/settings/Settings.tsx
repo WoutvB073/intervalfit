@@ -12,7 +12,7 @@ import { Stepper } from '../../components/Stepper';
 import { showToast } from '../../components/Toast';
 import { audio } from '../../engine/audio';
 import { speech } from '../../engine/speech';
-import { canVibrate, isIOS } from '../../engine/platform';
+import { canVibrate, env, isIOS } from '../../engine/platform';
 import { APP_NAME, APP_VERSION } from '../../config';
 
 type SoundPatch = Partial<SettingsT['sound']>;
@@ -121,6 +121,7 @@ export function Settings() {
               <ThemeTile key={t.id} id={t.id} label={t.label} active={settings.theme === t.id} onPick={() => update({ theme: t.id })} />
             ))}
           </div>
+          <SamsungDarkTip />
         </section>
 
         {/* ── Over jou: naam en gewicht ── */}
@@ -195,6 +196,17 @@ export function Settings() {
               </span>
               <Icon name="chevron" size={20} />
             </button>
+            {!isIOS && (
+              <details>
+                <summary>Melding dat de app onveilig is (Android)?</summary>
+                <p>
+                  Die melding komt doordat {APP_NAME} een web-app is en niet uit de Play Store komt; vooral bij installeren
+                  via <strong>Samsung Internet</strong>. Installeer de app via <strong>Chrome</strong>: dan krijg je geen
+                  melding en blijven de kleuren goed. Heb je de app al? Maak eerst een <strong>back-up</strong>, installeer
+                  hem via Chrome en zet de back-up daar terug.
+                </p>
+              </details>
+            )}
             <details>
               <summary>Hoor ik geen piepjes op mijn iPhone?</summary>
               <p>
@@ -294,6 +306,34 @@ function TestSoundButton({ settings }: { settings: SettingsT }) {
     <Button variant="secondary" size="lg" icon="sound" block onClick={run} disabled={busy}>
       {busy ? 'Luister…' : 'Test geluid'}
     </Button>
+  );
+}
+
+/**
+ * Samsung Internet kan (afhankelijk van versie en instellingen) zijn eigen donkere modus over de app heen leggen,
+ * ook als de app aangeeft dat het thema licht is. Alleen tonen in Samsung Internet (ook de daarmee geïnstalleerde
+ * app) en alleen als de donkere modus aan staat.
+ */
+function SamsungDarkTip() {
+  const dark = typeof matchMedia !== 'undefined' && matchMedia('(prefers-color-scheme: dark)').matches;
+  if (env.browser !== 'samsung' || !dark) return null;
+  return (
+    <div className="settings-tip" role="note">
+      <Icon name="sparkle" size={20} />
+      <div>
+        <strong>Kleuren donkerder dan je hebt gekozen?</strong>
+        <p>
+          Dan legt Samsung Internet zijn donkere modus over de app. Zet die zo uit: open de app <strong>Samsung Internet</strong>{' '}
+          → tik op <strong>☰</strong> → <strong>Instellingen</strong> → zoek <strong>Donkere modus</strong> (vaak bij{' '}
+          <em>Weergave van webpagina</em>) en kies <strong>Uit</strong> in plaats van <em>Telefooninstelling volgen</em>.
+          De namen kunnen per versie iets verschillen.
+        </p>
+        <p>
+          Nog beter: installeer {APP_NAME} via <strong>Chrome</strong>; daar blijven de kleuren altijd goed. Maak eerst
+          hieronder een <strong>back-up</strong> en zet die in de nieuwe app terug.
+        </p>
+      </div>
+    </div>
   );
 }
 

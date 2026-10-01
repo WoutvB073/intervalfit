@@ -280,3 +280,26 @@
     height: 84px;
   }
 }
+
+/* Tip bij Thema (Samsung Internet met donkere modus) */
+.settings-tip {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 14px 16px;
+  border-radius: var(--radius-card);
+  background: var(--warn-soft);
+  color: var(--warn-ink);
+  font-size: 15px;
+  line-height: 1.45;
+}
+.settings-tip > svg {
+  flex: none;
+  margin-top: 2px;
+}
+.settings-tip strong {
+  font-weight: 800;
+}
+.settings-tip p {
+  margin-top: 6px;
+}

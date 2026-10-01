@@ -432,3 +432,31 @@
   opacity: 0.8;
   pointer-events: none;
 }
+
+/* Android: via Chrome installeren, meldingen en uitleg bij een veiligheidswaarschuwing */
+.gate__notice {
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--warn-soft);
+  color: var(--warn-ink);
+  font-weight: 600;
+}
+.gate__warning {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--primary-soft);
+  color: var(--primary-soft-ink);
+  font-size: 15px;
+  line-height: 1.45;
+}
+.gate__warning svg {
+  flex: none;
+  margin-top: 1px;
+}
+.gate__copy .gate__hint {
+  margin: 0 0 8px;
+}
