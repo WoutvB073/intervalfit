@@ -43,6 +43,13 @@ export const EXERCISES: LibraryExercise[] = [
     instruction: 'Voeten breed, tenen naar buiten, rug recht.',
   },
   {
+    id: 'goblet-squats', name: 'Goblet squats', category: 'benen', met: 5.5, defaultWorkSec: 40, equipment: 'dumbbells',
+    aliases: ['goblet squat', 'squat met dumbbell', 'squat met halter', 'kniebuiging met gewicht', 'goblet', 'squats', 'dumbbells', 'halters'],
+    spoken: 'goblet skwots',
+    instruction: 'Dumbbell tegen je borst, rug recht, billen naar achteren.',
+  },
+
+  {
     id: 'lunges', name: 'Uitvalspassen', category: 'benen', met: 4.0, defaultWorkSec: 40,
     aliases: ['lunges', 'lunge', 'uitvalspas', 'uitval'],
     instruction: 'Grote stap vooruit, beide knieën 90 graden.',
@@ -168,6 +175,19 @@ export const EXERCISES: LibraryExercise[] = [
     spoken: 'baaiseps kurrls',
     instruction: 'Ellebogen tegen je zij, handpalmen naar boven.',
   },
+  {
+    id: 'bicep-curls-left', name: 'Bicep curls links', category: 'boven', met: 3.5, defaultWorkSec: 30, equipment: 'dumbbells',
+    aliases: ['biceps curls links', 'bicep curl links', 'arm curls', 'biceps', 'dumbbells', 'halters', 'gewichtjes', 'links'],
+    spoken: 'baaiseps kurrls, links',
+    instruction: 'Linkerarm: elleboog tegen je zij, handpalm naar boven.',
+  },
+  {
+    id: 'bicep-curls-right', name: 'Bicep curls rechts', category: 'boven', met: 3.5, defaultWorkSec: 30, equipment: 'dumbbells',
+    aliases: ['biceps curls rechts', 'bicep curl rechts', 'arm curls', 'biceps', 'dumbbells', 'halters', 'gewichtjes', 'rechts'],
+    spoken: 'baaiseps kurrls, rechts',
+    instruction: 'Rechterarm: elleboog tegen je zij, handpalm naar boven.',
+  },
+
   {
     id: 'hammer-curls', name: 'Hammer curls', category: 'boven', met: 3.5, defaultWorkSec: 40, equipment: 'dumbbells',
     aliases: ['hammer curl', 'hamer curls', 'biceps', 'dumbbells', 'halters', 'gewichtjes'],

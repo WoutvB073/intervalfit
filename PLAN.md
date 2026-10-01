@@ -19,6 +19,8 @@ De naam "IntervalFit" staat op één plek (`src/config.ts` + manifest in `vite.c
 
 | 7b. Android-fixes na test moeder (thema's bleven donker; melding "onveilig" bij installeren) | ✅ gebouwd en online (versie 1.0.1). **Wacht op test** op de telefoon van de moeder (opnieuw installeren via Chrome) |
 
+| 7c. Bibliotheek: Russian twists vernieuwd, bicep curls links/rechts, goblet squats (54 oefeningen) | ✅ gebouwd en online (versie 1.0.2). **Wacht op test** |
+
 **Na de eindtest:** alleen nog onderhoud en eventuele wensen; zie README → "Zelf iets aanpassen".
 
 ## Aanvullende besluiten (onderweg genomen)
@@ -47,6 +49,10 @@ De naam "IntervalFit" staat op één plek (`src/config.ts` + manifest in `vite.c
   - *Besluit:* op Android in elke andere browser dan Chrome (Samsung Internet, Firefox, Edge, Opera, ingebouwde browsers van WhatsApp/Instagram/Facebook) adviseert het installatiescherm Chrome met de knop **Openen in Chrome** (`intent://…;package=com.android.chrome;S.browser_fallback_url=…?geenchrome=1`, `src/engine/chrome.ts`); daaronder "Liever in <browser>?" met de eigen stappen en uitleg bij de melding. Geen eigen Installeren-knop buiten Chrome. Geen Chrome → melding + eigen stappen open.
   - *Gedeelde link* in een andere Android-browser: niet direct toevoegen (ander geheugen dan de via Chrome geïnstalleerde app) maar **Openen in Chrome** (`?deel=CODE` → `#/deel/CODE`) of **Kopieer voor de app**.
   - Hulp-vraag "Melding dat de app onveilig is (Android)?" en handleiding aangepast. Tests: `tests/android.test.ts`, `tools/e2e/android-test.mjs`.
+- **Bibliotheek-aanpassingen (7c):**
+  - *Russian twists:* nieuw, **schuin van voren** (camera 40° gedraaid): zittend op de billen, romp 38° achterover (V-houding), knieën gebogen met de hielen op de grond, handen samen voor de borst; romp en schouders draaien om de ruggengraat (±55°) en de handen tikken naast de heup bijna de vloer. Benen stil. Opgebouwd in 3D en geprojecteerd (`src/figure/body3d.ts`: `poseFrom3D`, verkorte ledematen, buigrichting per gewricht). Puur van voren viel de V-houding weg en bedekten de armen het gezicht.
+  - *Bicep curls links/rechts:* naast de bestaande (beide armen). Alleen de werkende arm beweegt en krijgt de accentkleur (`focus: ['armN']`), de andere hangt stil met de dumbbell. Rechts = arm dichtbij (figuur kijkt naar rechts); links = gespiegeld. Spraak "bicep curls, links/rechts".
+  - *Goblet squats:* zelfde squat als Squats; één dumbbell rechtop onder de kin met beide handen (`dumbbells: 'goblet'`, kantelt mee met de romp), ellebogen langs de romp. Benen & billen, dumbbells, MET 5,5.
 - **Materiaal:** `equipment` per oefening: geen (standaard), `stoel` (stoel/trap: step-ups, tricep dips), `dumbbells`, `stang`. Bibliotheek: tweede rij keuzeknopjes (Alle materialen · Zonder materiaal · Stoel of trap · Dumbbells · Optrekstang) en een klein label linksboven op tegels met materiaal. Figuren: rekwisieten `step`, `bar`, `barSide`; `dumbbells: 'end' | 'side'`, `grip: 'over' | 'under'` (kleur `--fig-gear`, standaard `--text-2`).
 - **Back-up:** JSON incl. foto's (data-URL), geschiedenis; instellingen niet. Terugzetten voegt toe (geen dubbelen).
 - **Overzicht na afloop (stap 6):** route `#/klaar/:id`; bij afloop wordt de workout direct bewaard (`storage/history.ts`) en vervangt het overzicht de speler (terug = Home). Net afgerond: confetti in themakleuren (`canvas-confetti`, niet bij "Verminder beweging"), medaille met pictogram/getal van de belangrijkste boodschap, optellende tegels (getraind, werktijd, ≈ kcal, rondes, oefeningen; gestopt: "2 van 3"), reeks + dagen van deze week, *Klaar* en *Nog een keer*. Vanuit de geschiedenis: zelfde overzicht zonder feest, met terugknop.

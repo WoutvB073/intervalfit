@@ -40,15 +40,15 @@ describe('tijdweergave', () => {
 });
 
 describe('oefeningenbibliotheek', () => {
-  it('bevat alle 51 oefeningen met unieke id', () => {
-    expect(EXERCISES).toHaveLength(51);
-    expect(new Set(EXERCISES.map((e) => e.id)).size).toBe(51);
+  it('bevat alle 54 oefeningen met unieke id', () => {
+    expect(EXERCISES).toHaveLength(54);
+    expect(new Set(EXERCISES.map((e) => e.id)).size).toBe(54);
   });
   it('heeft per oefening een geldig materiaal; alleen stoel/dumbbells/stang staan erbij', () => {
     const ids = new Set(EQUIPMENT.map((m) => m.id));
     for (const e of EXERCISES) expect(ids.has(equipmentOf(e)), e.id).toBe(true);
     const byEquipment = (m: string) => EXERCISES.filter((e) => equipmentOf(e) === m).map((e) => e.id).sort();
-    expect(byEquipment('dumbbells')).toEqual(['bicep-curls', 'hammer-curls']);
+    expect(byEquipment('dumbbells')).toEqual(['bicep-curls', 'bicep-curls-left', 'bicep-curls-right', 'goblet-squats', 'hammer-curls']);
     expect(byEquipment('stang')).toEqual(['chin-ups', 'hanging-knee-raises', 'pull-ups']);
     expect(byEquipment('stoel')).toEqual(['step-ups', 'tricep-dips']);
   });

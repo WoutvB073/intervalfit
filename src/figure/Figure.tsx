@@ -68,7 +68,8 @@ function draw(sk: Skeleton, refs: Map<Ref, SVGElement>) {
     dot?.setAttribute('cx', p[0].toFixed(1));
     dot?.setAttribute('cy', p[1].toFixed(1));
   }
-  placeGear(refs.get('gearN'), sk.handN, sk.elbowN);
+  // Goblet: de dumbbell staat evenwijdig aan de romp (de "onderarm" is dan de lijn heup → schouder).
+  placeGear(refs.get('gearN'), sk.handN, refs.get('gearN')?.classList.contains('fig-gear--goblet') ? [sk.handN[0] - (sk.shoulder[0] - sk.hip[0]), sk.handN[1] - (sk.shoulder[1] - sk.hip[1])] : sk.elbowN);
   placeGear(refs.get('gearF'), sk.handF, sk.elbowF);
   const head = refs.get('head');
   head?.setAttribute('cx', sk.head[0].toFixed(1));
@@ -147,6 +148,17 @@ export function Figure({ exerciseId, anim: animProp, playing = true, at, frame, 
           <line x1={-9} y1={0} x2={9} y2={0} className="fig-gear__handle" />
           <rect x={-14} y={-8} width={6.5} height={16} rx={2} />
           <rect x={7.5} y={-8} width={6.5} height={16} rx={2} />
+        </g>
+      );
+    }
+    if (anim.dumbbells === 'goblet') {
+      // Eén dumbbell, rechtop tegen de borst, met beide handen vast (alleen bij de "dichtbij"-hand tekenen).
+      if (far) return null;
+      return (
+        <g ref={reg(k)} className={`${cls} fig-gear--goblet`}>
+          <line x1={0} y1={-9} x2={0} y2={9} className="fig-gear__handle" />
+          <rect x={-8.5} y={-16} width={17} height={7.5} rx={2.5} />
+          <rect x={-8.5} y={8.5} width={17} height={7.5} rx={2.5} />
         </g>
       );
     }

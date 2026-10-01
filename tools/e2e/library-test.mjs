@@ -41,13 +41,13 @@ for (const theme of THEMES) {
   await sleep(700);
   if (theme === THEMES[0]) {
     const all = await tiles();
-    check(all.length === 51, `Alles: ${all.length} oefeningen`);
+    check(all.length === 54, `Alles: ${all.length} oefeningen`);
     await clickChip('Zonder materiaal');
     const none = await tiles();
     check(none.length === 44 && none.every((t) => !t.gear), `Zonder materiaal: ${none.length}, zonder labels`);
     await clickChip('Dumbbells');
     const db = await tiles();
-    check(db.map((t) => t.name).join() === 'Bicep curls,Hammer curls' && db.every((t) => t.gear.includes('Dumbbells')), `Dumbbells: ${db.map((t) => t.name + ' [' + t.gear + ']').join(', ')}`);
+    check(db.map((t) => t.name).join() === 'Goblet squats,Bicep curls,Bicep curls links,Bicep curls rechts,Hammer curls' && db.every((t) => t.gear.includes('Dumbbells')), `Dumbbells: ${db.map((t) => t.name + ' [' + t.gear + ']').join(', ')}`);
     await clickChip('Optrekstang');
     const bar = await tiles();
     check(bar.length === 3 && bar.every((t) => t.gear.includes('Stang')), `Optrekstang: ${bar.map((t) => t.name).join(', ')}`);

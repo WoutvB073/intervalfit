@@ -213,9 +213,10 @@ export type FigureAnim = {
   order?: 'rear' | 'legsFront' | 'hang';
   /**
    * Dumbbells in beide handen: 'end' = van opzij op de kop gezien (handvat dwars, bicep curls),
-   * 'side' = hele dumbbell in profiel, haaks op de onderarm (hamergreep).
+   * 'side' = hele dumbbell in profiel, haaks op de onderarm (hamergreep),
+   * 'goblet' = één dumbbell rechtop met beide handen tegen de borst (evenwijdig aan de romp).
    */
-  dumbbells?: 'end' | 'side';
+  dumbbells?: 'end' | 'side' | 'goblet';
   /** Handen om de optrekstang: 'over' = bovenhands (pull-ups), 'under' = onderhands (chin-ups). */
   grip?: 'over' | 'under';
   /** Van bovenaf gezien (liggend op een matje): geen vloerlijn, figuur verticaal gecentreerd. */

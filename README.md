@@ -73,8 +73,9 @@ animatie, zoals de bestaande oefeningen."*
    },
    ```
 2. **Animatie** – voeg in `src/figure/animations.ts` een animatie toe met dezelfde `id` (sleutelhoudingen + tijden).
-   Links/rechts-varianten: de ene maken, de andere gespiegeld (`mirror: true`, zie zijplank). Zonder animatie krijgt de
-   oefening vanzelf een nette letter-tegel.
+   Links/rechts-varianten: de ene maken, de andere gespiegeld (`mirror: true`, zie zijplank en bicep curls links/rechts).
+   Draaiende bewegingen (zoals Russian twists) kun je in 3D opbouwen met `src/figure/body3d.ts`. Zonder animatie krijgt
+   de oefening vanzelf een nette letter-tegel.
 3. **Controleren**:
    - `npm test` (o.a. aantal oefeningen in `tests/basics.test.ts` ophogen, instructielengte, animatie-checks);
    - galerij: `…/intervalfit/?dev=1#/galerij`, en per oefening 8 momenten via de knop *Houdingen*
