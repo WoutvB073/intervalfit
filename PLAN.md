@@ -21,7 +21,7 @@ De naam "IntervalFit" staat op één plek (`src/config.ts` + manifest in `vite.c
 
 | 7c. Bibliotheek: Russian twists vernieuwd, bicep curls links/rechts, goblet squats (54 oefeningen) | ✅ gebouwd en online (versie 1.0.2). **Wacht op test** |
 
-| 7d. Fire hydrants verwijderd, pull-ups verbeterd, Russian twists in 3D met draaiende camera (53 oefeningen) | ✅ gebouwd en getest, versie 1.0.3. **Nog niet online: wacht op akkoord** op de nieuwe Russian twists |
+| 7d. Fire hydrants verwijderd, pull-ups verbeterd, Russian twists in 3D met draaiende camera (53 oefeningen) | ✅ akkoord gebruiker (screenshots), online in versie 1.0.3. **Wacht op test** op de telefoons |
 
 **Na de eindtest:** alleen nog onderhoud en eventuele wensen; zie README → "Zelf iets aanpassen".
 
