@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { ANIMATIONS } from '../src/figure/animations';
+import { ANIMATIONS_3D } from '../src/figure/anim3d';
+import { fitViewBox3D, frame3D } from '../src/figure/scene3d';
 import { EXERCISES } from '../src/data/exercises';
 import { computeSkeleton, cycleLength, fitViewBox, LEN, sampleAnim, solveLimb, type V } from '../src/figure/rig';
 
@@ -21,8 +23,8 @@ describe('skelet (inverse kinematica)', () => {
 });
 
 describe('animaties', () => {
-  it('bestaan voor alle oefeningen', () => {
-    for (const e of EXERCISES) expect(ANIMATIONS[e.id], e.id).toBeDefined();
+  it('bestaan voor alle oefeningen (2D of 3D, nooit allebei)', () => {
+    for (const e of EXERCISES) expect(!!ANIMATIONS[e.id] !== !!ANIMATIONS_3D[e.id], e.id).toBe(true);
   });
 
   it('geven op elk moment geldige getallen en blijven binnen beeld', () => {
@@ -75,5 +77,43 @@ describe('animaties', () => {
   it('opdrukken bovenin: armen gestrekt', () => {
     const sk = computeSkeleton(ANIMATIONS['push-ups']!.frames[0]!, 'side');
     expect(dist(sk.shN, sk.handN)).toBeGreaterThan(LEN.upper + LEN.fore - 1);
+  });
+});
+
+describe('3D-animaties (draaiende camera)', () => {
+  const d3 = (a: number[], b: number[]) => Math.hypot(a[0]! - b[0]!, a[1]! - b[1]!, a[2]! - b[2]!);
+  for (const [id, anim] of Object.entries(ANIMATIONS_3D)) {
+    it(`${id}: vaste lengtes, niets onder de vloer, binnen beeld`, () => {
+      for (let i = 0; i < 40; i++) {
+        const b = anim.body((i / 40) * anim.cycle);
+        expect(d3(b.shR, b.elbowR)).toBeCloseTo(27, 3);
+        expect(d3(b.elbowR, b.handR)).toBeCloseTo(25, 3);
+        expect(d3(b.shL, b.elbowL)).toBeCloseTo(27, 3);
+        expect(d3(b.chest, b.pelvis)).toBeCloseTo(46, 3);
+        for (const p of [b.handR, b.handL, b.ankleR, b.ankleL, b.kneeR, b.kneeL, b.elbowR, b.elbowL]) expect(p[1]).toBeGreaterThan(0);
+        // ook vanuit elke camerahoek zinnige getallen
+        const f = frame3D(anim, (i / 40) * anim.orbit);
+        for (const s of f.segs) expect(Number.isFinite(s.a[0] + s.a[1] + s.b[0] + s.b[1])).toBe(true);
+      }
+      const [, , size] = fitViewBox3D(anim);
+      expect(size).toBeGreaterThanOrEqual(150);
+      expect(size).toBeLessThanOrEqual(210);
+    });
+  }
+
+  it('russian twists: benen blijven stil, de schouders draaien flink en de handen gaan naast de heup omlaag', () => {
+    const a = ANIMATIONS_3D['russian-twists']!;
+    const left = a.body(a.cycle / 4);
+    const right = a.body((3 * a.cycle) / 4);
+    expect(left.kneeR).toEqual(right.kneeR);
+    expect(left.ankleL).toEqual(right.ankleL);
+    expect(left.ankleR[1]).toBeGreaterThan(8); // voeten net los van de vloer
+    // schouderlijn draait in totaal ruim 90° (van links naar rechts)
+    const ang = (b: typeof left) => (Math.atan2(b.shL[2] - b.shR[2], b.shL[0] - b.shR[0]) * 180) / Math.PI;
+    expect(Math.abs(ang(left) - ang(right))).toBeGreaterThan(90);
+    // handen naast de heup, bijna op de vloer, aan de kant waar naartoe gedraaid wordt
+    expect(left.handL[1]).toBeLessThan(10);
+    expect(left.handL[0]).toBeGreaterThan(15);
+    expect(right.handR[0]).toBeLessThan(-15);
   });
 });

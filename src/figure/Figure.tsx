@@ -1,6 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { BAR_Y, computeSkeleton, cycleLength, fitViewBox, GROUND_Y, LEN, sampleAnim, STEP, type FigureAnim, type Part, type Skeleton, type V } from './rig';
 import { getAnimation } from './animations';
+import { getAnimation3D } from './anim3d';
+import { Figure3D } from './Figure3D';
 import { prefersReducedMotion, subscribeFrame } from './ticker';
 
 type Props = {
@@ -77,7 +79,14 @@ function draw(sk: Skeleton, refs: Map<Ref, SVGElement>) {
 }
 
 /** Geanimeerd figuurtje van een oefening. Kleuren komen uit het thema (CSS-variabelen). */
-export function Figure({ exerciseId, anim: animProp, playing = true, at, frame, className = '', title }: Props) {
+export function Figure(props: Props) {
+  // Oefeningen met een 3D-animatie (draaiende camera) apart tekenen.
+  const a3 = props.anim ? undefined : getAnimation3D(props.exerciseId);
+  if (a3) return <Figure3D anim={a3} playing={props.playing} at={props.at} className={props.className} title={props.title} />;
+  return <Figure2D {...props} />;
+}
+
+function Figure2D({ exerciseId, anim: animProp, playing = true, at, frame, className = '', title }: Props) {
   const anim = animProp ?? getAnimation(exerciseId);
   const svgRef = useRef<SVGSVGElement>(null);
   const refs = useRef(new Map<Ref, SVGElement>());

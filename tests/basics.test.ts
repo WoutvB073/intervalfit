@@ -40,9 +40,9 @@ describe('tijdweergave', () => {
 });
 
 describe('oefeningenbibliotheek', () => {
-  it('bevat alle 54 oefeningen met unieke id', () => {
-    expect(EXERCISES).toHaveLength(54);
-    expect(new Set(EXERCISES.map((e) => e.id)).size).toBe(54);
+  it('bevat alle 53 oefeningen met unieke id', () => {
+    expect(EXERCISES).toHaveLength(53);
+    expect(new Set(EXERCISES.map((e) => e.id)).size).toBe(53);
   });
   it('heeft per oefening een geldig materiaal; alleen stoel/dumbbells/stang staan erbij', () => {
     const ids = new Set(EQUIPMENT.map((m) => m.id));

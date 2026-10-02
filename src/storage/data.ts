@@ -2,9 +2,10 @@ import type { HistoryEntry, Settings, Workout } from '../model/types';
 import { createStore, readJSON, writeJSON } from './store';
 import { createSampleWorkouts } from '../data/sampleWorkouts';
 import { newId } from '../model/id';
+import { withKnownExercises } from '../data/exercises';
 
 /** Huidige versie van de opslagvorm. Verhoog bij een wijziging en voeg een stap toe in `migrate`. */
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 
 export const DEFAULT_SETTINGS: Settings = {
   sound: { beeps: true, whistle: true, voice: true, vibrate: true, alwaysAudible: false, volume: 0.8 },
@@ -24,7 +25,8 @@ function loadSettings(raw: unknown): Settings {
 }
 
 function loadWorkouts(raw: unknown): Workout[] {
-  return Array.isArray(raw) ? (raw as Workout[]).filter((w) => w && typeof w.id === 'string') : [];
+  // Oefeningen die niet meer in de bibliotheek staan worden eigen oefeningen (zie REMOVED_EXERCISES).
+  return Array.isArray(raw) ? (raw as Workout[]).filter((w) => w && typeof w.id === 'string').map(withKnownExercises) : [];
 }
 
 export const workoutsStore = createStore<Workout[]>('workouts', () => [], loadWorkouts);
@@ -49,7 +51,8 @@ export function migrate(): void {
     writeJSON('schema', SCHEMA_VERSION);
     return;
   }
-  // Toekomstige migraties: if (version < 2) { … }
+  // v2: fire hydrants uit de bibliotheek → in bestaande workouts een eigen oefening (zelfde naam en tijden).
+  if (version < 2) workoutsStore.set((list) => list.map(withKnownExercises));
   if (version < SCHEMA_VERSION) writeJSON('schema', SCHEMA_VERSION);
 }
 

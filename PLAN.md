@@ -4,7 +4,7 @@ Persoonlijke interval/tabata-trainingsapp als Progressive Web App. Draait volled
 (geen backend, geen accounts), is installeerbaar op iPhone en Android en werkt offline.
 De naam "IntervalFit" staat op één plek (`src/config.ts` + manifest in `vite.config.ts`).
 
-## Status (01-10-2026)
+## Status (02-10-2026)
 
 | Stap | Status |
 |---|---|
@@ -20,6 +20,8 @@ De naam "IntervalFit" staat op één plek (`src/config.ts` + manifest in `vite.c
 | 7b. Android-fixes na test moeder (thema's bleven donker; melding "onveilig" bij installeren) | ✅ gebouwd en online (versie 1.0.1). **Wacht op test** op de telefoon van de moeder (opnieuw installeren via Chrome) |
 
 | 7c. Bibliotheek: Russian twists vernieuwd, bicep curls links/rechts, goblet squats (54 oefeningen) | ✅ gebouwd en online (versie 1.0.2). **Wacht op test** |
+
+| 7d. Fire hydrants verwijderd, pull-ups verbeterd, Russian twists in 3D met draaiende camera (53 oefeningen) | ✅ gebouwd en getest, versie 1.0.3. **Nog niet online: wacht op akkoord** op de nieuwe Russian twists |
 
 **Na de eindtest:** alleen nog onderhoud en eventuele wensen; zie README → "Zelf iets aanpassen".
 
@@ -53,6 +55,10 @@ De naam "IntervalFit" staat op één plek (`src/config.ts` + manifest in `vite.c
   - *Russian twists:* nieuw, **schuin van voren** (camera 40° gedraaid): zittend op de billen, romp 38° achterover (V-houding), knieën gebogen met de hielen op de grond, handen samen voor de borst; romp en schouders draaien om de ruggengraat (±55°) en de handen tikken naast de heup bijna de vloer. Benen stil. Opgebouwd in 3D en geprojecteerd (`src/figure/body3d.ts`: `poseFrom3D`, verkorte ledematen, buigrichting per gewricht). Puur van voren viel de V-houding weg en bedekten de armen het gezicht.
   - *Bicep curls links/rechts:* naast de bestaande (beide armen). Alleen de werkende arm beweegt en krijgt de accentkleur (`focus: ['armN']`), de andere hangt stil met de dumbbell. Rechts = arm dichtbij (figuur kijkt naar rechts); links = gespiegeld. Spraak "bicep curls, links/rechts".
   - *Goblet squats:* zelfde squat als Squats; één dumbbell rechtop onder de kin met beide handen (`dumbbells: 'goblet'`, kantelt mee met de romp), ellebogen langs de romp. Benen & billen, dumbbells, MET 5,5.
+- **Bibliotheek-aanpassingen (7d):**
+  - *Fire hydrants verwijderd* (bibliotheek, animatie). `REMOVED_EXERCISES` in `src/data/exercises.ts` bewaart id → naam; `withKnownExercises` maakt van een oefening die niet meer in de bibliotheek staat een eigen oefening (zelfde naam/tijden, letter-tegel). Toegepast bij laden + migratie naar **schema 2**, bij back-up terugzetten en bij gedeelde links (oude links bewaren de naam niet → naam uit `REMOVED_EXERCISES`). Test: `tests/removed.test.ts`, `tools/e2e/removed-test.mjs`.
+  - *Pull-ups:* ellebogen altijd omlaag en naar buiten (bovenin een "W", nooit boven de schouders), veel tussenstappen (geen omklappende ellebogen), knieën licht gebogen met evenwijdige onderbenen en hangende voeten, lichaam recht zonder zwaaien. Chin-ups (smal, onderhands, onderarmen verticaal) blijven duidelijk anders.
+  - *Russian twists in 3D* (optie a gekozen boven b "per herhaling wisselen" en c "twee aanzichten tegelijk"): 3D-poppetje met langzaam rondgaande camera (18 s per rondje, 24° van boven), matje op de vloer, delen van achter naar voor getekend; verre lichaamshelft lichter. Voeten net los van de vloer, handen samen voor de borst, draai ±55°, handen naast de heup omlaag, benen stil. Bestanden: `src/figure/scene3d.ts` (camera, projectie, diepte), `src/figure/Figure3D.tsx` (tekenen), `src/figure/anim3d.ts` (3D-animaties + `hasAnimation`). Zelfde lijnstijl en themakleuren, geen bibliotheek (± 3 kB gzip). Later bruikbaar voor andere draaiende/zijwaartse oefeningen (bv. bicycle crunches, side lunges, hielen tikken, fire-hydrant-achtige bewegingen) — nu niet aangepast.
 - **Materiaal:** `equipment` per oefening: geen (standaard), `stoel` (stoel/trap: step-ups, tricep dips), `dumbbells`, `stang`. Bibliotheek: tweede rij keuzeknopjes (Alle materialen · Zonder materiaal · Stoel of trap · Dumbbells · Optrekstang) en een klein label linksboven op tegels met materiaal. Figuren: rekwisieten `step`, `bar`, `barSide`; `dumbbells: 'end' | 'side'`, `grip: 'over' | 'under'` (kleur `--fig-gear`, standaard `--text-2`).
 - **Back-up:** JSON incl. foto's (data-URL), geschiedenis; instellingen niet. Terugzetten voegt toe (geen dubbelen).
 - **Overzicht na afloop (stap 6):** route `#/klaar/:id`; bij afloop wordt de workout direct bewaard (`storage/history.ts`) en vervangt het overzicht de speler (terug = Home). Net afgerond: confetti in themakleuren (`canvas-confetti`, niet bij "Verminder beweging"), medaille met pictogram/getal van de belangrijkste boodschap, optellende tegels (getraind, werktijd, ≈ kcal, rondes, oefeningen; gestopt: "2 van 3"), reeks + dagen van deze week, *Klaar* en *Nog een keer*. Vanuit de geschiedenis: zelfde overzicht zonder feest, met terugknop.

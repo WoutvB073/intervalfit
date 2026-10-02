@@ -120,3 +120,13 @@ export function poseFrom3D(b: Body3D, yaw = 0): Pose {
     },
   };
 }
+
+/**
+ * Arm/been naar een doel laten reiken: gewricht én eindpunt. Ligt het doel buiten bereik, dan gestrekt
+ * in die richting (de ledematen worden nooit langer).
+ */
+export function reach3(root: V3, target: V3, l1: number, l2: number, pole: V3): { joint: V3; end: V3 } {
+  const joint = joint3(root, target, l1, l2, pole);
+  const end = add3(joint, mul3(norm3(sub3(target, joint)), l2));
+  return { joint, end };
+}

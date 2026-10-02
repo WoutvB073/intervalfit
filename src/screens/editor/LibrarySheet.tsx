@@ -9,7 +9,7 @@ import { Icon, type IconName } from '../../components/Icon';
 export const EQUIPMENT_ICON: Record<Equipment, IconName> = { geen: 'check', stoel: 'stairs', dumbbells: 'dumbbell', stang: 'pullupBar' };
 import { Stepper, timeOptions } from '../../components/Stepper';
 import { Figure } from '../../figure/Figure';
-import { getAnimation } from '../../figure/animations';
+import { hasAnimation } from '../../figure/anim3d';
 import { formatShort } from '../../model/format';
 
 /** Vergelijkbaar maken voor zoeken: kleine letters, zonder accenten, streepjes en spaties. */
@@ -198,7 +198,7 @@ export function LibrarySheet({
                       onClick={() => toggle(e.id)}
                     >
                       <span className="lib-tile__art">
-                        {getAnimation(e.id) ? (
+                        {hasAnimation(e.id) ? (
                           <Figure exerciseId={e.id} playing={on} title={e.name} />
                         ) : (
                           <span className="lib-tile__letter">{e.name.charAt(0)}</span>

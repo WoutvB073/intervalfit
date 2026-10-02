@@ -1,5 +1,5 @@
 import { getExercise } from '../data/exercises';
-import { getAnimation } from '../figure/animations';
+import { hasAnimation } from '../figure/anim3d';
 import { Figure } from '../figure/Figure';
 import { usePhotoUrl } from '../storage/photos';
 import type { WorkoutExercise } from '../model/types';
@@ -15,7 +15,7 @@ export function ExerciseVisual({ exercise, animate = false, className = '' }: { 
   if (exercise.photoId && photo) {
     return <img src={photo} alt={exercise.name} className={`ex-visual ex-visual--photo ${className}`} />;
   }
-  if (getAnimation(exercise.libraryId)) {
+  if (hasAnimation(exercise.libraryId)) {
     return (
       <div className={`ex-visual ex-visual--figure ${className}`}>
         <Figure exerciseId={exercise.libraryId} playing={animate} title={exercise.name} />

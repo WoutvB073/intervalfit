@@ -1,4 +1,4 @@
-import type { Category, Equipment, LibraryExercise } from '../model/types';
+import type { Category, Equipment, LibraryExercise, WorkoutExercise } from '../model/types';
 
 /**
  * De oefeningenbibliotheek.
@@ -116,12 +116,6 @@ export const EXERCISES: LibraryExercise[] = [
     aliases: ['donkey kick', 'ezelschop', 'been naar achteren', 'billen'],
     spoken: 'donkie kiks',
     instruction: 'Knie gebogen, voetzool naar het plafond.',
-  },
-  {
-    id: 'fire-hydrants', name: 'Fire hydrants', category: 'benen', met: 3.5, defaultWorkSec: 30,
-    aliases: ['fire hydrant', 'brandkraan', 'been opzij', 'billen'],
-    spoken: 'faajer haaidrants',
-    instruction: 'Gebogen been opzij tot heuphoogte, rug recht.',
   },
 
   // ── Bovenlichaam ───────────────────────────────────────────────
@@ -358,8 +352,29 @@ export function equipmentOf(e: LibraryExercise): Equipment {
   return e.equipment ?? 'geen';
 }
 
+/**
+ * Oefeningen die uit de bibliotheek zijn gehaald (id → naam). Bestaande workouts, gedeelde links en back-ups
+ * met zo'n oefening blijven werken: de oefening wordt een eigen oefening met dezelfde naam en tijden.
+ * Een id hier nooit hergebruiken voor een nieuwe oefening.
+ */
+export const REMOVED_EXERCISES: Record<string, string> = {
+  'fire-hydrants': 'Fire hydrants',
+};
+
 const BY_ID = new Map(EXERCISES.map((e) => [e.id, e]));
 
 export function getExercise(id: string | undefined): LibraryExercise | undefined {
   return id ? BY_ID.get(id) : undefined;
+}
+
+/** Oefening uit een workout die niet (meer) in de bibliotheek staat → eigen oefening (naam en tijden blijven). */
+export function toKnownExercise(e: WorkoutExercise): WorkoutExercise {
+  if (!e.libraryId || BY_ID.has(e.libraryId)) return e;
+  const { libraryId, ...rest } = e;
+  return { ...rest, name: e.name || REMOVED_EXERCISES[libraryId] || 'Oefening' };
+}
+
+/** Zelfde voor een hele workout (geeft dezelfde workout terug als er niets verandert). */
+export function withKnownExercises<W extends { exercises: WorkoutExercise[] }>(w: W): W {
+  return w.exercises.some((e) => e.libraryId && !BY_ID.has(e.libraryId)) ? { ...w, exercises: w.exercises.map(toKnownExercise) } : w;
 }

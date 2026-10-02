@@ -1,5 +1,4 @@
 import { BAR_Y, STEP, type FigureAnim, type Pose, type Target, type V } from './rig';
-import { add3, joint3, lerp3, mul3, norm3, poseFrom3D, rotate3, type Body3D, type V3 } from './body3d';
 
 /**
  * Animaties per oefening (sleutel = id uit src/data/exercises.ts).
@@ -167,35 +166,28 @@ function hangAnim(grip: 'over' | 'under'): FigureAnim {
   const hands: [Target, Target] = [[100 - hx, BAR_Y], [100 + hx, BAR_Y]];
   const bottomY = wide ? BAR_Y + 45 : BAR_Y + 50; // schouderhoogte hangend (armen gestrekt)
   const topY = BAR_Y + 6; // kin boven de stang
-  const legs = { shinN: 0.55, shinF: 0.55 };
+  // Knieën licht gebogen (onderbenen wijzen iets naar achteren, dus verkort), onderbenen evenwijdig:
+  // zo hangen de voeten vrij van de vloer en blijft het lichaam rustig en recht.
+  const legs = { shinN: 0.5, shinF: 0.5 };
   const at = (shY: number): Pose => {
     const pose: Pose = {
       hip: [100, shY + 46],
       torso: 180,
       head: 0,
       hands,
-      feet: [[95, shY + 100], [105, shY + 100]],
+      feet: [[92.5, shY + 99.5], [107.5, shY + 99.5]],
+      footAbs: [6, -6], // hangende voeten wijzen omlaag
+      knees: [1, -1],
       scale: legs,
     };
-    if (wide) return pose;
+    // Bovenhands: ellebogen altijd naar beneden en naar buiten (nooit boven de schouders).
+    if (wide) return { ...pose, elbows: [1, -1] };
     // Onderhands: de onderarm blijft verticaal onder de hand, de elleboog wijst naar voren.
     // Van voren gezien is de bovenarm dan verkort: lengte = afstand schouder → elleboogpunt.
     const elbow: V = [100 - hx, BAR_Y + 25.2];
     const k = Math.max(0.12, Math.hypot(100 - 13 - elbow[0], shY - elbow[1]) / 27);
     return { ...pose, elbows: [1, -1], scale: { ...legs, upperN: k, upperF: k } };
   };
-  if (wide) {
-    return {
-      view: 'front',
-      order: 'hang',
-      focus: ['arms', 'torso'],
-      props: ['bar'],
-      grip,
-      still: 1,
-      frames: [at(bottomY), at(topY), at(topY), at(bottomY)],
-      times: [0.9, 0.25, 0.9, 0.45],
-    };
-  }
   // Veel tussenstappen (lineair, zelf versneld/vertraagd), zodat de elleboog op zijn plek blijft.
   const N = 8;
   const ys = Array.from({ length: N + 1 }, (_, i) => bottomY + (topY - bottomY) * (0.5 - 0.5 * Math.cos((Math.PI * i) / N)));
@@ -203,60 +195,6 @@ function hangAnim(grip: 'over' | 'under'): FigureAnim {
   const frames = [...up, ...up.slice(1, -1).reverse()];
   const times = frames.map((_, i) => (i === N ? 0.25 : i === frames.length - 1 ? 0.4 : 0.9 / N));
   return { view: 'front', order: 'hang', focus: ['arms', 'torso'], props: ['bar'], grip, ease: 'linear', still: N, frames, times };
-}
-
-/**
- * Russian twists, opgebouwd in 3D (zie body3d.ts): zittend op de billen, romp ± 38° achterover (V-houding),
- * knieën gebogen met de hielen op de grond. De romp en schouders draaien om de ruggengraat; de handen
- * (samen voor de borst) tikken naast de heup bijna de vloer aan. De benen blijven stil.
- * `yaw`: camera schuin van voren (graden), zodat zowel de V-houding als de draai te zien is.
- */
-function russianTwist(yaw: number): FigureAnim {
-  const lean = 38;
-  const pelvis: V3 = [0, 11, 0];
-  const spine: V3 = [0, Math.cos((lean * Math.PI) / 180), -Math.sin((lean * Math.PI) / 180)];
-  const forward0: V3 = [0, Math.sin((lean * Math.PI) / 180), Math.cos((lean * Math.PI) / 180)];
-  const X: V3 = [1, 0, 0];
-  const MAX_TWIST = 55;
-
-  /** u = 0: midden (handen voor de borst); u = 1: helemaal naar `side` gedraaid (+1 = links van de figuur). */
-  const body = (side: number, u: number): Body3D => {
-    const e = 0.5 - 0.5 * Math.cos(Math.PI * u);
-    const twist = side * MAX_TWIST * e;
-    const right = rotate3(X, spine, twist);
-    const fwd = rotate3(forward0, spine, twist);
-    const chest = add3(pelvis, mul3(spine, 46));
-    const shL = add3(chest, mul3(right, 13));
-    const shR = add3(chest, mul3(right, -13));
-    const head = add3(chest, mul3(norm3(add3(spine, mul3(fwd, 0.25))), 19));
-    // Handen: samen voor de borst → naast de heup, net boven de vloer.
-    const atChest = add3(add3(chest, mul3(spine, -18)), mul3(fwd, 22));
-    const atFloor: V3 = [side * 27, 5, 7];
-    const mid = lerp3(atChest, atFloor, Math.pow(e, 1.3));
-    const handL = add3(mid, mul3(right, 2.5));
-    const handR = add3(mid, mul3(right, -2.5));
-    const hipR = add3(pelvis, [-8, 0, 0]);
-    const hipL = add3(pelvis, [8, 0, 0]);
-    const ankleR: V3 = [-11, 6, 47];
-    const ankleL: V3 = [11, 6, 47];
-    return {
-      pelvis, chest, head, shR, shL, handR, handL, ankleR, ankleL,
-      elbowR: joint3(shR, handR, 27, 25, [-0.6, -1, 0.1]),
-      elbowL: joint3(shL, handL, 27, 25, [0.6, -1, 0.1]),
-      kneeR: joint3(hipR, ankleR, 36, 36, [-0.35, 1, 0.15]),
-      kneeL: joint3(hipL, ankleL, 36, 36, [0.35, 1, 0.15]),
-    };
-  };
-  const N = 5;
-  // Voeten plat op de hielen, tenen naar voren (schuin naar rechts in beeld).
-  const swing = (side: number) => Array.from({ length: N + 1 }, (_, i): Pose => ({ ...poseFrom3D(body(side, i / N), yaw), footAbs: [76, 76] }));
-  const toLeft = swing(1);
-  const toRight = swing(-1);
-  // midden → links → midden → rechts → (midden)
-  const frames = [...toLeft, ...toLeft.slice(1, -1).reverse(), ...toRight, ...toRight.slice(1, -1).reverse()];
-  const step = 0.09;
-  const times = frames.map((_, i) => (i === N || i === 3 * N - 1 ? 0.16 : step));
-  return { view: 'front', order: 'legsFront', focus: ['torso'], ease: 'linear', still: N, frames, times };
 }
 
 export const ANIMATIONS: Record<string, FigureAnim> = {
@@ -404,28 +342,6 @@ export const ANIMATIONS: Record<string, FigureAnim> = {
     times: [0.55, 0.25, 0.55, 0.55, 0.25, 0.55],
   },
 
-  'fire-hydrants': (() => {
-    // Van achteren gezien op handen en knieën; het been gaat opzij omhoog.
-    const base: Pose = {
-      hip: [100, 142],
-      torso: 180,
-      head: 0,
-      hands: [[84, 180], [116, 180]],
-      feet: [[92, 183], [108, 183]],
-      scale: { torso: 0.3, shinN: 0.15, shinF: 0.15, neck: 0.45 },
-    };
-    const liftF = P(base, { feet: [[92, 183], [145, 146]], torso: 177 });
-    const liftN = P(base, { feet: [[55, 146], [108, 183]], torso: 183 });
-    return {
-      view: 'front',
-      order: 'rear',
-      focus: ['legs'],
-      still: 1,
-      frames: [base, liftF, liftF, base, liftN, liftN],
-      times: [0.6, 0.3, 0.6, 0.6, 0.3, 0.6],
-    } satisfies FigureAnim;
-  })(),
-
   'side-leg-raises-left': (() => {
     // Vooraanzicht, liggend op de rechterzij (hoofd links in beeld, rechterkant onder),
     // hoofd rust op de gestrekte onderste arm, bovenste hand op de vloer voor de borst.
@@ -560,8 +476,6 @@ export const ANIMATIONS: Record<string, FigureAnim> = {
     const b: Pose = { ...base, feet: [[160, 150], [118, 142]], torso: -110 };
     return { view: 'side', focus: ['torso'], frames: [a, b], times: [0.55, 0.55] } satisfies FigureAnim;
   })(),
-
-  'russian-twists': russianTwist(40),
 
   'leg-raises': (() => {
     const down: Pose = { hip: [95, 177], torso: -90, head: -15, hands: ARMS_ON_FLOOR, elbows: [1, 1], feet: [pol(94, LEG), pol(94, LEG)] };

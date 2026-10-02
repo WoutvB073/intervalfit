@@ -74,13 +74,19 @@ animatie, zoals de bestaande oefeningen."*
    ```
 2. **Animatie** – voeg in `src/figure/animations.ts` een animatie toe met dezelfde `id` (sleutelhoudingen + tijden).
    Links/rechts-varianten: de ene maken, de andere gespiegeld (`mirror: true`, zie zijplank en bicep curls links/rechts).
-   Draaiende bewegingen (zoals Russian twists) kun je in 3D opbouwen met `src/figure/body3d.ts`. Zonder animatie krijgt
+   Draaiende bewegingen (zoals Russian twists) kunnen een 3D-animatie met draaiende camera krijgen in
+   `src/figure/anim3d.ts` (zelfde id, dan niet in animations.ts). Zonder animatie krijgt
    de oefening vanzelf een nette letter-tegel.
 3. **Controleren**:
    - `npm test` (o.a. aantal oefeningen in `tests/basics.test.ts` ophogen, instructielengte, animatie-checks);
    - galerij: `…/intervalfit/?dev=1#/galerij`, en per oefening 8 momenten via de knop *Houdingen*
      (of `cd tools/e2e && node poses.mjs <id>`);
    - de stem: speel een workout af met de nieuwe oefening.
+
+### Een oefening verwijderen
+Haal het blok weg uit `src/data/exercises.ts` en de animatie uit `src/figure/animations.ts`, en zet de id met de
+naam in `REMOVED_EXERCISES` (zelfde bestand). Bestaande workouts, back-ups en gedeelde links houden de oefening
+dan als eigen oefening. Pas het aantal in `tests/basics.test.ts` aan.
 
 ### Teksten, kleuren en logo
 - **Boodschappen na afloop**: `src/data/messages.ts` (per soort een lijst varianten; `{naam}`, `{tijd}` enz. worden

@@ -2,6 +2,7 @@ import type { HistoryEntry, Workout } from '../model/types';
 import { historyStore, workoutsStore } from './data';
 import { exportPhotos, importPhotos } from './photos';
 import { APP_NAME } from '../config';
+import { withKnownExercises } from '../data/exercises';
 
 /**
  * Back-up als JSON-bestand: alle workouts, de geschiedenis en (optioneel) eigen foto's.
@@ -71,9 +72,9 @@ export async function importBackup(file: File): Promise<ImportResult> {
     throw new Error('Dit is geen back-up van IntervalFit.');
   }
   const existing = new Set(workoutsStore.get().map((w) => w.id));
-  const fresh = data.workouts.filter(
-    (w): w is Workout => !!w && typeof w.id === 'string' && Array.isArray(w.exercises) && !existing.has(w.id),
-  );
+  const fresh = data.workouts
+    .filter((w): w is Workout => !!w && typeof w.id === 'string' && Array.isArray(w.exercises) && !existing.has(w.id))
+    .map(withKnownExercises); // oefeningen die niet meer in de bibliotheek staan → eigen oefening
   const photos = data.photos ? await importPhotos(data.photos) : 0;
   if (fresh.length) workoutsStore.set((list) => [...list, ...fresh]);
 

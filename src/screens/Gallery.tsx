@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { CATEGORIES, EXERCISES } from '../data/exercises';
 import { getAnimation } from '../figure/animations';
+import { getAnimation3D } from '../figure/anim3d';
+import { Figure3D } from '../figure/Figure3D';
 import { Figure } from '../figure/Figure';
 import { cycleLength } from '../figure/rig';
 import { IconButton } from '../components/Button';
@@ -50,6 +52,25 @@ export function Gallery({ poses }: { poses: boolean }) {
         <div className="gallery-poses">
           {list.map((e) => {
             const anim = getAnimation(e.id);
+            const a3 = getAnimation3D(e.id);
+            if (a3) {
+              // 3D: 8 momenten verspreid over een hele rondgang van de camera.
+              return (
+                <section key={e.id} className="gallery-poses__row">
+                  <h2>
+                    {e.name} <small>({e.id})</small>
+                  </h2>
+                  <div className="gallery-poses__frames">
+                    {Array.from({ length: 8 }, (_, i) => (
+                      <div key={i} className="gallery-poses__frame">
+                        <Figure3D anim={a3} at={(i / 8) * a3.orbit} />
+                        <span>{((i / 8) * a3.orbit).toFixed(2)} s</span>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              );
+            }
             if (!anim) return null;
             // Sleutelhoudingen + tussenmomenten (om de beweging te controleren).
             const total = cycleLength(anim);

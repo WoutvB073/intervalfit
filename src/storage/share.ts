@@ -1,6 +1,6 @@
 import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
 import type { Workout, WorkoutExercise } from '../model/types';
-import { getExercise } from '../data/exercises';
+import { getExercise, REMOVED_EXERCISES } from '../data/exercises';
 import { newId } from '../model/id';
 
 /**
@@ -60,7 +60,9 @@ export function decodeWorkout(code: string, now = Date.now()): Workout | null {
     for (const row of c.e.slice(0, LIMITS.exercises)) {
       if (!Array.isArray(row)) continue;
       const lib = getExercise(typeof row[0] === 'string' ? row[0] : undefined);
-      const name = text(row[1], LIMITS.name) || lib?.name || '';
+      // Oude link met een oefening die uit de bibliotheek is gehaald: wordt een eigen oefening met die naam.
+      const removed = typeof row[0] === 'string' ? REMOVED_EXERCISES[row[0]] : undefined;
+      const name = text(row[1], LIMITS.name) || lib?.name || removed || '';
       if (!name) continue;
       const ex: WorkoutExercise = {
         id: newId(),
